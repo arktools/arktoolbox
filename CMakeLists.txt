@@ -82,6 +82,7 @@ else()
 endif()
 
 # find libraries with cmake modules
+MacroFindOrBuild(ARKOSG thirdParty/arkOsg FOUND_GIT_REPO)
 find_package(Qt4)
 find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 set(QT_USE_QTOPENGL TRUE)
@@ -92,6 +93,16 @@ if ("OSG_LIBRARY-NOTFOUND" STREQUAL "${OSG_LIBRARY}")
     set(OPENSCENEGRAPH_FOUND FALSE)
 else()
     set(OPENSCENEGRAPH_FOUND TRUE)
+endif()
+
+if(ARKOSG_BUILD_FROM_SOURCE)
+	set(ARKOSG_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/thirdParty/arkOsg/src")
+	set(ARKOSG_LIBRARIES "${PROJECT_BINARY_DIR}/arkOsg/src/.libs/libarkOsg.a")
+	add_custom_command(OUTPUT ARKOSG_BUILD.stamp 
+		COMMAND mkdir -p arkOsg
+		COMMAND cd arkOsg && cmake ${PROJECT_SOURCE_DIR}/thirdParty/arkOsg
+		COMMAND cd arkOsg && make -j8
+		COMMAND touch ARKOSG_BUILD.stamp)
 endif()
 
 # data directory

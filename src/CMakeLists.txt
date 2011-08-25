@@ -19,6 +19,8 @@ set(arkScicosHeaders
 
 add_library(arkScicos SHARED ${arkScicosSource})
 
+add_dependencies(arkScicos ARKOSG)
+
 set_target_properties(arkScicos PROPERTIES VERSION ${LIBRARY_VERSION}
 	SOVERSION ${LIBRARY_SOVERSION})
 

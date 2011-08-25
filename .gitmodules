@@ -1,0 +1,3 @@
+[submodule "thirdParty/arkOsg"]
+	path = thirdParty/arkOsg
+	url = git@github.com:jgoppert/arkOsg.git
