@@ -6,21 +6,20 @@
 #  SIMGEAR_LIBRARIES - libraries to link to
 
 include(LibFindMacros)
+include(MacroCommonPaths)
+
+MacroCommonPaths(SIMGEAR)
 
 # Include dir
 find_path(SIMGEAR_INCLUDE_DIR
-	NAMES version.h
-	PATHS 
-  		/usr/include/simgear
-  		/usr/local/include/simgear
+	NAMES simgear/version.h
+	PATHS  ${COMMON_INCLUDE_PATHS_SIMGEAR}
 )
 
 # Finally the library itself
 find_library(SIMGEAR_LIBRARY
 	NAMES sgio
-	PATHS 
-		/usr/lib 
-		/usr/local/lib
+	PATHS  ${COMMON_LIBRARY_PATHS_SIMGEAR}
 )
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.

@@ -6,22 +6,20 @@
 #  ARKOSG_LIBRARIES - libraries to link to
 
 include(LibFindMacros)
+include(MacroCommonPaths)
+
+MacroCommonPaths(ARKOSG)
 
 # Include dir
 find_path(ARKOSG_INCLUDE_DIR
-	NAMES initialization/FGTrimmer.h
-	PATHS 
-		/usr/include/arkOsg
-		/usr/local/include/arkOsg
+	NAMES arkosg/osgutils.hpp
+	PATHS ${COMMON_INCLUDE_PATHS_ARKOSG}
 )
 
 # Finally the library itself
 find_library(ARKOSG_LIBRARY
-	NAMES
-		arkOsg
-	PATHS 
-		/usr/lib 
-		/usr/local/lib
+	NAMES arkosg
+	PATHS ${COMMON_LIBRARY_PATHS_ARKOSG}
 )
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.

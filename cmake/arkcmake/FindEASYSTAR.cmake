@@ -5,13 +5,14 @@
 #  EASYSTAR_INCLUDE_DIRS - the easystar include directories
 
 include(LibFindMacros)
+include(MacroCommonPaths)
+
+MacroCommonPaths(EASYSTAR)
 
 # Include dir
 find_path(EASYSTAR_INCLUDE_DIR
-	NAMES in
-	PATHS 
-		/usr/include/easystar
-		/usr/local/include/easystar
+	NAMES easystar/easystar.xml
+	PATHS ${COMMON_INCLUDE_PATHS_EASYSTAR}
 )
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.

@@ -24,6 +24,7 @@ set(LIBRARY_SOVERSION "0.0.0")
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
 set(CMAKE_MODULE_PATH
+	${CMAKE_SOURCE_DIR}/cmake
 	${CMAKE_SOURCE_DIR}/cmake/arkcmake
 )
 

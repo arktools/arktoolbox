@@ -6,25 +6,20 @@
 #  JSBSIM_LIBRARIES - libraries to link to
 
 include(LibFindMacros)
+include(MacroCommonPaths)
+
+MacroCommonPaths(JSBSIM)
 
 # Include dir
 find_path(JSBSIM_INCLUDE_DIR
-	NAMES initialization/FGTrimmer.h
-	PATHS 
-		/usr/include/JSBSim
-		/usr/include/jsbsim
-		/usr/local/include/JSBSim
-		/usr/local/include/jsbsim
+	NAMES JSBSim/initialization/FGTrimmer.h
+	PATHS ${COMMON_INCLUDE_PATHS_JSBSIM}
 )
 
 # Finally the library itself
 find_library(JSBSIM_LIBRARY
-	NAMES
-		jsbsim
-		JSBSim
-	PATHS 
-		/usr/lib 
-		/usr/local/lib
+	NAMES JSBSim
+	PATHS ${COMMON_LIBRARY_PATHS_JSBSIM}
 )
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.

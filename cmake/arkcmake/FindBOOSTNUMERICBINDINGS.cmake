@@ -5,13 +5,14 @@
 #  BOOSTNUMERICBINDINGS_INCLUDE_DIRS - the scicoslab include directories
 
 include(LibFindMacros)
+include(MacroCommonPaths)
+
+MacroCommonPaths(BOOSTNUMERICBINDINGS)
 
 # Include dir
 find_path(BOOSTNUMERICBINDINGS_INCLUDE_DIR
-	NAMES lapack/lapack.h
-	PATHS 
-  		/usr/include/boost/numeric/bindings
-  		/usr/local/include/boost/numeric/bindings
+	NAMES boost/numeric/bindings/lapack/lapack.h
+	PATHS ${COMMON_INCLUDE_PATHS_BOOSTNUMERICBINDINGS}
 )
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
