@@ -82,17 +82,10 @@ endif()
 
 # find libraries with cmake modules
 MacroFindOrBuild(ARKOSG thirdParty/arkosg FOUND_GIT_REPO)
-find_package(Qt4)
+MacroFindOrBuild(ARKCOMM thirdParty/arkcomm FOUND_GIT_REPO)
+MacroFindOrBuild(ARKMATH thirdParty/arkmath FOUND_GIT_REPO)
+
 find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
-set(QT_USE_QTOPENGL TRUE)
-set(QT_USE_QTUITOOLS TRUE)
-find_package(OpenGL)
-find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
-if ("OSG_LIBRARY-NOTFOUND" STREQUAL "${OSG_LIBRARY}")
-    set(OPENSCENEGRAPH_FOUND FALSE)
-else()
-    set(OPENSCENEGRAPH_FOUND TRUE)
-endif()
 
 if(ARKOSG_BUILD_FROM_SOURCE)
 	set(ARKOSG_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/thirdParty/arkosg/src")
@@ -134,19 +127,17 @@ message(STATUS "=================================")
 message(STATUS "\tLIBRARY\t\tBUILDING")
 message(STATUS "=================================")
 
-message(STATUS "\tOpenSceneGraph\t${OPENSCENEGRAPH_FOUND}")
-if (OPENSCENEGRAPH_FOUND)
+message(STATUS "\tARKCOMM\t\t${ARKCOMM_FOUND}")
+if (ARKCOMM_FOUND)
 endif()
 
-message(STATUS "\tQT4\t\t${QT4_FOUND}")
-if (QT4_FOUND)
-endif ()
+message(STATUS "\tARKOSG\t\t${ARKOSG_FOUND}")
+if (ARKOSG_FOUND)
+endif()
 
-message(STATUS "\tBoost\t\t${Boost_FOUND}")
-if (Boost_FOUND)
-endif ()
-
-
+message(STATUS "\tARKMATH\t\t${ARKMATH_FOUND}")
+if (ARKMATH_FOUND)
+endif()
 
 message(STATUS "=================================")
 
