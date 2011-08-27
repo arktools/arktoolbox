@@ -1,3 +1,9 @@
-[submodule "thirdParty/arkOsg"]
-	path = thirdParty/arkOsg
-	url = git@github.com:jgoppert/arkOsg.git
+[submodule "thirdParty/arkosg"]
+	path = thirdParty/arkosg
+	url = git@github.com:arktools/arkosg.git
+[submodule "thirdParty/arkmath"]
+	path = thirdParty/arkmath
+	url = git@github.com:arktools/arkmath.git
+[submodule "thirdParty/arkcomm"]
+	path = thirdParty/arkcomm
+	url = git@github.com:arktools/arkcomm.git

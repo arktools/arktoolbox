@@ -1,4 +1,4 @@
-project (arkOsg)
+project (arkscicos)
 
 # Requried cmake version
 cmake_minimum_required (VERSION 2.6)
@@ -24,7 +24,7 @@ set(LIBRARY_SOVERSION "0.0.0")
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
 set(CMAKE_MODULE_PATH
-	${CMAKE_SOURCE_DIR}/cmake/arkCMake
+	${CMAKE_SOURCE_DIR}/cmake/arkcmake
 )
 
 # add definitions
@@ -32,8 +32,6 @@ include(DefineCMakeDefaults)
 include(DefinePlatformDefaults)
 include(DefineCompilerFlags)
 include(DefineInstallationPaths)
-include(DefineOptions.cmake)
-include(CPackConfig.cmake)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -82,7 +80,7 @@ else()
 endif()
 
 # find libraries with cmake modules
-MacroFindOrBuild(ARKOSG thirdParty/arkOsg FOUND_GIT_REPO)
+MacroFindOrBuild(ARKOSG thirdParty/arkosg FOUND_GIT_REPO)
 find_package(Qt4)
 find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 set(QT_USE_QTOPENGL TRUE)
@@ -96,12 +94,12 @@ else()
 endif()
 
 if(ARKOSG_BUILD_FROM_SOURCE)
-	set(ARKOSG_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/thirdParty/arkOsg/src")
-	set(ARKOSG_LIBRARIES "${PROJECT_BINARY_DIR}/arkOsg/src/.libs/libarkOsg.a")
+	set(ARKOSG_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/thirdParty/arkosg/src")
+	set(ARKOSG_LIBRARIES "${PROJECT_BINARY_DIR}/arkosg/src/.libs/libarkosg.a")
 	add_custom_command(OUTPUT ARKOSG_BUILD.stamp 
-		COMMAND mkdir -p arkOsg
-		COMMAND cd arkOsg && cmake ${PROJECT_SOURCE_DIR}/thirdParty/arkOsg
-		COMMAND cd arkOsg && make -j8
+		COMMAND mkdir -p arkosg
+		COMMAND cd arkosg && cmake ${PROJECT_SOURCE_DIR}/thirdParty/arkosg
+		COMMAND cd arkosg && make -j8
 		COMMAND touch ARKOSG_BUILD.stamp)
 endif()
 
