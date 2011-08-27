@@ -6,9 +6,13 @@ cmake_minimum_required (VERSION 2.6)
 # global needed variables
 set(APPLICATION_NAME ${PROJECT_NAME})
 
+# set these for release
 set(APPLICATION_VERSION_MAJOR "0")
 set(APPLICATION_VERSION_MINOR "0")
 set(APPLICATION_VERSION_PATCH "0")
+set(ARKOSG_TAG "master")
+set(ARKMATH_TAG "master")
+set(ARKCOMM_TAG "master")
 
 set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
 set(LIBRARY_VERSION ${APPLICATION_VERSION})
@@ -24,8 +28,8 @@ set(LIBRARY_SOVERSION "0.0.0")
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
 set(CMAKE_MODULE_PATH
-	${CMAKE_SOURCE_DIR}/cmake
-	${CMAKE_SOURCE_DIR}/cmake/arkcmake
+    ${CMAKE_SOURCE_DIR}/cmake
+    ${CMAKE_SOURCE_DIR}/cmake/arkcmake
 )
 
 # add definitions
@@ -42,10 +46,11 @@ Please create a separate build directory and run 'cmake /path/to/${PROJECT_NAME}
 # add macros
 include(MacroAddPlugin)
 include(MacroCopyFile)
-include(MacroFindOrBuild)
 include(MacroSetDefault)
 include(language_support_v2)
 include(MacroAddLinkFlags)
+include(ExternalProject)
+include(CTest)
 
 # settings
 option(DEV_MODE "Setup paths for developer testing." OFF)
@@ -69,58 +74,62 @@ enable_language(CXX)
 # add make dist target
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
-# git submodules
-if(IS_DIRECTORY ${PROJECT_SOURCE_DIR}/.git)
-	message(STATUS "git repository detected, will attempt to load submodules")
-	set(FOUND_GIT_REPO TRUE)
-	add_custom_command(OUTPUT GIT.stamp 
-		COMMAND cd ${PROJECT_SOURCE_DIR} && git submodule init ${GIT_SUBMODULES}
-		COMMAND cd ${PROJECT_SOURCE_DIR} && git submodule update ${GIT_SUBMODULES})
-	add_custom_target(GIT DEPENDS GIT.stamp)
-else()
-	set(FOUND_GIT_REPO FALSE)
-endif()
-
 # find libraries with cmake modules
-MacroFindOrBuild(ARKOSG thirdParty/arkosg FOUND_GIT_REPO)
-MacroFindOrBuild(ARKCOMM thirdParty/arkcomm FOUND_GIT_REPO)
-MacroFindOrBuild(ARKMATH thirdParty/arkmath FOUND_GIT_REPO)
-
+find_package(ARKOSG)
+find_package(ARKCOMM)
+find_package(ARKMATH)
 find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 
-if(ARKOSG_BUILD_FROM_SOURCE)
-	set(ARKOSG_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/thirdParty/arkosg/src")
-	set(ARKOSG_LIBRARIES "${PROJECT_BINARY_DIR}/arkosg/src/.libs/libarkosg.a")
-	add_custom_command(OUTPUT ARKOSG_BUILD.stamp 
-		COMMAND mkdir -p arkosg
-		COMMAND cd arkosg && cmake ${PROJECT_SOURCE_DIR}/thirdParty/arkosg
-		COMMAND cd arkosg && make -j8
-		COMMAND touch ARKOSG_BUILD.stamp)
+# external projects
+set_property(DIRECTORY PROPERTY EP_BASE "${CMAKE_BINARY_DIR}/CMakeExternals")
+
+if( NOT ARKCOMM_FOUND)
+    ExternalProject_Add(arkcomm
+        GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
+        GIT_TAG ${ARKCOMM_TAG}
+        )
+    set(ARKCOMM_FOUND true)
+endif()
+
+if( NOT ARKOSG_FOUND)
+    ExternalProject_Add(arkosg
+        GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
+        GIT_TAG ${ARKOSG_TAG} 
+        )
+    set(ARKOSG_FOUND true)
+endif()
+
+if( NOT ARKMATH_FOUND)
+    ExternalProject_Add(arkmath
+        GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
+        GIT_TAG ${ARKMATH_TAG} 
+        )
+    set(ARKMATH_FOUND true)
 endif()
 
 # data directory
-if(IN_SRC_BUILD)
-	message(STATUS "configuring for in source build")
-	set(DATADIR ${PROJECT_SOURCE_DIR}/data)
-	set(LIBDIR ${CMAKE_BINARY_DIR}/bin)
-	set(BINDIR ${CMAKE_BINARY_DIR}/bin)
+if(DEV_MODE)
+    message(STATUS "configuring for in source build")
+    set(DATADIR ${PROJECT_SOURCE_DIR}/data)
+    set(LIBDIR ${CMAKE_BINARY_DIR}/bin)
+    set(BINDIR ${CMAKE_BINARY_DIR}/bin)
 else()
-	message(STATUS "configuring for install build")
-	set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/mavsim/data)
-	set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
-	set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
+    message(STATUS "configuring for install build")
+    set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/mavsim/data)
+    set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
+    set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
 endif()
 
 # install data files
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/data"
-	DESTINATION share/mavsim
-	PATTERN "*.git*" EXCLUDE)
+    DESTINATION share/mavsim
+    PATTERN "*.git*" EXCLUDE)
 
 # pkgconfig
 install(FILES
-	${PROJECT_NAME}.pc
-	DESTINATION lib/pkgconfig
-	)
+    ${PROJECT_NAME}.pc
+    DESTINATION lib/pkgconfig
+    )
 
 #
 # internal library list definition / dep summary
@@ -147,3 +156,5 @@ include_directories( ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 # subdirectories
 add_subdirectory(src)
+
+# vim:sw=4:ts=4:expandtab
