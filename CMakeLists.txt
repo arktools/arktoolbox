@@ -81,7 +81,8 @@ find_package(ARKMATH)
 find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 
 # external projects
-set_property(DIRECTORY PROPERTY EP_BASE "${CMAKE_BINARY_DIR}/CMakeExternals")
+set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
+set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
 
 if( NOT ARKCOMM_FOUND)
     ExternalProject_Add(arkcomm
