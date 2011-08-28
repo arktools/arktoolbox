@@ -1,0 +1,10 @@
+Makelib
+*.bin
+*.so
+*.a
+*.lo
+*.la
+lib
+names
+VERSION
+Data

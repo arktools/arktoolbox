@@ -1,0 +1,41 @@
+mode(-1);
+lines(0);
+
+mavsimDataPath='@DATADIR@'
+
+// whether or not to configure for final installation
+scicoslabInstallSettings = @SCICOSLAB_INSTALL_SETTINGS@;
+
+stdBlocks=[
+'sci_euler2Dcm';..
+'sci_waypointGuidance';..
+'sci_quat2EulerDcm';..
+'sci_magMeasModel';..
+'sci_gpsMeasModel';..
+'sci_geoMag';..
+'sci_randn';..
+'sci_invPend';..
+'sci_insDynamics';..
+'sci_eom6Dof';..
+'sci_quadForceMoments';..
+'sci_insErrorDynamics';..
+'sci_navigationEquations';..
+'sci_zeroOrderHold'];
+simgearBlocks=['sci_flightGearComm'];
+osgBlocks=['sci_jet';'sci_car';'sci_quad';'sci_plane'];
+jsbsimBlocks=['sci_jsbsimTrim';'sci_jsbsimComm'];
+lapackBlocks=['sci_gpsIns'];
+mavlinkBlocks=['sci_mavlinkHilSensor';'sci_mavlinkHilState';'sci_mavlinkHilTracker'];
+blocks=[@SCICOSLAB_BLOCKS@]';
+
+if (scicoslabInstallSettings) then
+	link(['@LIBDIR@/libmavsimScicos.so'],blocks,'c');
+else
+	link(['@MAVSIM_SCICOS_LOCATION@'],blocks,'c');
+end
+
+genlib('lib_mavsim',pwd()+'/mavsim');
+if (~scicoslabInstallSettings) then create_palette('mavsim'); end
+add_palette('mavsim',pwd()+'/mavsim/mavsim.cosf');
+
+clear blocks stdBlocks simgearBlocks osgBlocks jsbsimBlocks lapackBlocks mavlinkBlocks
