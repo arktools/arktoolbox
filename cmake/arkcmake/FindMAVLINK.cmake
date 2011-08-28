@@ -7,7 +7,7 @@
 include(LibFindMacros)
 include(MacroCommonPaths)
 
-MacroCommonPaths(MAVLINK mavlink)
+MacroCommonPaths(MAVLINK)
 
 # Include dir
 find_path(MAVLINK_INCLUDE_DIR

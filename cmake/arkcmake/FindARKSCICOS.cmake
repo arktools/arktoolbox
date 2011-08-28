@@ -8,7 +8,7 @@
 include(LibFindMacroos)
 include(MacroCommonPaths)
 
-MacroCommonPaths(ARKSCICOS arkscicos)
+MacroCommonPaths(ARKSCICOS)
 
 # Include dir
 find_path(ARKSCICOS_INCLUDE_DIR
@@ -16,11 +16,18 @@ find_path(ARKSCICOS_INCLUDE_DIR
 	PATHS ${COMMON_INCLUDE_PATHS_ARKSCICOS}
 )
 
-# Finally the library itself
+# the library itself
 find_library(ARKSCICOS_LIBRARY
 	NAMES arkscicos
 	PATHS ${COMMON_LIBRARY_PATHS_ARKSCICOS}
 )
+
+# the import file
+find_path(ARKSCICOS_LIBRARY_DIR
+	NAMES arkscicos/arkscicos-targets.cmake
+	PATHS ${COMMON_LIBRARY_PATHS_ARKSCICOS}
+)
+set(ARKSCICOS_LIB_IMPORT ${ARKSCICOS_LIBRARY_DIR}/arkscicos/arkscicos-targets.cmake)
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.

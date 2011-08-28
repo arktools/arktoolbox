@@ -103,7 +103,9 @@ if(NOT ARKCOMM_FOUND)
     set(ARKCOMM_FOUND TRUE)
 endif()
 
-if(NOT ARKOSG_FOUND)
+if(ARKOSG_FOUND)
+    include(${ARKOSG_LIB_IMPORT})
+else()
     ExternalProject_Add(arkosg
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
         GIT_TAG ${ARKOSG_TAG} 

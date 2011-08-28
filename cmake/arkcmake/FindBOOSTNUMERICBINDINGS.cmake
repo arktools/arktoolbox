@@ -7,7 +7,7 @@
 include(LibFindMacros)
 include(MacroCommonPaths)
 
-MacroCommonPaths(BOOSTNUMERICBINDINGS boost-numeric-bindings)
+MacroCommonPaths(BOOSTNUMERICBINDINGS)
 
 # Include dir
 find_path(BOOSTNUMERICBINDINGS_INCLUDE_DIR
