@@ -47,7 +47,7 @@
 #include <string>
 #include <cstdlib>
 #include "arkmath/GpsIns.hpp"
-#include "math/storage_adaptors.hpp"
+#include "arkmath/storage_adaptors.hpp"
 #include "utilities.hpp"
 #include <stdexcept>
 
