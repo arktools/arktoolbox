@@ -79,6 +79,7 @@ add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 find_package(ARKOSG)
 find_package(ARKCOMM)
 find_package(ARKMATH)
+find_package(JSBSIM)
 find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 
 # external projects
@@ -103,9 +104,7 @@ if(NOT ARKCOMM_FOUND)
     set(ARKCOMM_FOUND TRUE)
 endif()
 
-if(ARKOSG_FOUND)
-    include(${ARKOSG_LIB_IMPORT})
-else()
+if(NOT ARKOSG_FOUND)
     ExternalProject_Add(arkosg
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
         GIT_TAG ${ARKOSG_TAG} 
@@ -138,6 +137,26 @@ if(NOT ARKMATH_FOUND)
     endif()
     set(ARKMATH_FOUND TRUE)
 endif()
+
+if(NOT JSBSIM_FOUND)
+    ExternalProject_Add(jsbsim
+        GIT_REPOSITORY "git://github.com/arktools/jsbsim.git"
+        GIT_TAG ${JSBSIM_TAG} 
+        CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${EP_BASE_DIR}/Install/jsbsim
+        BUILD_COMMAND make
+        BUILD_IN_SOURCE 1
+        )
+    set(JSBSIM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/jsbsim/includes)
+    if(WIN32)
+        set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/JSBSim.a)
+    elseif(APPLE)
+        set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/libJSBSim.a)
+    else()
+        set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/libJSBSim.a)
+    endif()
+    set(JSBSIM_FOUND TRUE)
+endif()
+
 
 # data directory
 if(DEV_MODE)
