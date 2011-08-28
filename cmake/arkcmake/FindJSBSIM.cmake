@@ -24,6 +24,6 @@ find_library(JSBSIM_LIBRARY
 
 # Set the include dir variables and the libraries and let libfind_process do the rest.
 # NOTE: Singular variables for this library, plural for libraries this this lib depends on.
-set(JSBSIM_PROCESS_INCLUDES JSBSIM_INCLUDE_DIR)
+set(JSBSIM_PROCESS_INCLUDES JSBSIM_INCLUDE_DIR ${JSBSIM_INCLUDE_DIR}/JSBSim)
 set(JSBSIM_PROCESS_LIBS JSBSIM_LIBRARY JSBSIM_LIBRARIES)
 libfind_process(JSBSIM)

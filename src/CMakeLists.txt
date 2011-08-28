@@ -1,6 +1,11 @@
-include_directories(${SCICOSLAB_INCLUDE_DIRS}
-	${JSBSIM_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
+include_directories(
+	${SCICOSLAB_INCLUDE_DIRS}
+	${JSBSIM_INCLUDE_DIRS} 
+	${Boost_INCLUDE_DIRS}
 	${MAVLINK_INCLUDE_DIRS}
+	${ARKCOMM_INCLUDE_DIRS}
+	${ARKMATH_INCLUDE_DIRS}
+	${ARKOSG_INCLUDE_DIRS}
 	.
 	)
 
@@ -56,9 +61,9 @@ set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
-add_dependencies(${PROJECT_NAME} JSBSIM)
+add_dependencies(${PROJECT_NAME} jsbsim arkosg arkmath arkcomm)
 
-target_link_libraries(${PROJECT_NAME} ${MAVSIM_LIBRARIES} ${JSBSIM_LIBRARIES} ${LAPACK_LIBRARIES} -lpthread)
+target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES} ${JSBSIM_LIBRARIES} ${LAPACK_LIBRARIES} -lpthread)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION}
     SOVERSION ${LIBRARY_SOVERSION})
@@ -70,8 +75,8 @@ if (UNIX)
 		COMMAND cd ${PROJECT_SOURCE_DIR}/toolbox && ./build.sh)
 endif()
 
-get_target_property(MAVSIM_SCICOS_LOCATION ${PROJECT_NAME} LOCATION)
-get_target_property(MAVSIM_COMMUNICATION_LOCATION mavsimCommunication LOCATION)
+get_target_property(ARKSCICOS_SCICOS_LOCATION ${PROJECT_NAME} LOCATION)
+get_target_property(ARKSCICOS_COMMUNICATION_LOCATION mavsimCommunication LOCATION)
 
 set(SCICOSLAB_INSTALL_SETTINGS 0)
 configure_file(loadscicos.sce.in ${CMAKE_SOURCE_DIR}/toolbox/scicos/loadscicos.sce)

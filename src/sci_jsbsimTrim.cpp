@@ -17,7 +17,7 @@
  */
 
 #include <cstdlib>
-#include "initialization/FGTrimmer.h"
+#include "JSBSim/initialization/FGTrimmer.h"
 #include "math/FGStateSpace.h"
 #include <iomanip>
 #include <fstream>

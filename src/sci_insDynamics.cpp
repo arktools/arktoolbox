@@ -107,17 +107,17 @@ void sci_insDynamics(scicos_block *block, scicos::enumScicosFlags flag)
 
         if (mode == INS_FULL_STATE)
         {
-            #include "navigation/ins_dynamics_f.hpp"
+            #include "arkmath/gen/navigation/ins_dynamics_f.hpp"
         }
         else if (mode == INS_ATT_STATE)
         {
             #define f_att f
-            #include "navigation/ins_dynamics_f_att.hpp"
+            #include "arkmath/gen/navigation/ins_dynamics_f_att.hpp"
         }
         else if (mode == INS_VP_STATE)
         {
             #define f_vp f
-            #include "navigation/ins_dynamics_f_vp.hpp"
+            #include "arkmath/gen/navigation/ins_dynamics_f_vp.hpp"
         }
         else
         {

@@ -30,8 +30,8 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include "math/GpsIns.hpp"
-#include "math/storage_adaptors.hpp"
+#include "arkmath/GpsIns.hpp" 
+#include "arkmath/storage_adaptors.hpp"
 #include "utilities.hpp"
 #include <stdexcept>
 #include <cstdio>

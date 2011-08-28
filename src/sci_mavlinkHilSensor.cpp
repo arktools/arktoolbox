@@ -21,7 +21,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "mavlink_types.h"
-#include "communication/asio_mavlink_bridge.h"
+#include "arkcomm/asio_mavlink_bridge.h"
 #include "common/mavlink.h"
 
 BufferedAsyncSerial * mavlink_comm_1_port;

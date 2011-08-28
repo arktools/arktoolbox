@@ -18,13 +18,13 @@
  */
 
 #include "utilities.hpp"
-#include "communication/AsyncSerial.hpp"
+#include "arkcomm/AsyncSerial.hpp"
 #include <iostream>
 #include <stdexcept>
 
 // mavlink system definition and headers
 #include "mavlink_types.h"
-#include "communication/asio_mavlink_bridge.h"
+#include "arkcomm/asio_mavlink_bridge.h"
 #include "common/mavlink.h"
 	
 BufferedAsyncSerial * mavlink_comm_2_port = NULL;

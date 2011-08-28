@@ -28,7 +28,7 @@
 #include "utilities.hpp"
 #include <config.h>
 #include <stdexcept>
-#include "navigation/GeoMag.hpp"
+#include "arkmath/GeoMag.hpp"
 
 extern "C"
 {

@@ -76,24 +76,38 @@ enable_language(CXX)
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 # find libraries with cmake modules
+find_package(SCICOSLAB)
 find_package(ARKOSG)
 find_package(ARKCOMM)
 find_package(ARKMATH)
 find_package(JSBSIM)
+find_package(MAVLINK)
 find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 
 # external projects
 set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
 
-# since we can't use find for external projects
+if( NOT MAVLINK_FOUND)
+    ExternalProject_Add(mavlink
+        GIT_REPOSITORY "git://github.com/pixhawk/mavlink.git"
+        GIT_TAG ${MAVLINK_TAG}
+		CONFIGURE_COMMAND ""
+		BUILD_COMMAND ""
+		INSTALL_COMMAND ""
+		BUILD_IN_SOURCE 1
+	)
+	set(MAVLINK_FOUND TRUE)
+	set(MAVLINK_INCLUDE_DIRS ${EP_BASE_DIR}/Source/mavlink/include)
+endif()
+
 if(NOT ARKCOMM_FOUND)
     ExternalProject_Add(arkcomm
         GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
         GIT_TAG ${ARKCOMM_TAG}
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkcomm
         )
-    set(ARKCOMM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkcomm/includes)
+    set(ARKCOMM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkcomm/include)
     if(WIN32)
         set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/arkcomm.a)
     elseif(APPLE)
@@ -110,7 +124,7 @@ if(NOT ARKOSG_FOUND)
         GIT_TAG ${ARKOSG_TAG} 
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkosg
         )
-    set(ARKOSG_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkosg/includes)
+    set(ARKOSG_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkosg/include)
     if(WIN32)
         set(ARKOSG_LIBRARIES ${EP_BASE_DIR}/Install/arkosg/lib/arkosg.a)
     elseif(APPLE)
@@ -127,7 +141,7 @@ if(NOT ARKMATH_FOUND)
         GIT_TAG ${ARKMATH_TAG} 
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkmath
         )
-    set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkmath/includes)
+    set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkmath/include)
     if(WIN32)
         set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/Install/arkmath/lib/arkmath.a)
     elseif(APPLE)
@@ -146,7 +160,7 @@ if(NOT JSBSIM_FOUND)
         BUILD_COMMAND make
         BUILD_IN_SOURCE 1
         )
-    set(JSBSIM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/jsbsim/includes)
+    set(JSBSIM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/jsbsim/include)
     if(WIN32)
         set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/JSBSim.a)
     elseif(APPLE)
@@ -157,6 +171,19 @@ if(NOT JSBSIM_FOUND)
     set(JSBSIM_FOUND TRUE)
 endif()
 
+set(ARKSCICOS_LIBRARIES "")
+if (JSBSIM_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${JSBSIM_LIBRARIES})
+endif()
+if (ARKOSG_FOUND)
+    list(APPEND ARKOSG_LIBRARIES ${ARKOSG_LIBRARIES})
+endif()
+if (ARKMATH_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
+endif()
+if (ARKCOMM_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
+endif()
 
 # data directory
 if(DEV_MODE)
@@ -166,21 +193,20 @@ if(DEV_MODE)
     set(BINDIR ${CMAKE_BINARY_DIR}/bin)
 else()
     message(STATUS "configuring for install build")
-    set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/mavsim/data)
+    set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
     set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
     set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
 endif()
 
 # install data files
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/data"
-    DESTINATION share/mavsim
-    PATTERN "*.git*" EXCLUDE)
+#install(DIRECTORY "${PROJECT_SOURCE_DIR}/data" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
 
 # pkgconfig
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
 install(FILES
-    ${PROJECT_NAME}.pc
-    DESTINATION lib/pkgconfig
-    )
+	${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
+	DESTINATION lib/pkgconfig
+	)
 
 # summary
 feature_summary(WHAT ENABLED_FEATURES VAR DESCRIPTION "enabled features: " VAR enabledFeaturesText)

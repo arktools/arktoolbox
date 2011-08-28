@@ -1,7 +1,7 @@
 mode(-1);
 lines(0);
 
-mavsimDataPath='@DATADIR@'
+arkscicosDataPath='@DATADIR@'
 
 // whether or not to configure for final installation
 scicoslabInstallSettings = @SCICOSLAB_INSTALL_SETTINGS@;
@@ -29,13 +29,13 @@ mavlinkBlocks=['sci_mavlinkHilSensor';'sci_mavlinkHilState';'sci_mavlinkHilTrack
 blocks=[@SCICOSLAB_BLOCKS@]';
 
 if (scicoslabInstallSettings) then
-	link(['@LIBDIR@/libmavsimScicos.so'],blocks,'c');
+	link(['@LIBDIR@/libarkscicos.so'],blocks,'c');
 else
-	link(['@MAVSIM_SCICOS_LOCATION@'],blocks,'c');
+	link(['@ARKSCICOS_SCICOS_LOCATION@'],blocks,'c');
 end
 
-genlib('lib_mavsim',pwd()+'/mavsim');
-if (~scicoslabInstallSettings) then create_palette('mavsim'); end
-add_palette('mavsim',pwd()+'/mavsim/mavsim.cosf');
+genlib('lib_arkscicos',pwd()+'/arkscicos');
+if (~scicoslabInstallSettings) then create_palette('arkscicos'); end
+add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');
 
 clear blocks stdBlocks simgearBlocks osgBlocks jsbsimBlocks lapackBlocks mavlinkBlocks
