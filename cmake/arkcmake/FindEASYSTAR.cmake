@@ -7,7 +7,7 @@
 include(LibFindMacros)
 include(MacroCommonPaths)
 
-MacroCommonPaths(EASYSTAR)
+MacroCommonPaths(EASYSTAR easystar)
 
 # Include dir
 find_path(EASYSTAR_INCLUDE_DIR

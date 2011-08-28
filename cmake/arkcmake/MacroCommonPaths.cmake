@@ -1,5 +1,6 @@
-macro(MacroCommonPaths NAME)
+macro(MacroCommonPaths NAME DIR_NAME)
     set(COMMON_INCLUDE_PATHS_${NAME}
+        ${EP_BASE_DIR}/Install/${DIR_NAME}/include
         $ENV{${NAME}_DIR}/include
         $ENV{${NAME}_DIR}
         $ENV{${NAME}_ROOT}/include
@@ -17,6 +18,7 @@ macro(MacroCommonPaths NAME)
         /usr/freeware/include
         )
     set(COMMON_LIB_PATHS_${NAME}
+        ${EP_BASE_DIR}/Install/${DIR_NAME}/lib
         $ENV{${NAME}_DIR}/lib
         $ENV{${NAME}_DIR}
         ~/Library/Frameworks

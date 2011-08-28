@@ -51,6 +51,7 @@ include(language_support_v2)
 include(MacroAddLinkFlags)
 include(ExternalProject)
 include(CTest)
+include(FeatureSummary)
 
 # settings
 option(DEV_MODE "Setup paths for developer testing." OFF)
@@ -84,28 +85,56 @@ find_package(Boost 1.40.0 REQUIRED COMPONENTS thread-mt system-mt)
 set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
 
-if( NOT ARKCOMM_FOUND)
+# since we can't use find for external projects
+if(NOT ARKCOMM_FOUND)
     ExternalProject_Add(arkcomm
         GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
         GIT_TAG ${ARKCOMM_TAG}
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkcomm
         )
-    set(ARKCOMM_FOUND true)
+    set(ARKCOMM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkcomm/includes)
+    if(WIN32)
+        set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/arkcomm.a)
+    elseif(APPLE)
+        set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/libarkcomm.a)
+    else()
+        set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/libarkcomm.a)
+    endif()
+    set(ARKCOMM_FOUND TRUE)
 endif()
 
-if( NOT ARKOSG_FOUND)
+if(NOT ARKOSG_FOUND)
     ExternalProject_Add(arkosg
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
         GIT_TAG ${ARKOSG_TAG} 
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkosg
         )
-    set(ARKOSG_FOUND true)
-endif()
+    set(ARKOSG_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkosg/includes)
+    if(WIN32)
+        set(ARKOSG_LIBRARIES ${EP_BASE_DIR}/Install/arkosg/lib/arkosg.a)
+    elseif(APPLE)
+        set(ARKOSG_LIBRARIES ${EP_BASE_DIR}/Install/arkosg/lib/libarkosg.a)
+    else()
+        set(ARKOSG_LIBRARIES ${EP_BASE_DIR}/Install/arkosg/lib/libarkosg.a)
+    endif()
+    set(ARKOSG_FOUND TRUE)
+endif() 
 
-if( NOT ARKMATH_FOUND)
+if(NOT ARKMATH_FOUND)
     ExternalProject_Add(arkmath
         GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
         GIT_TAG ${ARKMATH_TAG} 
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkmath
         )
-    set(ARKMATH_FOUND true)
+    set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkmath/includes)
+    if(WIN32)
+        set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/Install/arkmath/lib/arkmath.a)
+    elseif(APPLE)
+        set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/Install/arkmath/lib/libarkmath.a)
+    else()
+        set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/Install/arkmath/lib/libarkmath.a)
+    endif()
+    set(ARKMATH_FOUND TRUE)
 endif()
 
 # data directory
@@ -132,25 +161,11 @@ install(FILES
     DESTINATION lib/pkgconfig
     )
 
-#
-# internal library list definition / dep summary
-message(STATUS "=================================")
-message(STATUS "\tLIBRARY\t\tBUILDING")
-message(STATUS "=================================")
-
-message(STATUS "\tARKCOMM\t\t${ARKCOMM_FOUND}")
-if (ARKCOMM_FOUND)
-endif()
-
-message(STATUS "\tARKOSG\t\t${ARKOSG_FOUND}")
-if (ARKOSG_FOUND)
-endif()
-
-message(STATUS "\tARKMATH\t\t${ARKMATH_FOUND}")
-if (ARKMATH_FOUND)
-endif()
-
-message(STATUS "=================================")
+# summary
+feature_summary(WHAT ENABLED_FEATURES VAR DESCRIPTION "enabled features: " VAR enabledFeaturesText)
+message(STATUS "${enabledFeaturesText}")
+feature_summary(WHAT DISABLED_FEATURES VAR DESCRIPTION "disabled features: " VAR disabledFeaturesText)
+message(STATUS "${disabledFeaturesText}")
 
 # project wide flags
 include_directories( ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)

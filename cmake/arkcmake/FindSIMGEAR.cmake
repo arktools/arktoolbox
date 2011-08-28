@@ -8,7 +8,7 @@
 include(LibFindMacros)
 include(MacroCommonPaths)
 
-MacroCommonPaths(SIMGEAR)
+MacroCommonPaths(SIMGEAR simgear)
 
 # Include dir
 find_path(SIMGEAR_INCLUDE_DIR

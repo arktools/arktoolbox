@@ -8,7 +8,7 @@
 include(LibFindMacros)
 include(MacroCommonPaths)
 
-MacroCommonPaths(JSBSIM)
+MacroCommonPaths(JSBSIM JSBSim)
 
 # Include dir
 find_path(JSBSIM_INCLUDE_DIR

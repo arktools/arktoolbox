@@ -8,7 +8,7 @@
 include(LibFindMacroos)
 include(MacroCommonPaths)
 
-MacroCommonPaths(ARKSCICOS)
+MacroCommonPaths(ARKSCICOS arkscicos)
 
 # Include dir
 find_path(ARKSCICOS_INCLUDE_DIR

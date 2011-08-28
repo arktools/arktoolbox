@@ -8,7 +8,7 @@
 include(LibFindMacros)
 include(MacroCommonPaths)
 
-MacroCommonPaths(ARKCOMM)
+MacroCommonPaths(ARKCOMM arkcomm)
 
 # Include dir
 find_path(ARKCOMM_INCLUDE_DIR
