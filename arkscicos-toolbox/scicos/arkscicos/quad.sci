@@ -1,3 +1,4 @@
+clearfun('quad');
 function [x,y,typ]=quad(job,arg1,arg2)
 //
 // quad.sci

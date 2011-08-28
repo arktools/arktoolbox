@@ -11,6 +11,7 @@
 #cmakedefine SYSCONFDIR "${SYSCONFDIR}"
 #cmakedefine BINARYDIR "${BINARYDIR}"
 #cmakedefine SOURCEDIR "${SOURCEDIR}"
+#cmakedefine JSBSIM_DATA_DIR "${JSBSIM_DATA_DIR}"
 
 /************************** HEADER FILES *************************/
 

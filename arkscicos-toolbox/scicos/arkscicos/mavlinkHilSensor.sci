@@ -1,3 +1,4 @@
+clearfun('mavlinkHilSensor');
 function [x,y,typ]=mavlinkHilSensor(job,arg1,arg2)
 //
 // mavlinkHilSensor.sci

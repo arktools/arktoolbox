@@ -1,3 +1,4 @@
+clearfun('gpsIns');
 function [x,y,typ]=gpsIns(job,arg1,arg2)
 //
 // gpsIns.sci

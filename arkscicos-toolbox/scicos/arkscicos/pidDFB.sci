@@ -1,3 +1,4 @@
+clearfun('pidDFB');
 function [x,y,typ]=pidDFB(job,arg1,arg2)
 //Generated from SuperBlock on 14-Mar-2011
 x=[];y=[];typ=[];

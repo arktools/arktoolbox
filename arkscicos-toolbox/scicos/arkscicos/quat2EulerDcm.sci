@@ -1,3 +1,4 @@
+clearfun('quat2EulerDcm');
 function [x,y,typ]=quat2EulerDcm(job,arg1,arg2)
 //
 // quat2EulerDcm.sci

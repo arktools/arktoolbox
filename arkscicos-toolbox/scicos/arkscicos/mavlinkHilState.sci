@@ -1,3 +1,4 @@
+clearfun('mavlinkHilState');
 function [x,y,typ]=mavlinkHilState(job,arg1,arg2)
 //
 // mavlinkHilState.sci

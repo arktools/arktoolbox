@@ -1,3 +1,4 @@
+clearfun('insDynamics');
 function [x,y,typ]=insDynamics(job,arg1,arg2)
 //
 // insDynamics.sci

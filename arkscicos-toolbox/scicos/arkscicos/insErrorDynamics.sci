@@ -1,3 +1,4 @@
+clearfun('insErrorDynamics');
 function [x,y,typ]=insErrorDynamics(job,arg1,arg2)
 //
 // insErrorDynamics.sci

@@ -58,7 +58,7 @@ void trimFunction ()
     std::string aircraftPath="easystar";
     std::string enginePath="easystar";
     std::string systemsPath="easystar";
-    std::string root=DATADIR;
+    std::string root=std::string(JSBSIM_DATA_DIR)+"/aircraft";
     double rtol = std::numeric_limits<float>::epsilon();
     double abstol = std::numeric_limits<double>::epsilon();
     double speed = 2.0;

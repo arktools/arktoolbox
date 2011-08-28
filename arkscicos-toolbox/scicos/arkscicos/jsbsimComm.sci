@@ -1,3 +1,4 @@
+clearfun('jsbsimComm')
 function [x,y,typ]=jsbsimComm(job,arg1,arg2)
 //
 // jsbsimComm.sci
@@ -122,7 +123,7 @@ select job
 		model.dep_ut=[%f %t]
 
 		// jsbsim parameters
-		Root="jsbsimDataPath+""/aircraft/easystar"";
+		Root="jsbsimDataPath+""/aircraft/easystar""";
 		ModelName="""easystar-datcom""";
 		AircraftPath="""""";
 		EnginePath="""""";

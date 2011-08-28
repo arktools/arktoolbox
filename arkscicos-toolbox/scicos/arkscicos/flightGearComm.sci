@@ -1,6 +1,7 @@
+clearfun('flightGearComm');
 function [x,y,typ]=flightGearComm(job,arg1,arg2)
 //
-// flightGearComm.sci
+// flightGearComm
 // Copyright (C) James Goppert 2010 <jgoppert@users.sourceforge.net>
 //
 // flightGearComm.sci is free software: you can redistribute it and/or modify it

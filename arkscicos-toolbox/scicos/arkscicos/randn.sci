@@ -1,3 +1,4 @@
+clearfun('randn');
 function [x,y,typ]=randn(job,arg1,arg2)
 // Copyright Alan Kim
 mode(-1);

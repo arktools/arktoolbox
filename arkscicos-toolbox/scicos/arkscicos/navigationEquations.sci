@@ -1,3 +1,4 @@
+clearfun('navigationEquations');
 function [x,y,typ]=navigationEquations(job,arg1,arg2)
 //
 // insDynamics.sci

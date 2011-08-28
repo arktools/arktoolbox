@@ -7,7 +7,7 @@ jsbsimDataPath='@JSBSIM_DATA_DIR@'
 // whether or not to configure for final installation
 scicoslabInstallSettings = @SCICOSLAB_INSTALL_SETTINGS@;
 
-stdBlocks=[
+mathBlocks=[
 'sci_euler2Dcm';..
 'sci_waypointGuidance';..
 'sci_quat2EulerDcm';..
@@ -39,4 +39,4 @@ genlib('lib_arkscicos',pwd()+'/arkscicos');
 if (~scicoslabInstallSettings) then create_palette('arkscicos'); end
 add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');
 
-clear blocks stdBlocks simgearBlocks osgBlocks jsbsimBlocks lapackBlocks mavlinkBlocks
+clear blocks mathBlocks simgearBlocks osgBlocks jsbsimBlocks lapackBlocks mavlinkBlocks

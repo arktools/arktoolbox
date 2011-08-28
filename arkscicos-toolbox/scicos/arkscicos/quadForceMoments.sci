@@ -1,3 +1,4 @@
+clearfun('quadForceMoments');
 function [x,y,typ]=quadForceMoments(job,arg1,arg2)
 //
 // quadForceMoments.sci

@@ -1,3 +1,4 @@
+clearfun('gpsMeasModel');
 function [x,y,typ]=gpsMeasModel(job,arg1,arg2)
 //
 // gpsMeasModel.sci

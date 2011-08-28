@@ -38,6 +38,33 @@ include(DefinePlatformDefaults)
 include(DefineCompilerFlags)
 include(DefineInstallationPaths)
 
+# cpack
+include(CPack)
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "arkTools scicoslab toolbox")
+set(CPACK_PACKAGE_VENDOR "arkTools")
+set(CPACK_PACKAGE_CONTACT "james.goppert@gmail.com")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+set(CPACK_PACKAGE_VERSION_MAJOR "${APPLICATION_VERSION_MAJOR}") 
+set(CPACK_PACKAGE_VERSION_MINOR "${APPLICATION_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${APPLICATION_VERSION_PATCH}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
+#if(WIN32 and not UNIX)
+  ## There is a bug in NSI that does not handle full unix paths properly. Make
+  ## sure there is at least one set of four (4) backlasshes.
+  #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+  #set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
+  #set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ${PROJECT_NAME}")
+  #set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
+  #set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
+  #set(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
+  #set(CPACK_NSIS_MODIFY_PATH ON)
+#else(WIN32 and not UNIX)
+  #set(CPACK_STRIP_FILES "bin/MyExecutable")
+  #set(CPACK_SOURCE_STRIP_FILES "")
+#endif(WIN32 and not UNIX)
+#set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
+
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
 macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source build. 
@@ -196,6 +223,10 @@ endif()
 # install data files
 #install(DIRECTORY "${PROJECT_SOURCE_DIR}/data" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
 
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
+	DESTINATION ${SCICOSLAB_CONTRIB_DIR}
+	PATTERN "*.git*" EXCLUDE)
+
 # pkgconfig
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
 install(FILES
@@ -208,8 +239,6 @@ feature_summary(WHAT ENABLED_FEATURES VAR DESCRIPTION "enabled features: " VAR e
 message(STATUS "${enabledFeaturesText}")
 feature_summary(WHAT DISABLED_FEATURES VAR DESCRIPTION "disabled features: " VAR disabledFeaturesText)
 message(STATUS "${disabledFeaturesText}")
-
-set(SCICOSLAB_BLOCKS "")
 
 # subdirectories
 add_subdirectory(src)

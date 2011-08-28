@@ -1,3 +1,4 @@
+clearfun('elapsedTime');
 function [x,y,typ]=elapsedTime(job,arg1,arg2)
 //Generated from SuperBlock on 13-Mar-2011
 x=[];y=[];typ=[];
