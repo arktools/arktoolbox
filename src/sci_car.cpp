@@ -18,8 +18,8 @@
 
 
 #include <iostream>
-#include "arkOsg/Viewer.hpp"
-#include "arkOsg/osgUtils.hpp"
+#include "arkosg/Viewer.hpp"
+#include "arkosg/osgUtils.hpp"
 
 using namespace mavsim::visualization;
 

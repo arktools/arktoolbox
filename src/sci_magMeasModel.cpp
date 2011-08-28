@@ -100,8 +100,8 @@ void sci_magMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
         // we can use the same file for both modes
         // this works since non zero elements are ignored and 
         // the states are the first 4 (quaternions in ATT mode)
-        #include "navigation/ins_H_mag.hpp" 
-        #include "navigation/ins_R_mag_n.hpp" 
+        #include "arkmath/gen/navigation/ins_H_mag.hpp" 
+        #include "arkmath/gen/navigation/ins_R_mag_n.hpp" 
     }
     else if (flag==scicos::terminate)
     {

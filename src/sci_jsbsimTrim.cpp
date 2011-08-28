@@ -18,13 +18,13 @@
 
 #include <cstdlib>
 #include "JSBSim/initialization/FGTrimmer.h"
-#include "math/FGStateSpace.h"
+#include "JSBSim/math/FGStateSpace.h"
 #include <iomanip>
 #include <fstream>
-#include "models/FGAircraft.h"
-#include "models/propulsion/FGEngine.h"
-#include "models/propulsion/FGTurbine.h"
-#include "models/propulsion/FGTurboProp.h"
+#include "JSBSim/models/FGAircraft.h"
+#include "JSBSim/models/propulsion/FGEngine.h"
+#include "JSBSim/models/propulsion/FGTurbine.h"
+#include "JSBSim/models/propulsion/FGTurboProp.h"
 #include "config.h"
 
 template <class varType>
@@ -58,7 +58,7 @@ void trimFunction ()
     std::string aircraftPath="easystar";
     std::string enginePath="easystar";
     std::string systemsPath="easystar";
-    std::string root=datadir;
+    std::string root=DATADIR;
     double rtol = std::numeric_limits<float>::epsilon();
     double abstol = std::numeric_limits<double>::epsilon();
     double speed = 2.0;

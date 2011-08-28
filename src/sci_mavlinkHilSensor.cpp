@@ -24,8 +24,6 @@
 #include "arkcomm/asio_mavlink_bridge.h"
 #include "common/mavlink.h"
 
-BufferedAsyncSerial * mavlink_comm_1_port;
-
 extern "C"
 {
 #include <scicos/scicos_block4.h>

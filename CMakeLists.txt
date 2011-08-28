@@ -76,7 +76,11 @@ enable_language(CXX)
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 # find libraries with cmake modules
-find_package(SCICOSLAB)
+find_package(SCICOSLAB REQUIRED)
+find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
+find_package(SIMGEAR)
+find_package(PLIB)
+find_package(LAPACK)
 find_package(ARKOSG)
 find_package(ARKCOMM)
 find_package(ARKMATH)
@@ -160,7 +164,9 @@ if(NOT JSBSIM_FOUND)
         BUILD_COMMAND make
         BUILD_IN_SOURCE 1
         )
-    set(JSBSIM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/jsbsim/include)
+    set(JSBSIM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/jsbsim/include
+        ${EP_BASE_DIR}/Install/jsbsim/include/JSBSim)
+    set(JSBSIM_DATA_DIR ${EP_BASE_DIR}/Install/jsbsim/share/jsbsim)
     if(WIN32)
         set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/JSBSim.a)
     elseif(APPLE)
@@ -172,18 +178,7 @@ if(NOT JSBSIM_FOUND)
 endif()
 
 set(ARKSCICOS_LIBRARIES "")
-if (JSBSIM_FOUND)
-    list(APPEND ARKSCICOS_LIBRARIES ${JSBSIM_LIBRARIES})
-endif()
-if (ARKOSG_FOUND)
-    list(APPEND ARKOSG_LIBRARIES ${ARKOSG_LIBRARIES})
-endif()
-if (ARKMATH_FOUND)
-    list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
-endif()
-if (ARKCOMM_FOUND)
-    list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
-endif()
+
 
 # data directory
 if(DEV_MODE)
@@ -214,8 +209,7 @@ message(STATUS "${enabledFeaturesText}")
 feature_summary(WHAT DISABLED_FEATURES VAR DESCRIPTION "disabled features: " VAR disabledFeaturesText)
 message(STATUS "${disabledFeaturesText}")
 
-# project wide flags
-include_directories( ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
+set(SCICOSLAB_BLOCKS "")
 
 # subdirectories
 add_subdirectory(src)

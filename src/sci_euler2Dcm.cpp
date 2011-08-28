@@ -24,7 +24,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include "math/GpsIns.hpp"
+#include "arkmath/GpsIns.hpp"
 #include "utilities.hpp"
 #include <stdexcept>
 

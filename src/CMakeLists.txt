@@ -1,4 +1,8 @@
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
 include_directories(
+    ${PROJECT_SOURCE_DIR}/src 
+    ${PROJECT_BINARY_DIR}/src
 	${SCICOSLAB_INCLUDE_DIRS}
 	${JSBSIM_INCLUDE_DIRS} 
 	${Boost_INCLUDE_DIRS}
@@ -6,8 +10,22 @@ include_directories(
 	${ARKCOMM_INCLUDE_DIRS}
 	${ARKMATH_INCLUDE_DIRS}
 	${ARKOSG_INCLUDE_DIRS}
+	${CMAKE_BINARY_DIR}/src
 	.
 	)
+
+if (OPENSCENEGRAPH_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${OPENSCENEGRAPH_LIBRARIES})
+endif()
+if (LAPACK_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${LAPACK_LIBRARIES})
+endif()
+if (JSBSIM_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${JSBSIM_LIBRARIES})
+endif()
+if (Boost_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${Boost_LIBRARIES})
+endif()
 
 set(${PROJECT_NAME}Sources
 	definitions.cpp
@@ -33,28 +51,44 @@ set(${PROJECT_NAME}Sources
 	sci_navigationEquations.cpp
 	)
 
-if (SIMGEAR_FOUND)
-	list(APPEND ${PROJECT_NAME}Sources
-		sci_flightGearComm.cpp
-	)
-endif (SIMGEAR_FOUND)
+set(SCICOSLAB_BLOCKS "")
 
-if (LAPACK_FOUND)
-	list(APPEND ${PROJECT_NAME}Sources
-    	sci_gpsIns.cpp
-	)
-endif (LAPACK_FOUND)
+if(ARKCOMM_FOUND)
+	list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
+    list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
+	if (SIMGEAR_FOUND and PLIB_FOUND)
+		list(APPEND ARKCOMM_LIBRARIES ${SIMGEAR_LIBRARIES} ${PLIB_LIBRARIES})
+   		list(APPEND SCICOSLAB_BLOCKS "simgearBlocks")
+		list(APPEND ${PROJECT_NAME}Sources
+			sci_flightGearComm.cpp
+		)
+	endif()
+endif()
 
-if (OPENSCENEGRAPH_FOUND)
+if(ARKMATH_FOUND)
+	if (LAPACK_FOUND)
+		list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
+		list(APPEND SCICOSLAB_BLOCKS "lapackBlocks")
+		list(APPEND ${PROJECT_NAME}Sources
+			sci_gpsIns.cpp
+		)
+	endif()
+endif()
+
+if(ARKOSG_FOUND)
+	list(APPEND ARKSCICOS_LIBRARIES ${ARKOSG_LIBRARIES})
+	list(APPEND SCICOSLAB_BLOCKS "osgBlocks")
 	list(APPEND ${PROJECT_NAME}Sources
 		sci_jet.cpp
 		sci_plane.cpp
 		sci_car.cpp
 		sci_quad.cpp
 	)
-	include_directories(${OPENSCENEGRAPH_INCLUDE_DIRS})
-	link_directories( ${OSG_LIBRARY_DIRS} ) 
-endif(OPENSCENEGRAPH_FOUND)
+endif()
+
+if(JSBSIM_FOUND)
+	list(APPEND SCICOSLAB_BLOCKS "jsbsimBlocks")
+endif()
 
 set(CMAKE_C_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
@@ -63,7 +97,7 @@ set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
 add_dependencies(${PROJECT_NAME} jsbsim arkosg arkmath arkcomm)
 
-target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES} ${JSBSIM_LIBRARIES} ${LAPACK_LIBRARIES} -lpthread)
+target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION}
     SOVERSION ${LIBRARY_SOVERSION})
@@ -72,20 +106,20 @@ if (UNIX)
 	# if using unix add script to see if scicoslab toolbox builds correctly
 	add_custom_target(toolbox ALL
 		DEPENDS ${PROJECT_NAME}
-		COMMAND cd ${PROJECT_SOURCE_DIR}/toolbox && ./build.sh)
+		COMMAND cd ${PROJECT_SOURCE_DIR}/arkscicos-toolbox && ./build.sh)
 endif()
 
 get_target_property(ARKSCICOS_SCICOS_LOCATION ${PROJECT_NAME} LOCATION)
-get_target_property(ARKSCICOS_COMMUNICATION_LOCATION mavsimCommunication LOCATION)
 
 set(SCICOSLAB_INSTALL_SETTINGS 0)
-configure_file(loadscicos.sce.in ${CMAKE_SOURCE_DIR}/toolbox/scicos/loadscicos.sce)
+configure_file(loadscicos.sce.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
 set(SCICOSLAB_INSTALL_SETTINGS 1)
 configure_file(loadscicos.sce.in ${CMAKE_CURRENT_BINARY_DIR}/loadscicos.sce)
 
-configure_file(VERSION.in ${CMAKE_SOURCE_DIR}/toolbox/VERSION)
+configure_file(VERSION.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/VERSION)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/loadscicos.sce DESTINATION ${SCICOSLAB_CONTRIB_DIR}/toolbox/scicos)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/loadscicos.sce DESTINATION
+	${SCICOSLAB_CONTRIB_DIR}/arkscicos-toolbox/scicos)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 

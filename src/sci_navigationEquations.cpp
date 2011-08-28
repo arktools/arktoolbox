@@ -79,7 +79,7 @@ void sci_navigationEquations(scicos_block *block, scicos::enumScicosFlags flag)
         const double sinTheta = sin(theta);
         const double cosPsi = cos(psi);
         const double sinPsi = sin(psi);
-        #include "dynamics/navigationEquations.hpp"
+        #include "arkmath/gen/dynamics/navigationEquations.hpp"
     }
     else if (flag==scicos::terminate)
     {

@@ -1,0 +1,192 @@
+Weight: 1.25 kg
+Thrust Max: 500 g
+
+Position Control: 50 Hz
+Attitude Control: 200 Hz
+
+Nav Delay: 100 ms
+
+position controller:
+ https://github.com/pixhawk/imu_autopilot/blob/master/controllers/quadrotor/control_quadrotor_position.c
+
+attitude controller
+https://github.com/pixhawk/imu_autopilot/tree/master/controllers/quadrotor
+
+position std dev: 0.10
+position data rate: 50 Hz, 15 Hz (measurement)
+attitude data rate: 200 Hz, 
+velocity data rate: 50 Hz (constant speed)
+
+low pass: 100 Hz
+
+Time Constat of motors: 0.136 seconds 
+source: https://dspace.ist.utl.pt/bitstream/2295/574042/1/Tese_de_Mestrado.pdf
+
+Arm length: 0.24 m
+
+motor thrust between 10-255 to keep them running
+
+control structure:
+
+roll angle -> L - R
+pitch angle -> F - B
+yaw angle -> L + R - F - B
+position x -> pitch
+position y -> roll
+position z -> L + R + F + B
+
+parameters for PID: 
+P, D, I, antiwindup limit
+
+
+Position Controller Observations from Code
+
+	// constants
+
+		set point: N,E,D waypoint in local tangent frame
+		x: .511; y: .4485; z: -1; (initially)
+		CONTROL_PID_POSITION_INTERVAL: 20 ms, 50 Hz
+
+	// parameters
+		PARAM_PID_POS_P =1.8;// 1.6f;  //0.5; //2.4;//5
+		PARAM_PID_POS_I =0.2;// 0.35f; //0.3;//0.1
+		PARAM_PID_POS_D = 2.0f;  //0.5;//1.6;//1
+		PARAM_PID_POS_LIM = 0.2;
+		PARAM_PID_POS_AWU = 5;//1
+		PARAM_PID_POS_Z_P = 0.5;
+		PARAM_PID_POS_Z_I = 0.3;//0
+		PARAM_PID_POS_Z_D = 0.2;
+		PARAM_PID_POS_Z_LIM = 0.30;//1
+		PARAM_PID_POS_Z_AWU = 3;//1
+
+		// waypoint
+		PARAM_POSITION_SETPOINT_X = 1.1
+		PARAM_POSITION_SETPOINT_Y = 1.1
+		PARAM_POSITION_SETPOINT_Z = -0.8
+		PARAM_POSITION_SETPOINT_YAW = 0.0
+		
+		// velocity offset, WHAT IS THIS??
+		PARAM_VEL_OFFSET_X = 0
+		PARAM_VEL_OFFSET_Y = 0
+
+	// down position error -> thrust
+		kP_navZ = 10; kI_navZ=0; kD_navZ = 0;
+		thrustMix = kP_navZ*(setPointZ-positionZ)
+			+ kI_navZ*(setPointZ-positionZ)/s 
+			- kD_navZ*(velocityZ-velocityOffsetZ) // note negative since deriv feedback
+		thrustMix = saturate(thrust,-PARAM_PID_POS_Z_LIM,PARAM_PID_POS_Z_LIM)
+			+ thrustHoverOffset
+
+	// north position error -> pitch nav frame
+		kP_navX = 10; kI_navX=0; kD_navX = 0;
+		pitchNav = -0.05(kP_navX*(setPointX-positionX)
+			+ kI_navX*(setPointX-positionX)/s 
+			- kD_navX*(velocityX-velocityOffsetX))
+		pitchNav = saturate(pitchNav,-PARAM_PID_POS_LIM,PARAM_PID_POS_LIM)
+
+	// east position error -> roll nav frame
+		kP_navY = 10; kI_navY=0; kD_navY = 0;
+		rollNav = 0.05(kP_navY*(setPointY-positionY) 
+			+ kI_navY*(setPointY-positionY)/s
+			- kD_navY*(velocityY-velocityOffsetY))
+		rollNav = saturate(rollNav,-PARAM_PID_POS_LIM,PARAM_PID_POS_LIM)
+
+Attitude Controller Observations from Code
+
+	// constants
+		min motor output: 10
+		max motor output: 255
+		remote control weigh_z = 1;
+		CONTROL_PID_ATTITUDE_INTERVAL: 5 ms, 200 Hz
+
+	// parameters
+
+		PARAM_PID_ATT_P= 90; // 45 Bravo
+		PARAM_PID_ATT_I= 60; // 15 Bravo
+		PARAM_PID_ATT_D= 30; // 15 Bravo
+		PARAM_PID_ATT_LIM= 100;//not yet used!!!!
+		PARAM_PID_ATT_AWU= 0.3;//1
+		PARAM_PID_YAWPOS_P= 5;//1;
+		PARAM_PID_YAWPOS_I= 0.1;//0
+		PARAM_PID_YAWPOS_D= 1;//0.5;
+		PARAM_PID_YAWPOS_LIM= 3;
+		PARAM_PID_YAWPOS_AWU= 1;//1
+		PARAM_PID_YAWSPEED_P= 15;
+		PARAM_PID_YAWSPEED_I= 5;//0
+		PARAM_PID_YAWSPEED_D= 0;
+		PARAM_PID_YAWSPEED_LIM= 50;//not yet used!!!!
+		PARAM_PID_YAWSPEED_AWU= 1;//1
+
+		// mixing
+		PARAM_MIX_REMOTE_WEIGHT = 1;
+		PARAM_MIX_POSITION_WEIGHT = 0;
+		PARAM_MIX_POSITION_Z_WEIGHT = 0;
+		PARAM_MIX_POSITION_YAW_WEIGHT = 1;
+		PARAM_MIX_OFFSET_WEIGHT = 1;
+
+		// offset
+		PARAM_ATT_OFFSET_X =0;// -0.08;//-0.11;
+		PARAM_ATT_OFFSET_Y =0;// -0.080;//0.085;
+		PARAM_ATT_OFFSET_Z = -0.080;//-0.08;
+	
+	// turn the right direction
+		errorYaw = positionYaw - setPointYaw
+		if (errorYaw > pi) errorYaw -= 2*pi;
+		if (errorYaw < -pi) errorYaw += 2*pi;
+
+	// transform pitch and roll commands to body frame
+		rollBody = cos(yaw)*rollNav + sin(yaw)*pitchNav
+		pitchBody = -sin(yaw)*rollNav + cos(yaw)*pitchNav;
+
+	// heading error -> yaw rate command
+		yawRateCommand = kP_posYaw*(positionYaw - setPointYaw) 
+			+ kI_posYaw*(positionYaw-setPointYaw)/s
+			- kD_posYaw*gyroZ
+		yawRateCommand= saturate(yawMix,-PARAM_PID_YAWPOS_LIM,PARAM_PID_YAWPOS_LIM)
+
+
+	// mix remote and offsets
+		setPointPitchRate = PARAM_MIX_REMOTE_WEIGHT*setPointRemoteBodyX
+			- PARAM_MIX_OFFSET_WEIGHT*PARAM_ATT_OFFSET_X
+			+ PARAM_MIX_POSITION_WEIGHT*setPointBodyX
+		setPointRollRate = PARAM_MIX_REMOTE_WEIGHT*setPointRemoteBodyY
+			- PARAM_MIX_OFFSET_WEIGHT*PARAM_ATT_OFFSET_Y
+			+ PARAM_MIX_POSITION_WEIGHT*setPointBodyY
+		setPointYawRate = PARAM_MIX_REMOTE_WEIGHT*setPointRemoteBodyZ
+			- PARAM_MIX_OFFSET_WEIGHT*PARAM_ATT_OFFSET_Z
+			+ PARAM_MIX_POSITION_WEIGHT*setPointBodyZ
+
+		* Note that they require that the yawMix be done before yawRate since
+		they are using it as a set point for yaw rate
+
+	// yaw Rate Error -> yaw mix
+		yawMix =  kP_yawRate*(yawRate - yawRateCommand)
+			+ kI_yawRate*(yawRate-yawRateCommand)/s
+			+ kD*s*(yawRate-yawRateCommand) <--- computed derivative
+		yawMix = satruate(yawMix,PARAM_PID_YAWSPEED_LIM)
+
+	// pitch error -> pitch mix
+		pitchMix =  kP_pitch*(pitch - pitchCommand)
+			+ kI_pitch*(pitch-pitchCommand)/s
+			- kD*gyroY
+		pitchMix = satruate(pitchMix,PARAM_PID_ATT_LIM)
+
+	// roll error -> roll mix
+		rollMix =  kP_roll*(roll - rollCommand)
+			+ kI_roll*(roll-rollCommand)/s
+			- kD*gyroX
+		rollMix = satruate(rollMix,PARAM_PID_ATT_LIM)
+
+	// motor hover thrust and ajustment
+		(abs(roll) > 0.5) ? zcomp = 1.13949393: zcomp = 1/cos(roll);
+		(abs(pitch) > 0.5) ? zcomp*=1.13949393: zcomp *=1/cos(pitch);
+		thrustMix *= zcomp;
+		thrustMix *= (maxGas - minGas);
+		thrustMix += minGas;
+
+	// quad motor mixing
+		motorFront 	= thrustMix - yawMix + pitchMix
+		motorBack 	= thrustMix - yawMix - pitchMix
+		mototLeft 	= thrustMix + yawMix + rollMix // note pixhawk has right motor first
+		motorRight 	= thrustMix + yawMix - rollMix
+		saturate all between min and max motor output
