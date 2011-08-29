@@ -1,4 +1,3 @@
-clearfun('flightGearComm');
 function [x,y,typ]=flightGearComm(job,arg1,arg2)
 //
 // flightGearComm

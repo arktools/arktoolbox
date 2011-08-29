@@ -1,4 +1,3 @@
-clearfun('mavlinkHilTracker');
 function [x,y,typ]=mavlinkHilTracker(job,arg1,arg2)
 //
 // mavlinkHilTracker.sci

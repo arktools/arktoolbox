@@ -1,4 +1,3 @@
-clearfun('magMeasModel');
 function [x,y,typ]=magMeasModel(job,arg1,arg2)
 //
 // magMeasModel.sci

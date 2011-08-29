@@ -1,4 +1,3 @@
-clearfun('pidDerivFb');
 function [x,y,typ]=pidDerivFb(job,arg1,arg2)
 //Generated from SuperBlock on 13-Mar-2011
 mode(-1);

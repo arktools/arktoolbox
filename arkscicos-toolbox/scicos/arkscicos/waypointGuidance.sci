@@ -1,4 +1,3 @@
-clearfun('waypointGuidance');
 function [x,y,typ]=waypointGuidance(job,arg1,arg2)
 //
 // waypointGuidance.sci

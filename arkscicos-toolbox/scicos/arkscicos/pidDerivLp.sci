@@ -1,4 +1,3 @@
-clearfun('pidDerivLp');
 function [x,y,typ]=pidDerivLp(job,arg1,arg2)
 //Generated from SuperBlock on 13-Mar-2011
 mode(-1)

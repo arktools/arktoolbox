@@ -1,4 +1,3 @@
-clearfun('car');
 function [x,y,typ]=car(job,arg1,arg2)
 //
 // car.sci

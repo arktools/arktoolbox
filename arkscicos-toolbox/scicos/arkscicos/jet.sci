@@ -1,4 +1,3 @@
-clearfun('jet');
 function [x,y,typ]=jet(job,arg1,arg2)
 //
 // jet.sci

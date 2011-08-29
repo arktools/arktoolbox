@@ -1,4 +1,3 @@
-clearfun('euler2Dcm');
 function [x,y,typ]=euler2Dcm(job,arg1,arg2)
 //
 // euler2Dcm.sci

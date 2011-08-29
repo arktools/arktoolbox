@@ -1,4 +1,3 @@
-clearfun('eom6Dof');
 function [x,y,typ]=eom6Dof(job,arg1,arg2)
 //
 // eom6Dof.sci

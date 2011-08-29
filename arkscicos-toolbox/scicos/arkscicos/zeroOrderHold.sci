@@ -1,4 +1,3 @@
-clearfun('zeroOrderHold');
 function [x,y,typ]=zeroOrderHold(job,arg1,arg2)
 //
 // zeroOrderHOld.sci

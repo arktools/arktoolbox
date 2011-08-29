@@ -1,4 +1,3 @@
-clearfun('jsbsimComm')
 function [x,y,typ]=jsbsimComm(job,arg1,arg2)
 //
 // jsbsimComm.sci

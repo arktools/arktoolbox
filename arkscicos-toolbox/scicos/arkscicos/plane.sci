@@ -1,4 +1,3 @@
-clearfun('plane');
 function [x,y,typ]=plane(job,arg1,arg2)
 //
 // plane.sci

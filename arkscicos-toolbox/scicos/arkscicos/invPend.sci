@@ -1,4 +1,3 @@
-clearfun('invPend');
 function [x,y,typ]=invPend(job,arg1,arg2)
 //
 // invPend.sci

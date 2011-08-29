@@ -1,4 +1,3 @@
-clearfun('geoMag');
 function [x,y,typ]=geoMag(job,arg1,arg2)
 //
 // geoMag.sci
