@@ -196,6 +196,7 @@ if(NOT ARKMATH_FOUND)
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkmath
         )
     set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkmath/include)
+    set(ARKMATH_DATA_DIR ${EP_BASE_DIR}/Install/arkmath/share/arkmath/data)
     if(WIN32)
         set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/Install/arkmath/lib/arkmath.a)
     elseif(APPLE)

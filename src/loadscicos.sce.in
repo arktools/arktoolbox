@@ -10,6 +10,7 @@ scicoslabInstallSettings = @SCICOSLAB_INSTALL_SETTINGS@;
 mathBlocks=[
 'sci_euler2Dcm';..
 'sci_waypointGuidance';..
+'sci_collisionAvoidance';..
 'sci_quat2EulerDcm';..
 'sci_magMeasModel';..
 'sci_gpsMeasModel';..
