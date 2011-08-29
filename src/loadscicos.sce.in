@@ -39,4 +39,9 @@ genlib('lib_arkscicos',pwd()+'/arkscicos');
 if (~scicoslabInstallSettings) then create_palette('arkscicos'); end
 add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');
 
+printf("arkscicos toolbox loaded\n\n");
+printf("\nredefinition warnings above are ok, any errors are a problem.\n")
+printf("\ntype scicos to start a block diagram session\n")
+printf("\nclick Demos  on the menu above to run arkscicos demos.\n")
+
 clear blocks mathBlocks simgearBlocks osgBlocks jsbsimBlocks lapackBlocks mavlinkBlocks
