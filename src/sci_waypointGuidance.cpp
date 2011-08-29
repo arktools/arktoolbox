@@ -17,6 +17,7 @@
  *
  * u1: lat, lon, alt, velocity (destination)
  * u2: x 
+ * u3: lat, lon, alt, velocity, heading (obstacle)
  *
  * Out1 = eH, eV, eR, ePsi, ePhi
  *
@@ -44,6 +45,7 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
     // data
     double * u1=(double*)GetInPortPtrs(block,1);
     double * u2=(double*)GetInPortPtrs(block,2);
+    double * u3=(double*)GetInPortPtrs(block,3);
     double * y1=(double*)GetOutPortPtrs(block,1);
 
     // alias names
@@ -65,6 +67,12 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
     double & lon1   = u2[10];
     double & lat1   = u2[11];
 
+    double & lat3   = u3[0];
+    double & lon3   = u3[1];
+    double & alt3   = u3[2];
+    double & Vt3    = u3[3];
+    double & psi3   = u3[4];
+
     double & eH     = y1[0];
     double & eV     = y1[1];
     double & eR     = y1[2];
@@ -74,21 +82,40 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
     //handle flags
     if (flag==scicos::computeOutput)
     {
+        // basic guidance to waypoint
         double dLat = lat2-lat1;
         double dLon = lon2-lon1;
         double y = sin(dLon) * cos(lat2);
         double x = cos(lat1)*sin(lat2) - sin(lat1)*cos(lat2)*cos(dLon);
         double psiB = atan2(y,x);
-        //if(psiB < 0) psi+=2*M_PI;
 
-        ePsi = psiB - psi;
-        if (ePsi > M_PI) ePsi -= 2*M_PI;
-        else if (ePsi < -M_PI) ePsi += 2*M_PI;
+        // basic safety zone collision avoidance
+        double rC = 10; // collision avoidance window, 10 meters
+        double Vc = Vt3 - Vt;
+        double dLatC = lat3-lat1;
+        double dLonC = lon3-lon1;
+        double yC = sin(dLonC) * cos(lat3);
+        double xC = cos(lat1)*sin(lat3) - sin(lat1)*cos(lat3)*cos(dLon);
+        double dC = sqrt(xC*xC + yC*yC); // distance to collision
+        double psiBC = atan2(yC,xC);  // bearing to vehicle
+        double alpha = psiBC - psi3;
+        double beta = 0;
+        if (dC < 1e-6) {
+            beta = 0;
+        } else {
+            beta = asin(rC/dC);
+        }
+        double gamma = beta - alpha;
 
+        // output
         eH = alt2 - alt;
-        eV = Vt2 - Vt;
+        eV = /*sqrt(Vt*Vt + (Vc*Vc*sin(gamma)*sin(gamma))) + */ Vt2 - Vt;
         eR = 0 - R;
         ePhi = 0 - phi;
+        
+        ePsi = psiB /*+ atan2(Vc*sin(gamma),Vt)*/- psi;
+        if (ePsi > M_PI) ePsi -= 2*M_PI;
+        else if (ePsi < -M_PI) ePsi += 2*M_PI;
    }
     else if (flag==scicos::terminate)
     {

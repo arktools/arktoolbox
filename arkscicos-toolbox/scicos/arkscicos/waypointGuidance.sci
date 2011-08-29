@@ -26,6 +26,13 @@ function [x,y,typ]=waypointGuidance(job,arg1,arg2)
 //  [13] Rpm(if prop)
 //   // not allowed currently [14] PropPitch (if prop)
 //
+// input 3: (obstacle)
+//  [1] Lat
+//  [2] Lon
+//  [3] Altitude
+//  [4] Velocity
+//  [5] Heading
+//
 // output 1: command error
 //  [1] eH (altitude error)
 //  [2] eV (true velocity error)
@@ -70,7 +77,7 @@ select job
 		model=scicos_model()
 		model.sim=list('sci_waypointGuidance',4)
 		model.evtin=[];
-		model.in=[4;13];
+		model.in=[4;13;5];
 		model.out=[5];
 		model.blocktype='c';
 		model.dep_ut=[%t %f];
