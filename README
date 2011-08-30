@@ -1,5 +1,5 @@
 Building
 =================
 
-./autobuild.sh
-Then follow menu
+./cmake/arkcmake/autobuild.sh
+Then follow menu.
