@@ -1,5 +1,5 @@
 Building
 =================
 
-./cmake/arkcmake/autobuild.sh
+./cmake/arkcmake/autobuild.py
 Then follow menu.
