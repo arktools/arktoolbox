@@ -104,12 +104,12 @@ void sci_gpsMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
 
         if (mode == INS_FULL_STATE)
         {
-            #include "arkmath/gen/navigation/ins_H_gps.hpp" 
+            #include "arkmath/gen_cpp/ins_H_gps.hpp" 
         }
         else if (mode == INS_VP_STATE)
         {
             #define H_gps_vp H_gps
-            #include "arkmath/gen/navigation/ins_H_gps_vp.hpp" 
+            #include "arkmath/gen_cpp/ins_H_gps_vp.hpp" 
         }
         else
         {

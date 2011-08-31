@@ -132,7 +132,7 @@ void sci_eom6Dof(scicos_block *block, scicos::enumScicosFlags flag)
                      
             matrix<double,column_major, shallow_array_adaptor<double> > d_x_wind(nY,1,shallow_array_adaptor<double>(nY,y1));
 
-            #include "arkmath/gen/dynamics/windDynamics.hpp"
+            #include "arkmath/gen_cpp/windDynamics.hpp"
         }
         else if (frame == BODY_DYNAMICS)
         {
@@ -157,7 +157,7 @@ void sci_eom6Dof(scicos_block *block, scicos::enumScicosFlags flag)
 
             matrix<double,column_major, shallow_array_adaptor<double> > d_x_body(nY,1,shallow_array_adaptor<double>(nY,y1));
 
-            #include "arkmath/gen/dynamics/dynamicsBodyFrame.hpp"
+            #include "arkmath/gen_cpp/dynamicsBodyFrame.hpp"
         }
         else if (flag==scicos::terminate)
         {

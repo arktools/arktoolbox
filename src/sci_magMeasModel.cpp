@@ -19,9 +19,10 @@
  * u2: sig dip, sig dec (rad)
  * u3: x (state)
  *
- * Out1 = H_mag (3x10)
- * Out2 = R_mag_n (3x3) : note this is in the navigation frame,
+ * y1 = H_mag (3x10)
+ * y2 = R_mag_n (3x3) : note this is in the navigation frame,
  *   you can use C_nb for a similarity transformation
+ * y3 = z_mag_predicted (3x1)
  *
  */
 
@@ -56,6 +57,7 @@ void sci_magMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
     double * u3=(double*)GetInPortPtrs(block,3);
     double * y1=(double*)GetOutPortPtrs(block,1);
     double * y2=(double*)GetOutPortPtrs(block,2);
+    double * y3=(double*)GetOutPortPtrs(block,2);
     int * ipar=block->ipar;
 
     // alias names
@@ -83,6 +85,7 @@ void sci_magMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
     using namespace boost::numeric::ublas;
     matrix<double,column_major, shallow_array_adaptor<double> > H_mag(nZ,nX,shallow_array_adaptor<double>(nZ*nX,y1));
     matrix<double,column_major, shallow_array_adaptor<double> > R_mag_n(nZ,nZ,shallow_array_adaptor<double>(nZ*nZ,y2));
+    matrix<double,column_major, shallow_array_adaptor<double> > z_mag(nZ,1,shallow_array_adaptor<double>(nZ,y3));
 
     //handle flags
     if (flag==scicos::computeOutput)
@@ -96,12 +99,17 @@ void sci_magMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
         double Bn = cosDec*cosDip;
         double Be = sinDec*cosDip;
         double Bd = sinDip;
+        double aa = a*a;
+        double bb = b*b;
+        double cc = c*c;
+        double dd = d*d;
 
         // we can use the same file for both modes
         // this works since non zero elements are ignored and 
         // the states are the first 4 (quaternions in ATT mode)
-        #include "arkmath/gen/navigation/ins_H_mag.hpp" 
-        #include "arkmath/gen/navigation/ins_R_mag_n.hpp" 
+        #include "arkmath/gen_cpp/ins_H_mag.hpp" 
+        #include "arkmath/gen_cpp/ins_R_mag_n.hpp" 
+        #include "arkmath/gen_cpp/z_mag.hpp" 
     }
     else if (flag==scicos::terminate)
     {
