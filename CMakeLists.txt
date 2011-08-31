@@ -211,7 +211,7 @@ endif()
 
 if(NOT JSBSIM_FOUND)
     ExternalProject_Add(jsbsim
-        GIT_REPOSITORY "git://github.com/arktools/jsbsim.git"
+        GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
         GIT_TAG ${JSBSIM_TAG} 
         CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${EP_BASE_DIR}/Install/jsbsim
         BUILD_COMMAND make
