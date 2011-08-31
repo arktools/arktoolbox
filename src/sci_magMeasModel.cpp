@@ -57,7 +57,7 @@ void sci_magMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
     double * u3=(double*)GetInPortPtrs(block,3);
     double * y1=(double*)GetOutPortPtrs(block,1);
     double * y2=(double*)GetOutPortPtrs(block,2);
-    double * y3=(double*)GetOutPortPtrs(block,2);
+    double * y3=(double*)GetOutPortPtrs(block,3);
     int * ipar=block->ipar;
 
     // alias names

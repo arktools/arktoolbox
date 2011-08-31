@@ -117,9 +117,9 @@ public:
 		ss.y.add(new FGStateSpace::AccelX);
 		ss.y.add(new FGStateSpace::AccelY);
 		ss.y.add(new FGStateSpace::AccelZ);
-		ss.y.add(new FGStateSpace::Pi);
-		ss.y.add(new FGStateSpace::Qi);
-		ss.y.add(new FGStateSpace::Ri);
+		ss.y.add(new FGStateSpace::P);
+		ss.y.add(new FGStateSpace::Q);
+		ss.y.add(new FGStateSpace::R);
 		ss.y.add(new FGStateSpace::Vn);
 		ss.y.add(new FGStateSpace::Ve);
 		ss.y.add(new FGStateSpace::Vd);

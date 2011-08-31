@@ -57,7 +57,19 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[0,0],[100,40],%t,0,"waypointGuidance",..
+                       "id","in_implicit","out_implicit"],[0,0],[100,40],%t,0,"0",[0;0;0],[0;0;0],[],[],..
+                       list("xstringb(orig(1),orig(2),''magMeasModel'',sz(1),sz(2),''fill'');",8),"",..
+                       ["E";"E";"E"],["E";"E";"E"]),..
+                       mlist(..
+                       ["model","sim","in","in2","intyp","out","out2","outtyp","evtin","evtout","state",..
+                       "dstate","odstate","rpar","ipar","opar","blocktype","firing","dep_ut","label",..
+                       "nzcross","nmode","equations"],list("sci_magMeasModel",4),[2;2;4],[],1,[3;3;3],..
+                       [10;3;1],1,[],[],[],[],list(),[],0,list(),"c",[],[%t,%f],"",0,0,list()),..
+                       "magMeasModel",list()),..
+                       mlist(["Block","graphics","model","gui","doc"],..
+                       mlist(..
+                       ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
+                       "id","in_implicit","out_implicit"],[130,0],[100,40],%t,0,"waypointGuidance",..
                        [0;0;0],0,[],[],..
                        list("xstringb(orig(1),orig(2),''waypointGuidance'',sz(1),sz(2),''fill'');",8),..
                        "",["E";"E";"E"],"E"),..
@@ -70,7 +82,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[130,0],[100,40],%t,0,"sci_car",0,[],0,[],..
+                       "id","in_implicit","out_implicit"],[260,0],[100,40],%t,0,"sci_car",0,[],0,[],..
                        list("xstringb(orig(1),orig(2),			[''car''],sz(1),sz(2),''fill'');",8),"","E",[]),..
                        mlist(..
                        ["model","sim","in","in2","intyp","out","out2","outtyp","evtin","evtout","state",..
@@ -80,7 +92,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[260,0],[40,40],%t,0,[],[],0,0,[],..
+                       "id","in_implicit","out_implicit"],[390,0],[40,40],%t,0,[],[],0,0,[],..
                        list("xstringb(orig(1),orig(2),[''elapsed'';''time''],sz(1),sz(2),''fill'');",8),..
                        "",[],"E"),..
                        mlist(..
@@ -213,7 +225,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[330,0],[100,40],%t,0,"0",[0;0;0;0],0,[],[],..
+                       "id","in_implicit","out_implicit"],[0,70],[100,40],%t,0,"0",[0;0;0;0],0,[],[],..
                        list("xstringb(orig(1),orig(2),[''EOM 6DOF''],sz(1),sz(2),''fill'');",8),"",..
                        ["E";"E";"E";"E"],"E"),..
                        mlist(..
@@ -224,7 +236,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[0,70],[100,40],%t,0,"euler2Dcm",0,0,[],[],..
+                       "id","in_implicit","out_implicit"],[130,70],[100,40],%t,0,"euler2Dcm",0,0,[],[],..
                        list("xstringb(orig(1),orig(2),''euler2Dcm'',sz(1),sz(2),''fill'');",8),"","E",..
                        "E"),..
                        mlist(..
@@ -235,7 +247,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[130,70],[100,40],%t,0,"sci_FlightGearComm",0,..
+                       "id","in_implicit","out_implicit"],[260,70],[100,40],%t,0,"sci_FlightGearComm",0,..
                        0,0,[],..
                        list("xstringb(orig(1),orig(2),			[''FlightGearComm''],sz(1),sz(2),''fill'');",8),..
                        "","E","E"),..
@@ -247,7 +259,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[260,70],[100,40],%t,0,["2011.1","12"],0,0,[],..
+                       "id","in_implicit","out_implicit"],[390,70],[100,40],%t,0,["2011.1","12"],0,0,[],..
                        [],list("xstringb(orig(1),orig(2),''geoMag'',sz(1),sz(2),''fill'');",8),"","E",..
                        "E"),..
                        mlist(..
@@ -258,7 +270,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[390,70],[100,40],%t,0,..
+                       "id","in_implicit","out_implicit"],[0,140],[100,40],%t,0,..
                        ["10","5","1","0.001","0.002"],[0;0],0,0,[],..
                        list("xstringb(orig(1),orig(2),''GpsIns'',sz(1),sz(2),''fill'');",8),"",..
                        ["E";"E"],"E"),..
@@ -271,7 +283,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[0,140],[100,40],%t,0,["0","6378137"],[0;0],..
+                       "id","in_implicit","out_implicit"],[130,140],[100,40],%t,0,["0","6378137"],[0;0],..
                        [0;0],[],[],..
                        list("xstringb(orig(1),orig(2),''gpsMeasModel'',sz(1),sz(2),''fill'');",8),"",..
                        ["E";"E"],["E";"E"]),..
@@ -284,7 +296,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[130,140],[100,40],%t,0,..
+                       "id","in_implicit","out_implicit"],[260,140],[100,40],%t,0,..
                        ["0.0000729","6378137","0"],[0;0;0],0,[],[],..
                        list(..
                        "xstringb(orig(1),orig(2),[''ins dynamics'';''quaternions''],sz(1),sz(2),''fill'');",..
@@ -298,7 +310,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[260,140],[100,40],%t,0,..
+                       "id","in_implicit","out_implicit"],[390,140],[100,40],%t,0,..
                        ["0.0000729","6378137","0"],[0;0],[0;0],[],[],..
                        list("xstringb(orig(1),orig(2),''insErrorDynamics'',sz(1),sz(2),''fill'');",8),..
                        "",["E";"E"],["E";"E"]),..
@@ -311,7 +323,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[390,140],[100,40],%t,0,"sci_invPend",[0;0;0],..
+                       "id","in_implicit","out_implicit"],[0,210],[100,40],%t,0,"sci_invPend",[0;0;0],..
                        [0;0],[],[],..
                        list(..
                        "xstringb(orig(1),orig(2),			[''Inverted Pendulum''],sz(1),sz(2),''fill'');",8),..
@@ -325,7 +337,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[0,210],[100,40],%t,0,"sci_jet",0,[],0,[],..
+                       "id","in_implicit","out_implicit"],[130,210],[100,40],%t,0,"sci_jet",0,[],0,[],..
                        list("xstringb(orig(1),orig(2),			[''Jet''],sz(1),sz(2),''fill'');",8),"","E",[]),..
                        mlist(..
                        ["model","sim","in","in2","intyp","out","out2","outtyp","evtin","evtout","state",..
@@ -335,7 +347,7 @@ scs_m.objs(1)=scicos_block(..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[130,210],[100,40],%t,0,..
+                       "id","in_implicit","out_implicit"],[260,210],[100,40],%t,0,..
                        ["jsbsimDataPath+""/aircraft/easystar""","""""","""""","""""",..
                        """easystar-datcom""","""place x0 here""","0","0","""localhost""","5500"],0,..
                        [0;0],[],[],..
@@ -354,18 +366,6 @@ scs_m.objs(1)=scicos_block(..
                        114,0,0,0,0,0,0,0,15,101,97,115,121,115,116,97,114,45,100,97,116,99,111,109,0,..
                        9,108,111,99,97,108,104,111,115,116,0,0,0,5500],list(),"c",[],[%f,%t],"",0,0,..
                        list()),"jsbsimComm",list()),..
-                       mlist(["Block","graphics","model","gui","doc"],..
-                       mlist(..
-                       ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..
-                       "id","in_implicit","out_implicit"],[260,210],[100,40],%t,0,"0",[0;0;0],[0;0],[],..
-                       [],list("xstringb(orig(1),orig(2),''magMeasModel'',sz(1),sz(2),''fill'');",8),"",..
-                       ["E";"E";"E"],["E";"E"]),..
-                       mlist(..
-                       ["model","sim","in","in2","intyp","out","out2","outtyp","evtin","evtout","state",..
-                       "dstate","odstate","rpar","ipar","opar","blocktype","firing","dep_ut","label",..
-                       "nzcross","nmode","equations"],list("sci_magMeasModel",4),[2;2;4],[],1,[3;3],..
-                       [10;3],1,[],[],[],[],list(),[],0,list(),"c",[],[%t,%f],"",0,0,list()),..
-                       "magMeasModel",list()),..
                        mlist(["Block","graphics","model","gui","doc"],..
                        mlist(..
                        ["graphics","orig","sz","flip","theta","exprs","pin","pout","pein","peout","gr_i",..

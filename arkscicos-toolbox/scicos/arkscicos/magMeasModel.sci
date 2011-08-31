@@ -21,6 +21,12 @@ function [x,y,typ]=magMeasModel(job,arg1,arg2)
 // 	Note: This is in the navigation frame, use
 //  	C_nb to perform a similarity transformation
 //
+// output 3:
+//
+//  z_mag_predicted (3x1) : The predicted measurement of the 
+//  	magnetic field using the non-linear equation.
+// 		Use the directly in an EKF
+//
 // input 1: (local magnetic field direction)
 //  [1] dip, inclination (rad)
 //  [2] dec, declination rad)
@@ -80,8 +86,8 @@ select job
 
 			// set sizes based on mode
 			if stateMode==0 then
-				out=[3;3]
-				out2=[10;3]
+				out=[3;3;3]
+				out2=[10;3;1]
 			elseif stateMode==1 then
 				out=[3;3]
 				out2=[4;3]
@@ -108,8 +114,8 @@ select job
 		model.in=in;
 		stateMode=0;	
 		model.ipar=stateMode;
-		model.out=[3;3];
-		model.out2=[10;3];
+		model.out=[3;3;3];
+		model.out2=[10;3;1];
 		model.blocktype='c';
 		model.dep_ut=[%t %f];
 		exprs=[strcat(sci2exp(stateMode))];
