@@ -84,6 +84,7 @@ if(ARKOSG_FOUND)
 		sci_plane.cpp
 		sci_car.cpp
 		sci_quad.cpp
+		sci_vector.cpp
 	)
 endif()
 

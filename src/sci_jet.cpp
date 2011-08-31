@@ -54,36 +54,36 @@ extern "C"
     void sci_jet(scicos_block *block, scicos::enumScicosFlags flag)
     {
         // definitions
-        static VisJet * vis=NULL;
         double *u=(double*)GetInPortPtrs(block,1);
+        void ** work =  GetPtrWorkPtrs(block);
+		VisJet * vis;
 
-        // handle flags
-        if (flag==scicos::initialize || flag==scicos::reinitialize)
+ 		// handle flags
+        if (flag==scicos::initialize)
         {
-            std::cout << "initializing" << std::endl;
-        }
+			try
+			{
+				vis = new VisJet;
+			}
+			catch (const std::runtime_error & e)
+			{
+				Coserror((char *)e.what());
+				set_block_error(-16);
+	 			return;
+			}
+			*work = (void *)vis;
+		}
         else if (flag==scicos::terminate)
         {
+			vis = (VisJet *)*work;
             if (vis)
             {
-                delete vis;
+				delete vis;
                 vis = NULL;
             }
         }
         else if (flag==scicos::computeOutput)
         {
-			if (!vis)
-			{
-				try
-				{
-					vis = new VisJet;
-				}
-				catch (const std::runtime_error & e)
-				{
-					Coserror((char *)e.what());
-				}
-			}
-
             vis->lock();
             vis->jet->setEuler(u[0],u[1],u[2]);
             vis->jet->setU(u[3],u[4],u[5],u[6]);
@@ -91,7 +91,7 @@ extern "C"
         }
         else
         {
-            std::cout << "unhandled flag: " << flag << std::endl;
+            //std::cout << "unhandled flag: " << flag << std::endl;
         }
     }
 

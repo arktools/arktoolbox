@@ -54,36 +54,37 @@ extern "C"
     void sci_plane(scicos_block *block, scicos::enumScicosFlags flag)
     {
         // definitions
-        static VisPlane * vis=NULL;
         double *u=(double*)GetInPortPtrs(block,1);
+		void ** work =  GetPtrWorkPtrs(block);
+		VisPlane * vis;
 
         // handle flags
-        if (flag==scicos::initialize || flag==scicos::reinitialize)
+        if (flag==scicos::initialize)
         {
-            std::cout << "initializing" << std::endl;
-        }
+			try
+			{
+				vis = new VisPlane;
+			}
+			catch (const std::runtime_error & e)
+			{
+				Coserror((char *)e.what());
+				set_block_error(-16);
+	 			return;
+			}
+			*work = (void *)vis;
+		}
         else if (flag==scicos::terminate)
         {
+			vis = (VisPlane *)*work;
             if (vis)
             {
-                delete vis;
+				delete vis;
                 vis = NULL;
             }
         }
         else if (flag==scicos::computeOutput)
         {
-			if (!vis)
-			{
-				try
-				{
-					vis = new VisPlane;
-				}
-				catch (const std::runtime_error & e)
-				{
-					Coserror((char *)e.what());
-				}
-			}
-
+			vis = (VisPlane *)*work;
 			if (vis)
 			{
 				vis->lock();
@@ -94,7 +95,7 @@ extern "C"
         }
         else
         {
-            std::cout << "unhandled flag: " << flag << std::endl;
+            //std::cout << "unhandled flag: " << flag << std::endl;
         }
     }
 

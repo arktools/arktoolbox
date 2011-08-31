@@ -71,38 +71,40 @@ extern "C"
     void sci_quad(scicos_block *block, scicos::enumScicosFlags flag)
     {
         // definitions
-        static VisQuad * vis=NULL;
         double *u1=(double*)GetInPortPtrs(block,1);
         double *u2=(double*)GetInPortPtrs(block,2);
         double *u3=(double*)GetInPortPtrs(block,3);
+        void ** work =  GetPtrWorkPtrs(block);
+		VisQuad * vis;
 
-        // handle flags
-        if (flag==scicos::initialize || flag==scicos::reinitialize)
+ 		// handle flags
+        if (flag==scicos::initialize)
         {
-            std::cout << "initializing" << std::endl;
-        }
+			try
+			{
+				vis = new VisQuad;
+			}
+			catch (const std::runtime_error & e)
+			{
+				Coserror((char *)e.what());
+				set_block_error(-16);
+	 			return;
+			}
+			*work = (void *)vis;
+		}
         else if (flag==scicos::terminate)
         {
+			vis = (VisQuad *)*work;
             if (vis)
             {
-                delete vis;
+				delete vis;
                 vis = NULL;
             }
         }
         else if (flag==scicos::computeOutput)
         {
-            if (!vis)
-			{
-				try
-				{
-					vis = new VisQuad;
-				}
-				catch (const std::runtime_error & e)
-				{
-					Coserror((char *)e.what());
-				}
-			}
-			else
+			vis = (VisQuad *)*work;
+			if (vis)
 			{
 				vis->lock();
 				vis->quad->setEuler(u1[0],u1[1],u1[2]);
