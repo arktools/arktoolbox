@@ -71,7 +71,7 @@ void sci_geoMag(scicos_block *block, scicos::enumScicosFlags flag)
     //handle flags
     if (flag==scicos::initialize || flag==scicos::reinitialize)
     {
-        std::cout << "initializing" << std::endl;
+        //std::cout << "initializing" << std::endl;
         if (!geoMag)
         {
             try
@@ -86,7 +86,7 @@ void sci_geoMag(scicos_block *block, scicos::enumScicosFlags flag)
     }
     else if (flag==scicos::terminate)
     {
-        std::cout << "terminating" << std::endl;
+        //std::cout << "terminating" << std::endl;
         if (geoMag)
         {
             delete geoMag;
@@ -110,7 +110,7 @@ void sci_geoMag(scicos_block *block, scicos::enumScicosFlags flag)
     }
     else
     {
-        std::cout << "unhandled flag: " << flag << std::endl;
+        //std::cout << "unhandled flag: " << flag << std::endl;
     }
 }
 

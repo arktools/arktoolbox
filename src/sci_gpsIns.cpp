@@ -85,7 +85,7 @@ extern "C"
         //handle flags
         if (flag==scicos::initialize || flag==scicos::reinitialize)
         {
-            std::cout << "initializing" << std::endl;
+            //std::cout << "initializing" << std::endl;
             if (!gpsIns)
             {
 			
@@ -101,7 +101,7 @@ extern "C"
         }
         else if (flag==scicos::terminate)
         {
-            std::cout << "terminating" << std::endl;
+            //std::cout << "terminating" << std::endl;
             if (gpsIns)
             {
                 delete gpsIns;
@@ -110,12 +110,12 @@ extern "C"
         }
         else if (flag==scicos::updateState)
         {
-            std::cout << "updating state" << std::endl;
+            //std::cout << "updating state" << std::endl;
 		
         }
         else if (flag==scicos::computeOutput)
         {
-            std::cout << "computing Output" << std::endl;
+            //std::cout << "computing Output" << std::endl;
 			if(gpsIns)
 			{
 				gpsIns->updateAll(*fbx, *fby, *fbz, *wbx, *wby,
@@ -125,7 +125,7 @@ extern "C"
         }
         else
         {
-            std::cout << "unhandled flag: " << flag << std::endl;
+            //std::cout << "unhandled flag: " << flag << std::endl;
         }
 
     }

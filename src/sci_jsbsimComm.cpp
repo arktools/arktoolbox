@@ -47,7 +47,7 @@ public:
                bool enableFlightGearComm, char * flightGearHost, int flightGearPort) :
         prop(), fdm(&prop), ss(fdm), socket()
     {
-        std::cout << "initializing JSBSim" << std::endl;
+        //std::cout << "initializing JSBSim" << std::endl;
         fdm.SetDebugLevel(debugLevel);
 		
         if (!fdm.LoadModel(
@@ -61,7 +61,7 @@ public:
 
         if (enableFlightGearComm)
         {
-            std::cout << "initializing FlightGear communication" << std::endl;
+            //std::cout << "initializing FlightGear communication" << std::endl;
             socket = new FGfdmSocket(flightGearHost,flightGearPort,FGfdmSocket::ptUDP);
 			if (!socket) throw std::runtime_error("unable to open FlightGear socket");
         }
@@ -243,7 +243,7 @@ extern "C"
         }
         else
         {
-            std::cout << "unhandled flag: " << flag << std::endl;
+            //std::cout << "unhandled flag: " << flag << std::endl;
         }
     }
 
