@@ -16,6 +16,14 @@ find_path(ARKMATH_INCLUDE_DIR
 	PATHS ${COMMON_INCLUDE_PATHS_ARKMATH}
 )
 
+# data dir
+find_path(ARKMATH_DATA_DIR
+	NAMES arkmath/data/WMM.COF
+	PATHS ${COMMON_DATA_PATHS_ARKMATH}
+)
+set(ARKMATH_DATA_DIR ${ARKMATH_DATA_DIR})
+message(STATUS "arkmath data dir: ${ARKMATH_DATA_DIR}")
+
 # the library itself
 find_library(ARKMATH_LIBRARY
 	NAMES arkmath

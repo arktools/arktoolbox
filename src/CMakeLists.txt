@@ -105,7 +105,7 @@ target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION}
     SOVERSION ${LIBRARY_SOVERSION})
 
-if (UNIX)
+if (UNIX AND NOT APPLE)
 	# if using unix add script to see if scicoslab toolbox builds correctly
 	add_custom_target(toolbox ALL
 		DEPENDS ${PROJECT_NAME}

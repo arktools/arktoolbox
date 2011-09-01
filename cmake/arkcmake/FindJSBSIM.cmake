@@ -19,9 +19,9 @@ find_path(JSBSIM_INCLUDE_DIR
 # data dir
 find_path(JSBSIM_DATA_DIR
 	NAMES jsbsim/aircraft/aircraft_template.xml
-	PATHS ${COMMON_INCLUDE_PATHS_JSBSIM}
+	PATHS ${COMMON_DATA_PATHS_JSBSIM}
 )
-set(JSBSIM_DATA_DIR ${JSBSIM_DATA_DIR}/jsbsim)
+set(JSBSIM_DATA_DIR ${JSBSIM_DATA_DIR}/jsbsim ${JSBSIM_DATA_DIR})
 
 # Finally the library itself
 find_library(JSBSIM_LIBRARY

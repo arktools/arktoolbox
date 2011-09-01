@@ -40,7 +40,7 @@ endif()
 
 # Include dir
 find_path(SCICOSLAB_INCLUDE_DIR
-  NAMES version.h
+  NAMES scicos/scicos_block4.h
   PATHS ${SCICOSLAB_GUESS_INCLUDE_DIRS}
 )
 
