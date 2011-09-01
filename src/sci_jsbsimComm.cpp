@@ -78,7 +78,6 @@ public:
         ss.x.add(new FGStateSpace::Alpha);
         ss.x.add(new FGStateSpace::Theta);
         ss.x.add(new FGStateSpace::Q);
-        ss.x.add(new FGStateSpace::Alt);
 
         // lateral states
         ss.x.add(new FGStateSpace::Beta);
@@ -88,8 +87,9 @@ public:
         ss.x.add(new FGStateSpace::R);
 
         // nav states
-        ss.x.add(new FGStateSpace::Longitude);
         ss.x.add(new FGStateSpace::Latitude);
+        ss.x.add(new FGStateSpace::Longitude);
+        ss.x.add(new FGStateSpace::Alt);
 
         // propulsion states
 		if (thruster0->GetType()==FGThruster::ttPropeller)

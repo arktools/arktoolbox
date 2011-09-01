@@ -15,14 +15,14 @@ function [x,y,typ]=waypointGuidance(job,arg1,arg2)
 //  [2]  Alpha
 //  [3]  Theta
 //  [4]  Q
-//  [5]  Alt
-//  [6]  Beta
-//  [7]  Phi
-//  [8]  P
-//  [9]  R
-//  [10] Psi
+//  [5]  Beta
+//  [6]  Phi
+//  [7]  P
+//  [8]  Psi
+//  [9] R
+//  [10] Latitude,
 //  [11] Longitude
-//  [12] Latitude,
+//  [12]  Alt
 //  [13] Rpm(if prop)
 //   // not allowed currently [14] PropPitch (if prop)
 //

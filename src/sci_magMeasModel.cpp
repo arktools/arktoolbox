@@ -109,13 +109,7 @@ void sci_magMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
         // the states are the first 4 (quaternions in ATT mode)
         #include "arkmath/gen_cpp/ins_H_mag.hpp" 
         #include "arkmath/gen_cpp/ins_R_mag_n.hpp" 
-        //#include "arkmath/gen_cpp/z_mag.hpp" 
-        //z_mag(0,0) = Bn*(-dd-cc+bb+aa)+Bd*(2*b*d-2*a*c)+Be*(2*a*d+2*b*c);
-        //z_mag(1,0) = Be*(-dd+cc-bb+aa)+Bd*(2*c*d+2*a*b)+Bn*(2*b*c-2*a*d);
-        //z_mag(2,0) = Bd*(dd-cc-bb+aa)+Be*(2*c*d-2*a*b)+Bn*(2*b*d+2*a*c);
-        z_mag(0,0) = Bn*(-dd-cc+bb+aa)+Bd*(2*b*d+2*a*c)+Be*(2*b*c-2*a*d);
-        z_mag(1,0) = Be*(-dd+cc-bb+aa)+Bd*(2*c*d-2*a*b)+Bn*(2*a*d+2*b*c);
-        z_mag(2,0) = Bd*(dd-cc-bb+aa)+Be*(2*c*d+2*a*b)+Bn*(2*b*d-2*a*c);
+        #include "arkmath/gen_cpp/z_mag.hpp" 
     }
     else if (flag==scicos::terminate)
     {

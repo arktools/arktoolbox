@@ -58,14 +58,14 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
     double & alpha  = u2[1];
     double & theta  = u2[2];
     double & Q      = u2[3];
-    double & alt    = u2[4];
-    double & beta   = u2[5];
-    double & phi    = u2[6];
-    double & P      = u2[7];
-    double & psi    = u2[8];
-    double & R      = u2[9];
+    double & beta   = u2[4];
+    double & phi    = u2[5];
+    double & P      = u2[6];
+    double & psi    = u2[7];
+    double & R      = u2[8];
+    double & lat1   = u2[9];
     double & lon1   = u2[10];
-    double & lat1   = u2[11];
+    double & alt    = u2[11];
 
     double & lat3   = u3[0];
     double & lon3   = u3[1];

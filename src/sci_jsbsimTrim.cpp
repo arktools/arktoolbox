@@ -26,6 +26,7 @@
 #include "JSBSim/models/propulsion/FGTurbine.h"
 #include "JSBSim/models/propulsion/FGTurboProp.h"
 #include "config.h"
+#include <exception>
 
 template <class varType>
 void prompt(const std::string & str, varType & var)
@@ -55,13 +56,14 @@ void trimFunction ()
     // defaults
     constraints.velocity = 45;
     std::string aircraft="easystar-datcom";
-    std::string aircraftPath="easystar";
-    std::string enginePath="easystar";
-    std::string systemsPath="easystar";
-    std::string root=std::string(JSBSIM_DATA_DIR)+"/aircraft";
-    double rtol = std::numeric_limits<float>::epsilon();
-    double abstol = std::numeric_limits<double>::epsilon();
-    double speed = 2.0;
+    std::string aircraftPath="aircraft/easystar";
+    std::string enginePath="aircraft/easystar/Engines";
+    std::string systemsPath="systems";
+    std::string root=std::string(JSBSIM_DATA_DIR);
+    double rtol = 10*std::numeric_limits<float>::epsilon();
+    double abstol = 10*std::numeric_limits<double>::epsilon();
+	double random = 0;
+    double speed = 1.8;
     int iterMax = 2000;
     bool showConvergeStatus = false;
     bool pause = false;
@@ -83,8 +85,13 @@ void trimFunction ()
         prompt("\taircraft path\t\t",aircraftPath);
         prompt("\tengine path\t\t",enginePath);
         prompt("\tsystems path\t\t",systemsPath);
-        fdm.LoadModel(root+"/"+aircraftPath,root+"/"+enginePath,
-                      root+"/"+systemsPath,aircraft,false);
+		try {
+			fdm.LoadModel(root+"/"+aircraftPath,root+"/"+enginePath,
+						  root+"/"+systemsPath,aircraft,false);
+		} catch(std::exception & e) {
+			std::cout << e.what() << std::endl;
+			continue;
+		}
         std::string aircraftName = fdm.GetAircraft()->GetAircraftName();
         if (aircraftName == "")
         {
@@ -159,17 +166,17 @@ void trimFunction ()
 
     lowerBound[0] = 0; //throttle
     lowerBound[1] = -1; // elevator
-    lowerBound[2] = -90*M_PI/180; // alpha
+    lowerBound[2] = -20*M_PI/180; // alpha
     lowerBound[3] = -1; // aileron
     lowerBound[4] = -1; // rudder
-    lowerBound[5] = -90*M_PI/180; // beta
+    lowerBound[5] = -20*M_PI/180; // beta
 
     upperBound[0] = 1; //throttle
     upperBound[1] = 1; // elevator
-    upperBound[2] = 90*M_PI/180; // alpha
+    upperBound[2] = 20*M_PI/180; // alpha
     upperBound[3] = 1; // aileron
     upperBound[4] = 1; // rudder
-    upperBound[5] = 90*M_PI/180; // beta
+    upperBound[5] = 20*M_PI/180; // beta
 
     initialStepSize[0] = 0.2; //throttle
     initialStepSize[1] = 0.1; // elevator
@@ -185,99 +192,104 @@ void trimFunction ()
     initialGuess[4] = 0; // rudder
     initialGuess[5] = 0; // beta
 
-    // solve
-    FGTrimmer trimmer(fdm, constraints);
-    FGNelderMead solver(trimmer,initialGuess, lowerBound, upperBound, initialStepSize,
-                        iterMax,rtol,abstol,speed,showConvergeStatus,showSimplex,pause);
+	try {
+		// solve
+		FGTrimmer trimmer(fdm, constraints);
+		FGNelderMead solver(trimmer,initialGuess, lowerBound, upperBound, initialStepSize,
+							iterMax,rtol,abstol,speed,random,showConvergeStatus,showSimplex,pause);
 
-	while(solver.status()==1) solver.update();		
+		while(solver.status()==1) solver.update();		
 
-    // output
-    trimmer.printSolution(solver.getSolution()); // this also loads the solution into the fdm
+		// output
+		trimmer.printSolution(solver.getSolution()); // this also loads the solution into the fdm
 
-    //std::cout << "\nsimulating flight to determine trim stability" << std::endl;
+		//std::cout << "\nsimulating flight to determine trim stability" << std::endl;
 
-    //std::cout << "\nt = 5 seconds" << std::endl;
-    //for (int i=0;i<5*120;i++) fdm.Run();
-    //trimmer.printState();
+		//std::cout << "\nt = 5 seconds" << std::endl;
+		//for (int i=0;i<5*120;i++) fdm.Run();
+		//trimmer.printState();
 
-    //std::cout << "\nt = 10 seconds" << std::endl;
-    //for (int i=0;i<5*120;i++) fdm.Run();
-    //trimmer.printState();
+		//std::cout << "\nt = 10 seconds" << std::endl;
+		//for (int i=0;i<5*120;i++) fdm.Run();
+		//trimmer.printState();
 
-    std::cout << "\nlinearization: " << std::endl;
-    FGStateSpace ss(fdm);
+		std::cout << "\nlinearization: " << std::endl;
+		FGStateSpace ss(fdm);
 
-    // longitudinal states
-    ss.x.add(new FGStateSpace::Vt);
-    ss.x.add(new FGStateSpace::Alpha);
-    ss.x.add(new FGStateSpace::Theta);
-    ss.x.add(new FGStateSpace::Q);
-    ss.x.add(new FGStateSpace::Alt);
+		// longitudinal states
+		ss.x.add(new FGStateSpace::Vt);
+		ss.x.add(new FGStateSpace::Alpha);
+		ss.x.add(new FGStateSpace::Theta);
+		ss.x.add(new FGStateSpace::Q);
 
-    // lateral states
-    ss.x.add(new FGStateSpace::Beta);
-    ss.x.add(new FGStateSpace::Phi);
-    ss.x.add(new FGStateSpace::P);
-    ss.x.add(new FGStateSpace::Psi);
-    ss.x.add(new FGStateSpace::R);
+		// lateral states
+		ss.x.add(new FGStateSpace::Beta);
+		ss.x.add(new FGStateSpace::Phi);
+		ss.x.add(new FGStateSpace::P);
+		ss.x.add(new FGStateSpace::Psi);
+		ss.x.add(new FGStateSpace::R);
 
-    // nav states
-    ss.x.add(new FGStateSpace::Longitude);
-    ss.x.add(new FGStateSpace::Latitude);
+		// nav states
+		ss.x.add(new FGStateSpace::Latitude);
+		ss.x.add(new FGStateSpace::Longitude);
+		ss.x.add(new FGStateSpace::Alt);
 
-    // propulsion states
-	if (thruster0->GetType()==FGThruster::ttPropeller)
-    {
-        ss.x.add(new FGStateSpace::Rpm0);
-        if (variablePropPitch) ss.x.add(new FGStateSpace::PropPitch);
-		int numEngines = fdm.GetPropulsion()->GetNumEngines();
-		if (numEngines>1) ss.x.add(new FGStateSpace::Rpm1);
-		if (numEngines>2) ss.x.add(new FGStateSpace::Rpm2);
-		if (numEngines>3) ss.x.add(new FGStateSpace::Rpm3);
-    }
+		// propulsion states
+		if (thruster0->GetType()==FGThruster::ttPropeller)
+		{
+			ss.x.add(new FGStateSpace::Rpm0);
+			if (variablePropPitch) ss.x.add(new FGStateSpace::PropPitch);
+			int numEngines = fdm.GetPropulsion()->GetNumEngines();
+			if (numEngines>1) ss.x.add(new FGStateSpace::Rpm1);
+			if (numEngines>2) ss.x.add(new FGStateSpace::Rpm2);
+			if (numEngines>3) ss.x.add(new FGStateSpace::Rpm3);
+		}
 
-    // input
-    ss.u.add(new FGStateSpace::ThrottleCmd);
-    ss.u.add(new FGStateSpace::DaCmd);
-    ss.u.add(new FGStateSpace::DeCmd);
-    ss.u.add(new FGStateSpace::DrCmd);
+		// input
+		ss.u.add(new FGStateSpace::ThrottleCmd);
+		ss.u.add(new FGStateSpace::DaCmd);
+		ss.u.add(new FGStateSpace::DeCmd);
+		ss.u.add(new FGStateSpace::DrCmd);
 
-    // state feedback
-    ss.y = ss.x;
+		// state feedback
+		ss.y = ss.x;
 
-    std::vector< std::vector<double> > A,B,C,D;
-    std::vector<double> x0 = ss.x.get(), u0 = ss.u.get();
-    std::vector<double> y0 = x0; // state feedback
-    std::cout << ss << std::endl;
+		std::vector< std::vector<double> > A,B,C,D;
+		std::vector<double> x0 = ss.x.get(), u0 = ss.u.get();
+		std::vector<double> y0 = x0; // state feedback
+		std::cout << ss << std::endl;
 
-    ss.linearize(x0,u0,y0,A,B,C,D);
-    int width=10;
-    std::cout.precision(3);
-    std::cout
-            << std::fixed
-            << std::right
-            << "\nA=\n" << std::setw(width) << A
-            << "\nB=\n" << std::setw(width) << B
-            << "\nC=\n" << std::setw(width) << C
-            << "\nD=\n" << std::setw(width) << D
-            << std::endl;
+		ss.linearize(x0,u0,y0,A,B,C,D);
+		int width=10;
+		std::cout.precision(3);
+		std::cout
+				<< std::fixed
+				<< std::right
+				<< "\nA=\n" << std::setw(width) << A
+				<< "\nB=\n" << std::setw(width) << B
+				<< "\nC=\n" << std::setw(width) << C
+				<< "\nD=\n" << std::setw(width) << D
+				<< std::endl;
 
-    //write scicoslab file
-    std::ofstream scicos(std::string(aircraft+"_lin.sce").c_str());
-    scicos.precision(10);
-    width=20;
-    scicos
-            << std::scientific
-            << "x0=..\n" << std::setw(width) << x0 << ";\n"
-            << "u0=..\n" << std::setw(width) << u0 << ";\n"
-            << "sys = syslin('c',..\n"
-            << std::setw(width) << A << ",..\n"
-            << std::setw(width) << B << ",..\n"
-            << std::setw(width) << C << ",..\n"
-            << std::setw(width) << D << ");\n"
-            << "tfm = ss2tf(sys);\n"
-            << std::endl;
+		//write scicoslab file
+		std::ofstream scicos(std::string(aircraft+"_lin.sce").c_str());
+		scicos.precision(10);
+		width=20;
+		scicos
+				<< std::scientific
+				<< "x0=..\n" << std::setw(width) << x0 << ";\n"
+				<< "u0=..\n" << std::setw(width) << u0 << ";\n"
+				<< "sys = syslin('c',..\n"
+				<< std::setw(width) << A << ",..\n"
+				<< std::setw(width) << B << ",..\n"
+				<< std::setw(width) << C << ",..\n"
+				<< std::setw(width) << D << ");\n"
+				<< "tfm = ss2tf(sys);\n"
+				<< std::endl;
+	} catch(std::exception & e) {
+		std::cout << e.what() << std::endl;
+		return;
+	}
 }
 
 extern "C"

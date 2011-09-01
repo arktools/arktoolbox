@@ -9,14 +9,14 @@ function [x,y,typ]=jsbsimComm(job,arg1,arg2)
 //  [2]  Alpha
 //  [3]  Theta
 //  [4]  Q
-//  [5]  Alt
-//  [6]  Beta
-//  [7]  Phi
-//  [8]  P
-//  [9]  Psi
-//  [10] R
+//  [5]  Beta
+//  [6]  Phi
+//  [7]  P
+//  [8]  Psi
+//  [9] R
+//  [10] Latitude,
 //  [11] Longitude
-//  [12] Latitude,
+//  [12] Alt
 //  [13] Rpm(if prop)
 //  [14] PropPitch (if prop)
 //
