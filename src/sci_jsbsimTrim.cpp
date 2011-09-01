@@ -219,8 +219,8 @@ void trimFunction ()
     ss.x.add(new FGStateSpace::Beta);
     ss.x.add(new FGStateSpace::Phi);
     ss.x.add(new FGStateSpace::P);
-    ss.x.add(new FGStateSpace::R);
     ss.x.add(new FGStateSpace::Psi);
+    ss.x.add(new FGStateSpace::R);
 
     // nav states
     ss.x.add(new FGStateSpace::Longitude);

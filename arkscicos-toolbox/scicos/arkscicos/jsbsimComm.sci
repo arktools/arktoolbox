@@ -13,8 +13,8 @@ function [x,y,typ]=jsbsimComm(job,arg1,arg2)
 //  [6]  Beta
 //  [7]  Phi
 //  [8]  P
-//  [9]  R
-//  [10] Psi
+//  [9]  Psi
+//  [10] R
 //  [11] Longitude
 //  [12] Latitude,
 //  [13] Rpm(if prop)
@@ -29,9 +29,9 @@ function [x,y,typ]=jsbsimComm(job,arg1,arg2)
 //  [6]  AccelX
 //  [7]  AccelY
 //  [8]  AccelZ
-//  [9]  Pi (inertial)
-//  [10] Qi (inertial)
-//  [11] Ri (inertial)
+//  [9]  P
+//  [10] Q
+//  [11] R
 //  [12] Vn
 //  [13] Ve 
 //  [14] Vd 

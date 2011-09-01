@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * x: Vt, Alpha, Theta, Q, Alt, Beta, Phi, P, R, Psi, Longitude, Latitude,
+ * x: Vt, Alpha, Theta, Q, Alt, Beta, Phi, P, Psi, R, Longitude, Latitude,
  * 		Rpm0,RPM1,RPM2,RPM3 (dependent on number of engines) (if prop), PropPitch (if prop)
  *
  * u: Throttle, Aileron, Elevator, Rudder
@@ -47,7 +47,7 @@ public:
                bool enableFlightGearComm, char * flightGearHost, int flightGearPort) :
         prop(), fdm(&prop), ss(fdm), socket()
     {
-        std::cout << "initializing JSBSim" << std::endl;
+        //std::cout << "initializing JSBSim" << std::endl;
         fdm.SetDebugLevel(debugLevel);
 		
         if (!fdm.LoadModel(
@@ -61,7 +61,7 @@ public:
 
         if (enableFlightGearComm)
         {
-            std::cout << "initializing FlightGear communication" << std::endl;
+            //std::cout << "initializing FlightGear communication" << std::endl;
             socket = new FGfdmSocket(flightGearHost,flightGearPort,FGfdmSocket::ptUDP);
 			if (!socket) throw std::runtime_error("unable to open FlightGear socket");
         }
@@ -84,8 +84,8 @@ public:
         ss.x.add(new FGStateSpace::Beta);
         ss.x.add(new FGStateSpace::Phi);
         ss.x.add(new FGStateSpace::P);
-        ss.x.add(new FGStateSpace::R);
         ss.x.add(new FGStateSpace::Psi);
+        ss.x.add(new FGStateSpace::R);
 
         // nav states
         ss.x.add(new FGStateSpace::Longitude);
@@ -243,7 +243,7 @@ extern "C"
         }
         else
         {
-            std::cout << "unhandled flag: " << flag << std::endl;
+            //std::cout << "unhandled flag: " << flag << std::endl;
         }
     }
 
