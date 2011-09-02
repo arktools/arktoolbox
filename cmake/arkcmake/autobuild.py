@@ -23,28 +23,36 @@ try:
 	from get_build_path import get_build_path
 except ImportError: 
 	print "Could not find 'get_build_path.py' "
+	print "in '%s'" % os.path.dirname(os.path.abspath(__file__))
 	print "This module is required."
 	raise SystemExit
 
 ## Move to directory containing CMakeLists.txt and src/
-os.chdir(get_build_path())
+build_path = get_build_path()
+if build_path:
+	os.chdir(build_path)
+else: 
+	print "The script was unable to find a build directory."
+	raise SystemExit
 
 makeargs = "-j8"
-cmakeargs = ""
+# In order to have variable numbers of cmake args
+# TODO: pass args as list?
+cmakeargs = " "
 build_dir = "build"
 
 def install_build(cmakeargs):
-	if os.path.isdir(build_dir): 
-		print "Directory '%s' exists" % build_dir
-	else:  
+	if not os.path.isdir(build_dir): 
 		os.mkdir(build_dir)
 	os.chdir(build_dir)
-	subprocess.check_call(["cmake", cmakeargs, ".."])
+	cmake_call = "cmake" + cmakeargs + ".."
+	subprocess.check_call(cmake_call, shell=True)
 	subprocess.check_call(["make", makeargs])
 	raise SystemExit
 	
 def dev_build():
-	cmakeargs = "-DIN_SRC_BUILD::bool=TRUE"
+	# cmakeargs must begin and end with a space
+	cmakeargs = " -DIN_SRC_BUILD::bool=TRUE "
 	install_build(cmakeargs)
 
 def grab_deps():
@@ -64,6 +72,7 @@ def grab_deps():
 			raise SystemExit
 	else: 
 		print "Platform not recognized (did not match linux or darwin)"
+		print "Script doesn't download dependencies for this platform"
 	raise SystemExit
 
 def package_source():
@@ -91,6 +100,7 @@ def clean():
 		subprocess.check_call(["rm", "-rf", build_dir])
 	else: 
 		print "Cleaning '%s' with shutil.rmtree()" % build_dir
+		print "(may be very slow)"
 		shutil.rmtree(build_dir, ignore_errors=True)
 	print "Build cleaned"
 
@@ -99,7 +109,8 @@ def clean():
 # set(CMAKE_CXX_FLAGS_PROFILE "-g -pg")
 # set(CMAKE_C_FLAGS_PROFILE "-g -pg")
 def profile():
-	cmakeargs = "-DBUILD_TYPE=PROFILE -DIN_SRC_BUILD::bool=TRUE"
+	# cmakeargs must begin and end with a space
+	cmakeargs = " -DBUILD_TYPE=PROFILE -DIN_SRC_BUILD::bool=TRUE "
 	install_build(cmakeargs)
 	
 def menu():
