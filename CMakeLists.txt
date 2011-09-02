@@ -97,7 +97,6 @@ include(language_support_v2)
 include(MacroAddLinkFlags)
 include(ExternalProject)
 include(CTest)
-include(FeatureSummary)
 
 # settings
 option(DEV_MODE "Setup paths for developer testing." OFF)
@@ -259,12 +258,6 @@ install(FILES
 	${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
 	DESTINATION lib/pkgconfig
 	)
-
-# summary
-feature_summary(WHAT ENABLED_FEATURES VAR DESCRIPTION "enabled features: " VAR enabledFeaturesText)
-message(STATUS "${enabledFeaturesText}")
-feature_summary(WHAT DISABLED_FEATURES VAR DESCRIPTION "disabled features: " VAR disabledFeaturesText)
-message(STATUS "${disabledFeaturesText}")
 
 # subdirectories
 add_subdirectory(src)
