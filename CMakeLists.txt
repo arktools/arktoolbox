@@ -1,7 +1,7 @@
 project (arkscicos)
 
 # Requried cmake version
-cmake_minimum_required (VERSION 2.8.5)
+cmake_minimum_required (VERSION 2.8.2)
 
 # global needed variables
 set(APPLICATION_NAME ${PROJECT_NAME})
