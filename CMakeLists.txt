@@ -116,6 +116,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 # enable languages
 enable_language(C)
 enable_language(CXX)
+enable_language(Fortran)
 
 # add make dist target
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
