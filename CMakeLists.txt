@@ -132,7 +132,7 @@ find_package(ARKCOMM)
 find_package(ARKMATH)
 find_package(JSBSIM)
 find_package(MAVLINK)
-find_package(Boost 1.46 REQUIRED COMPONENTS thread-mt system-mt)
+find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
 
 # external projects
 set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
