@@ -6,7 +6,6 @@ tags
 Makefile
 _CPack_Packages
 build
-*.sce
 *~
 *.dat
 *.eps
