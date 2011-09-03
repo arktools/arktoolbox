@@ -37,6 +37,8 @@ extern "C"
 #include <math.h>
 #include "definitions.hpp"
 
+#define EARTH_RAD 6378.137
+
 void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
 {
 
@@ -49,10 +51,10 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
     double * y1=(double*)GetOutPortPtrs(block,1);
 
     // alias names
-    double & lat2   = u1[0];
-    double & lon2   = u1[1];
-    double & alt2   = u1[2];
-    double & Vt2    = u1[3];
+    double & lat1   = u1[0];
+    double & lon1   = u1[1];
+    double & alt1   = u1[2];
+    double & Vt1    = u1[3];
 
     double & Vt     = u2[0];
     double & alpha  = u2[1];
@@ -63,8 +65,8 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
     double & P      = u2[6];
     double & psi    = u2[7];
     double & R      = u2[8];
-    double & lat1   = u2[9];
-    double & lon1   = u2[10];
+    double & lat    = u2[9];
+    double & lon    = u2[10];
     double & alt    = u2[11];
 
     double & lat3   = u3[0];
@@ -83,39 +85,136 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
     if (flag==scicos::computeOutput)
     {
         // basic guidance to waypoint
-        double dLat = lat2-lat1;
-        double dLon = lon2-lon1;
-        double y = sin(dLon) * cos(lat2);
-        double x = cos(lat1)*sin(lat2) - sin(lat1)*cos(lat2)*cos(dLon);
-        double psiB = atan2(y,x);
+        double dLat = lat1-lat;
+        double dLon = lon1-lon;
+        double y = sin(dLon) * cos(lat1);	
+        double x = cos(lat)*sin(lat1) - sin(lat)*cos(lat1)*cos(dLon);
+	    double c = sqrt(x*x + y*y);
+    	double ihat_v = x/c;
+	    double jhat_v = y/c;
+        double psi1 = atan2(y,x);
 
         // basic safety zone collision avoidance
         double rC = 10; // collision avoidance window, 10 meters
         double Vc = Vt3 - Vt;
-        double dLatC = lat3-lat1;
-        double dLonC = lon3-lon1;
+        double dLatC = lat3-lat;
+        double dLonC = lon3-lon;
         double yC = sin(dLonC) * cos(lat3);
-        double xC = cos(lat1)*sin(lat3) - sin(lat1)*cos(lat3)*cos(dLon);
+        double xC = cos(lat)*sin(lat3) - sin(lat)*cos(lat3)*cos(dLon);
         double dC = sqrt(xC*xC + yC*yC); // distance to collision
-        double psiBC = atan2(yC,xC);  // bearing to vehicle
-        double alpha = psiBC - psi3;
-        double beta = 0;
-        if (dC < 1e-6) {
-            beta = 0;
+
+        double deltaV;
+        double deltaPsi;
+        // Ignore obstacles farther than 10 km away
+    	if (dC > -1) {
+        	deltaV = 0;
+        	deltaPsi = 0;
         } else {
-            beta = asin(rC/dC);
+
+        	double psiC = acos(xC/dC);
+	        if(yC < 0) {
+            	psiC = -1 * psiC;
+        	}
+
+        	double ihat_c = cos(psi3);
+        	double jhat_c = sin(psi3);
+
+        	// Get the velocity vector of the vehicle relative to the obstacle
+        	double velx_vrelc = (Vt * ihat_v ) - (Vt3 * ihat_c);
+        	double vely_vrelc = (Vt * jhat_v) - (Vt3 * jhat_c);
+        	double velmag_vrelc = sqrt(velx_vrelc*velx_vrelc + vely_vrelc*vely_vrelc);
+
+        	// Get bearing of the relative velocity of the vehicle
+        	double psi_vrelc = acos(velx_vrelc / velmag_vrelc);
+        	if(vely_vrelc < 0) {
+        		psi_vrelc *= -1;
+        	}
+
+        	// Get the difference between a collision cource bearing and the
+        	// current bearing
+        	double alpha = psi_vrelc - psiC;
+        	if (alpha < -1*M_PI) {
+        		alpha += 2*M_PI;
+        	} else if (alpha > M_PI) {
+        		alpha -= 2*M_PI;
+        	}
+
+        	double velx_vrelc_new;
+        	double vely_vrelc_new;
+        	// Case where the separation distance is not already violated.
+        	if (dC > rC) {
+        		// Get the magnitude difference between a collision course
+        		// bearing and a bearing that maintains separation.
+        		double beta = asin(rC/dC);
+        		double gamma;
+		
+        		// The vehicle is not on a collision cource
+        		if(abs(alpha) > beta) {
+        			gamma = 0;
+        		} else {
+        			if(alpha < 0) {
+        				gamma = -1 * alpha - beta;
+        			} else {
+        				gamma = beta - alpha;
+        			}
+        		}
+
+        		// shift the bearing of the relative velocity vector by gamma
+        		psi_vrelc += gamma;
+        		velx_vrelc_new = cos(psi_vrelc);
+        		vely_vrelc_new = sin(psi_vrelc);
+        	} 
+        	// The case where the separation is already violated
+        	else {
+		        // The new relative velocity vector should point directly
+        		// away from the obstacle.
+		        velx_vrelc_new = cos(-1*psiC);
+        		velx_vrelc_new = sin(-1*psiC);
+        	}
+
+        	// The unit vector of the desired relative velocity has now been determined.
+        	// Using this, the new bearing of the vehicle needs to be determined to
+        	// create the relative velocity in that direction while the magnitude of
+        	// the vehicles velocity remains constant.
+
+        	double psiv;
+        	double d,e;
+        	double vnew = Vt;
+        	// If the bearing is in the regions where the tangent of that angle is defined.
+        	if ((psi_vrelc > -1 * M_PI/4 && psi_vrelc < M_PI / 4) || (psi_vrelc > 3 * M_PI / 4 || psi_vrelc < -3*M_PI/4)) {
+
+        		d = tan(psi_vrelc);
+		        e = (d*cos(psi3)-sin(psi3)) / sqrt(1+d*d);
+        		if(abs (e) > 1) {
+		        	vnew = Vt3 * e;
+        		}
+        		psiv = asin(Vt3/vnew*e) + psi_vrelc - M_PI;
+        	}
+        	else {
+
+        		// take the cotangent (phase shifted tangent)
+        		d = tan(M_PI_2 - psi_vrelc);
+        		e = (cos(psi3)-d*sin(psi3))/sqrt(1+d*d);
+        		if (abs(e) > 1) {
+		        	vnew = Vt3*e;
+        		}
+		        psiv = asin(Vt3/vnew * e) + psi_vrelc - M_PI;
+
+        	}
         }
-        double gamma = beta - alpha;
 
         // output
-        eH = alt2 - alt;
-        eV = /*sqrt(Vt*Vt + (Vc*Vc*sin(gamma)*sin(gamma))) + */ Vt2 - Vt;
+        eH = alt1 - alt;
+        eV = /*sqrt(Vt*Vt + (Vc*Vc*sin(gamma)*sin(gamma))) + */ Vt1 - Vt;
         eR = 0 - R;
         ePhi = 0 - phi;
         
-        ePsi = psiB /*+ atan2(Vc*sin(gamma),Vt)*/- psi;
-        if (ePsi > M_PI) ePsi -= 2*M_PI;
-        else if (ePsi < -M_PI) ePsi += 2*M_PI;
+        ePsi = psi1 /*+ atan2(Vc*sin(gamma),Vt)*/- psi;
+        if(ePsi > M_PI) {
+            ePsi -= 2*M_PI;
+        } else if(ePsi < M_PI) {
+            ePsi += 2*M_PI;
+        }
    }
     else if (flag==scicos::terminate)
     {
@@ -130,5 +229,4 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
 }
 
 } // extern c
-
 // vim:ts=4:sw=4:expandtab
