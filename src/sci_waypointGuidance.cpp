@@ -101,7 +101,7 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
         */
 
         // basic safety zone collision avoidance
-        double rC = 10; // collision avoidance window, 10 meters
+        double rC = 50; // collision avoidance window, 10 meters
         double dC;
         double psiC;
         vincentys(lat, lon, lat3, lon3, &dC, &psiC);
@@ -112,7 +112,7 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
         double dLatC = lat3-lat;
         double dLonC = lon3-lon;
         double yC = sin(dLonC) * cos(lat3);
-        double xC = cos(lat)*sin(lat3) - sin(lat)*cos(lat3)*cos(dLon);
+        double xC = cos(lat)*sin(lat3) - sin(lat)*cos(lat3)*cos(dLonC)
         double dC = sqrt(xC*xC + yC*yC); // distance to collision
         */
 
@@ -131,19 +131,22 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
 
         	// Get the angle of the relative velocity of the vehicle
         	double psi_vrelc = atan2(vely_vrelc, velx_vrelc);
+            psi_vrelc = M_PI/2 - psi_vrelc; // Change the vector angle to a bearing (rotate 90 degrees)
+            if(psi_vrelc < M_PI) {
+                psi_vrelc -= 2*M_PI;
+            } else if (psi_vrelc < -M_PI) {
+                psi_vrelc += 2*M_PI;
+            }
 
         	// Get the difference between a collision course bearing and the
-        	// current bearing. (psiC is bearing from North, psi_vrelc is angle
-            // from the horizontal, so it has been shifted))
-        	double alpha = psi_vrelc - (psiC + M_PI/2);
+        	// current relative bearing.
+        	double alpha = psi_vrelc - psiC;
         	if (alpha < -1*M_PI) {
         		alpha += 2*M_PI;
         	} else if (alpha > M_PI) {
         		alpha -= 2*M_PI;
         	}
 
-        	double velx_vrelc_new;
-        	double vely_vrelc_new;
             double beta = asin(rC/dC);
             double gamma = 0;
 
@@ -165,16 +168,12 @@ void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
                     } else if (psi_vrelc < -M_PI) {
                         psi_vrelc += 2*M_PI;
                     }
-
-        	    	velx_vrelc_new = cos(psi_vrelc);
-        		    vely_vrelc_new = sin(psi_vrelc);
             	} 
             	// The case where the separation is already violated
             	else {
 		            // The new relative velocity vector should point directly
         		    // away from the obstacle.
-    		        velx_vrelc_new = cos(-1*(psiC+ M_PI/2));
-            		vely_vrelc_new = sin(-1*(psiC + M_PI/2));
+                    psi_vrelc = -psiC;
             	}
 
         	    // The unit vector of the desired relative velocity has now been determined.
