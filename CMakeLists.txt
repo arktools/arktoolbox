@@ -39,9 +39,9 @@ include(DefineCompilerFlags)
 include(DefineInstallationPaths)
 
 # cpack
-include(CPack)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "arkTools scicoslab toolbox")
 set(CPACK_PACKAGE_VENDOR "arkTools")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "james.goppert@gmail.com")
 set(CPACK_PACKAGE_CONTACT "james.goppert@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
@@ -67,7 +67,6 @@ elseif(UNIX)
 else()
     message(FATAL_ERROR "unknown operating system")
 endif()
-
 #if(WIN32 and not UNIX)
   ## There is a bug in NSI that does not handle full unix paths properly. Make
   ## sure there is at least one set of four (4) backlasshes.
@@ -83,6 +82,7 @@ endif()
   #set(CPACK_SOURCE_STRIP_FILES "")
 #endif(WIN32 and not UNIX)
 #set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
+include(CPack)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -250,7 +250,7 @@ endif()
 #install(DIRECTORY "${PROJECT_SOURCE_DIR}/data" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
-    DESTINATION ${SCICOSLAB_CONTRIB_DIR}
+    DESTINATION ${CMAKE_DEST_DIR}/${SCICOSLAB_CONTRIB_DIR}
 	PATTERN "*.git*" EXCLUDE)
 
 # pkgconfig
