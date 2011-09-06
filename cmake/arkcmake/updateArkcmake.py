@@ -9,9 +9,11 @@
 import os # for os.path
 import subprocess # for check_call()
 
-clone_path = os.path.dirname(os.path.abspath(__file__))
+clone_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print clone_path
 os.chdir(clone_path)
-if os.path.isdir('arkcmake'):
+subprocess.check_call(["git", "clone", "git://github.com/arktools/arkcmake.git","arkcmake_tmp"])
+subprocess.check_call(["rm", "-rf", "arkcmake_tmp/.git"])
+if os.path.isdir("arkcmake"):
 	subprocess.check_call(["rm", "-rf", "arkcmake"])
-subprocess.check_call(["git", "clone", "git://github.com/arktools/arkcmake.git"])
-subprocess.check_call(["rm", "-rf", "arkcmake/.git"])
+subprocess.check_call(["mv", "arkcmake_tmp", "arkcmake"])
