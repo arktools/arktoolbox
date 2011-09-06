@@ -12,7 +12,7 @@
 ## check cmake success, etc.
 ## catch CMake Warning:
   #Manually-specified variables were not used by the project:
-		  #BUILD_TYPE
+          #BUILD_TYPE
 #     (missing gprof flags)
 
 import sys # for sys.argv[] and sys.platform
@@ -20,113 +20,170 @@ import os # for chdir()
 import subprocess # for check_call()
 import shutil # for rmtree()
 try: 
-	from get_build_path import get_build_path
+    from get_build_path import get_build_path
 except ImportError: 
-	print "Could not find 'get_build_path.py' "
-	print "in '%s'" % os.path.dirname(os.path.abspath(__file__))
-	print "This module is required."
-	raise SystemExit
+    print "Could not find 'get_build_path.py' "
+    print "in '%s'" % os.path.dirname(os.path.abspath(__file__))
+    print "This module is required."
+    raise SystemExit
 
 ## Move to directory containing CMakeLists.txt and src/
 build_path = get_build_path()
 if build_path:
-	os.chdir(build_path)
+    os.chdir(build_path)
 else: 
-	print "The script was unable to find a build directory."
-	raise SystemExit
+    print "The script was unable to find a build directory."
+    raise SystemExit
 
 makeargs = "-j8"
-# In order to have variable numbers of cmake args
-# TODO: pass args as list?
-cmakeargs = " "
+cmakecall = ["cmake", ".."]
 build_dir = "build"
 
+def requireBuildDir():
+    if not os.path.isdir(build_dir): 
+        print "Directory '%s' does not exist" % build_dir
+        print "You must make before you can remake."
+        return 1
+
 def install_build(cmakeargs):
-	if not os.path.isdir(build_dir): 
-		os.mkdir(build_dir)
-	os.chdir(build_dir)
-	cmake_call = "cmake" + cmakeargs + ".."
-	subprocess.check_call(cmake_call, shell=True)
-	subprocess.check_call(["make", makeargs])
-	raise SystemExit
-	
+    if not os.path.isdir(build_dir): 
+        os.mkdir(build_dir)
+    os.chdir(build_dir)
+    cmake_call = "cmake" + cmakeargs + ".."
+    subprocess.check_call(cmake_call, shell=True)
+    subprocess.check_call(["make", makeargs])
+    raise SystemExit
+    
 def dev_build():
-	# cmakeargs must begin and end with a space
-	cmakeargs = " -DIN_SRC_BUILD::bool=TRUE "
-	install_build(cmakeargs)
+    # cmakeargs must begin and end with a space
+    cmakeargs = " -DIN_SRC_BUILD::bool=TRUE "
+    install_build(cmakeargs)
 
 def grab_deps():
-	if 'linux' in sys.platform:
-		try: 
-			subprocess.check_call('sudo apt-get install cmake', shell=True)
-		except: 
-			print "Error installing dependencies: ", sys.exc_info()[0]
-			print "apt-get is available on Debian and Ubuntu" 
-			raise SystemExit
-	elif 'darwin' in sys.platform:
-		try: 
-			subprocess.check_call('sudo port install cmake', shell=True)
-		except: 
-			print "Error installing dependencies: ", sys.exc_info()[0]
-			print "Please install Macports (http://www.macports.org)"
-			raise SystemExit
-	else: 
-		print "Platform not recognized (did not match linux or darwin)"
-		print "Script doesn't download dependencies for this platform"
-	raise SystemExit
+    if 'linux' in sys.platform:
+        try: 
+            subprocess.check_call('sudo apt-get install cmake', shell=True)
+        except: 
+            print "Error installing dependencies: ", sys.exc_info()[0]
+            print "apt-get is available on Debian and Ubuntu" 
+            raise SystemExit
+    elif 'darwin' in sys.platform:
+        try: 
+            subprocess.check_call('sudo port install cmake', shell=True)
+        except: 
+            print "Error installing dependencies: ", sys.exc_info()[0]
+            print "Please install Macports (http://www.macports.org)"
+            raise SystemExit
+    else: 
+        print "Platform not recognized (did not match linux or darwin)"
+        print "Script doesn't download dependencies for this platform"
+    raise SystemExit
 
 def package_source():
-	install_build(cmakeargs)
-	subprocess.check_call(["make", "package_source"])
-	raise SystemExit
+    install_build(cmakeargs)
+    os.chdir(build_dir)
+    subprocess.check_call(["make", "package_source"])
+    raise SystemExit
 
 def package():
-	install_build(cmakeargs)
-	subprocess.check_call(["make", "package"])
-	raise SystemExit
+    install_build(cmakeargs)
+    requireBuildDir()
+    os.chdir(build_dir)
+    subprocess.check_call(["make", "package"])
+    raise SystemExit
 
 def remake():
-	if not os.path.isdir(build_dir): 
-		print "Directory '%s' does not exist" % build_dir
-		print "You must make before you can remake."
-		return 1
-	os.chdir(build_dir)
-	subprocess.check_call(["make", makeargs])
-	raise SystemExit
+    requireBuildDir()
+    os.chdir(build_dir)
+    subprocess.check_call(["make", makeargs])
+    raise SystemExit
 
 def clean():
-	if 'posix' in os.name: 
-		print "Cleaning '%s' with rm -rf" % build_dir
-		subprocess.check_call(["rm", "-rf", build_dir])
-	else: 
-		print "Cleaning '%s' with shutil.rmtree()" % build_dir
-		print "(may be very slow)"
-		shutil.rmtree(build_dir, ignore_errors=True)
-	print "Build cleaned"
+    if 'posix' in os.name: 
+        print "Cleaning '%s' with rm -rf" % build_dir
+        subprocess.check_call(["rm", "-rf", build_dir])
+    else: 
+        print "Cleaning '%s' with shutil.rmtree()" % build_dir
+        print "(may be very slow)"
+        shutil.rmtree(build_dir, ignore_errors=True)
+    print "Build cleaned"
 
 # requires PROFILE definition in CMakeLists.txt:
 # set(CMAKE_BUILD_TYPE PROFILE)
 # set(CMAKE_CXX_FLAGS_PROFILE "-g -pg")
 # set(CMAKE_C_FLAGS_PROFILE "-g -pg")
 def profile():
-	# cmakeargs must begin and end with a space
-	cmakeargs = " -DBUILD_TYPE=PROFILE -DIN_SRC_BUILD::bool=TRUE "
-	install_build(cmakeargs)
+<<<<<<< HEAD
+    # cmakeargs must begin and end with a space
+    cmakeargs = " -DBUILD_TYPE=PROFILE -DIN_SRC_BUILD::bool=TRUE "
+    install_build(cmakeargs)
+    
+=======
+	cmakecall.insert(1, "-D IN_SRC_BUILD::bool=TRUE")
+	cmakecall.insert(2, "-D BUILD_TYPE=PROFILE")
+	install_build(cmakecall)
 	
+>>>>>>> 10b0498856e501488aac6e1b3ce9f3cf3ffdd148
 def menu():
-	print "1. developer build: used for development."
-	print "2. install build: used for building before final installation to the system."
-	print "3. grab dependencies: installs all the required packages for debian based systems (ubuntu maverick/ debian squeeze,lenny) or darwin with macports."
-	print "4. package source: creates a source package for distribution."
-	print "5. package: creates binary packages for distribution."
-	print "6. remake: calls make again after project has been configured as install or in source build."
-	print "7. clean: removes the build directory."
-	print "8. profile: compiles for gprof."
-	print "9. end."
-	opt = raw_input("Please choose an option: ")
-	return opt
+    print "1. developer build: used for development."
+    print "2. install build: used for building before final installation to the system."
+    print "3. grab dependencies: installs all the required packages for debian based systems (ubuntu maverick/ debian squeeze,lenny) or darwin with macports."
+    print "4. package source: creates a source package for distribution."
+    print "5. package: creates binary packages for distribution."
+    print "6. remake: calls make again after project has been configured as install or in source build."
+    print "7. clean: removes the build directory."
+    print "8. profile: compiles for gprof."
+    print "9. end."
+    opt = raw_input("Please choose an option: ")
+    return opt
 
 try: 
+<<<<<<< HEAD
+    loop_num = 0
+    # continues until a function raises system exit or ^C
+    while (1):  
+        if len(sys.argv) == 2 and loop_num == 0:
+            opt = sys.argv[1]
+            loop_num += 1
+        else:
+            opt = menu()
+
+        try:
+            opt = int(opt)
+        except ValueError:
+            pass
+            
+        if   opt == 1:
+            print "You chose developer build"
+            dev_build()
+        elif opt == 2:
+            print "You chose install build"
+            install_build(cmakeargs)
+        elif opt == 3: 
+            print "You chose to install dependencies"
+            grab_deps()
+        elif opt == 4:
+            print "You chose to package the source"
+            package_source()
+        elif opt == 5:
+            print "You chose to package the binary"
+            package()
+        elif opt == 6:
+            print "You chose to re-call make on the previously configured build"
+            remake()
+        elif opt == 7:
+            print "You chose to clean the build"
+            clean()
+        elif opt == 8:
+            # requires definition in CMakeLists.txt (see def above)
+            print "You chose to compile for gprof"
+            profile()
+        elif opt == 9:
+            raise SystemExit
+        else:
+            print "Invalid option. Please try again: " 
+        
+=======
 	loop_num = 0
 	# continues until a function raises system exit or ^C
 	while (1): 	
@@ -146,7 +203,7 @@ try:
 			dev_build()
 		elif opt == 2:
 			print "You chose install build"
-			install_build(cmakeargs)
+			install_build(cmakecall)
 		elif opt == 3: 
 			print "You chose to install dependencies"
 			grab_deps()
@@ -171,5 +228,8 @@ try:
 		else:
 			print "Invalid option. Please try again: " 
 		
+>>>>>>> 10b0498856e501488aac6e1b3ce9f3cf3ffdd148
 except KeyboardInterrupt: 
-	print "\n" 
+    print "\n" 
+
+# vim:expandtab:ts=4:sw=4
