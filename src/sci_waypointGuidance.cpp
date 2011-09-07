@@ -85,37 +85,41 @@ extern "C"
         //handle flags
         if (flag==scicos::computeOutput)
         {
-            // basic guidance to waypoint
+            /*
+            basic guidance to waypoint
             double psiW;
             double c;
             vincentys(lat, lon, commandedLat, commandedLon, &c, &psiW);
-
-            /*
-               double y = sin(dLon) * cos(commandedLat);	
-               double x = cos(lat)*sin(commandedLat) - sin(lat)*cos(commandedLat)*cos(dLon);
-               double c = sqrt(x*x + y*y);
-               double ihat_v = x/c;
-               double jhat_v = y/c;
-               double psiW = atan2(y,x);
              */
+
+
+            double dLon = commandedLon - lon;
+            double y = sin(dLon) * cos(commandedLat);	            
+            double x = cos(lat)*sin(commandedLat) - sin(lat)*cos(commandedLat)*cos(dLon);
+            double c = sqrt(x*x + y*y);
+            double psiW = atan2(y,x);
+
 
             // The separation window defines the radius that the vehicle will
             // attempt to clear. The hard window is the radius inside which
             // the vehicle will turn 90 degrees to clear.
-            double separationWindow = 20;
+            double separationWindow = 0.0000075;
 
-            // basic safety zone collision avoidance
+            /*
+             basic safety zone collision avoidance
             double dC;
             double psiC;
             vincentys(lat, lon, obstacleLat, obstacleLon, &dC, &psiC);
-
-            /*
-               double dLatC = obstacleLat-lat;
-               double dLonC = obstacleLon-lon;
-               double yC = sin(dLonC) * cos(obstacleLat);
-               double xC = cos(lat)*sin(obstacleLat) - sin(lat)*cos(obstacleLat)*cos(dLonC)
-               double dC = sqrt(xC*xC + yC*yC); // distance to collision
              */
+
+
+            double dLatC = obstacleLat-lat;
+            double dLonC = obstacleLon-lon;
+            double yC = sin(dLonC) * cos(obstacleLat);
+            double xC = cos(lat)*sin(obstacleLat) - sin(lat)*cos(obstacleLat)*cos(dLonC);
+            double dC = sqrt(xC*xC + yC*yC); // distance to collision
+            double psiC = atan2(yC, xC);
+
 
             double commandPsi = psiW;
             // Ignore obstacles that are far away
@@ -132,7 +136,7 @@ extern "C"
                 // The separation distance has been violated
                 double beta;
                 if (dC < separationWindow) {
-                    beta = M_PI;
+                    beta = M_PI/2;
                 } else {
                     beta = asin(separationWindow/dC);
                 }
@@ -202,9 +206,6 @@ extern "C"
                             commandPsi = M_PI/2;
                         } else {
                             commandPsi = asin(c);
-                        }
-                        if (d < 0) {
-                            commandPsi += M_PI;
                         }
                         commandPsi += relativeVel_commandPsi;
                     }
