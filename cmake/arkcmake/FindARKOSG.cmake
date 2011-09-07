@@ -12,7 +12,7 @@ MacroCommonPaths(ARKOSG)
 
 # Include dir
 find_path(ARKOSG_INCLUDE_DIR
-	NAMES arkosg/osgutils.hpp
+	NAMES arkosg/osgUtils.hpp
 	PATHS ${COMMON_INCLUDE_PATHS_ARKOSG}
 )
 
