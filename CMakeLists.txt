@@ -164,7 +164,7 @@ if(NOT ARKCOMM_FOUND)
         set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/arkcomm.a)
     elseif(APPLE)
         set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/libarkcomm.a)
-    else(UNIX)
+    elseif(UNIX)
         set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/libarkcomm.a)
     else()
         message(FATAL_ERROR "unknown operating system")
@@ -219,7 +219,7 @@ if(NOT JSBSIM_FOUND)
         GIT_TAG ${JSBSIM_TAG} 
         UPDATE_COMMAND ""
         CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${EP_BASE_DIR}/Install/jsbsim
-        BUILD_COMMAND make
+        BUILD_COMMAND make -j4
         BUILD_IN_SOURCE 1
         )
     set(JSBSIM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/jsbsim/include
@@ -229,8 +229,10 @@ if(NOT JSBSIM_FOUND)
         set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/JSBSim.a)
     elseif(APPLE)
         set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/libJSBSim.a)
-    else()
+    elseif(UNIX)
         set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/libJSBSim.a)
+    else()
+        message(FATAL_ERROR "unknown operating system")
     endif()
     set(JSBSIM_FOUND TRUE)
 endif()
