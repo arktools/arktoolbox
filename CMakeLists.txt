@@ -145,6 +145,7 @@ if( NOT MAVLINK_FOUND)
 		CONFIGURE_COMMAND ""
 		BUILD_COMMAND ""
 		INSTALL_COMMAND ""
+        UPDATE_COMMAND ""
 		BUILD_IN_SOURCE 1
 	)
 	set(MAVLINK_FOUND TRUE)
@@ -155,6 +156,7 @@ if(NOT ARKCOMM_FOUND)
     ExternalProject_Add(arkcomm
         GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
         GIT_TAG ${ARKCOMM_TAG}
+        UPDATE_COMMAND ""
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkcomm
         )
     set(ARKCOMM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkcomm/include)
@@ -174,6 +176,7 @@ if(NOT ARKOSG_FOUND)
     ExternalProject_Add(arkosg
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
         GIT_TAG ${ARKOSG_TAG} 
+        UPDATE_COMMAND ""
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkosg
         )
     set(ARKOSG_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkosg/include)
@@ -193,6 +196,7 @@ if(NOT ARKMATH_FOUND)
     ExternalProject_Add(arkmath
         GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
         GIT_TAG ${ARKMATH_TAG} 
+        UPDATE_COMMAND ""
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkmath
         )
     set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkmath/include)
@@ -213,6 +217,7 @@ if(NOT JSBSIM_FOUND)
     ExternalProject_Add(jsbsim
         GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
         GIT_TAG ${JSBSIM_TAG} 
+        UPDATE_COMMAND ""
         CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${EP_BASE_DIR}/Install/jsbsim
         BUILD_COMMAND make
         BUILD_IN_SOURCE 1
@@ -241,16 +246,16 @@ if(DEV_MODE)
     set(BINDIR ${CMAKE_BINARY_DIR}/bin)
 else()
     message(STATUS "configuring for install build")
-    set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
-    set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
-    set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
+    set(DATADIR share/${PROJECT_NAME}/data)
+    set(LIBDIR lib)
+    set(BINDIR bin)
 endif()
 
 # install data files
 #install(DIRECTORY "${PROJECT_SOURCE_DIR}/data" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
-    DESTINATION ${CMAKE_DEST_DIR}/${SCICOSLAB_CONTRIB_DIR}
+    DESTINATION ${SCICOSLAB_CONTRIB_DIR}
 	PATTERN "*.git*" EXCLUDE)
 
 # pkgconfig

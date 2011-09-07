@@ -19,6 +19,7 @@ import sys # for sys.argv[] and sys.platform
 import os # for chdir()
 import subprocess # for check_call()
 import shutil # for rmtree()
+from optparse import OptionParser # for parsing options
 try: 
 	from get_build_path import get_build_path
 except ImportError: 
@@ -39,12 +40,37 @@ makeargs = "-j8"
 cmakecall = ["cmake", ".."]
 build_dir = "build"
 
-def install_build(cmakecall):
-	if not os.path.isdir(build_dir): 
-		os.mkdir(build_dir)
-	os.chdir(build_dir)
-	subprocess.check_call(cmakecall)
-	subprocess.check_call(["make", makeargs])
+## Parse command line options
+## TODO: add makeargs/cmakeargs etc.
+## (with 'action="append"' to append arg(s) to list)
+usage = "usage: %prog [options] [1-9]"
+parser = OptionParser(usage=usage)
+parser.set_defaults(verbose=False, makeargs="-j8")
+parser.add_option("-v", "--verbose",
+                  action="store_true", dest="verbose",
+                  help="Verbose mode")
+#parser.add_option("--makeargs", 
+#                  action="store", type="string", dest="makeargs",
+#                  help="Argument to `make` [default '-j8']")
+#parser.add_option("--cmakeargs", 
+#                  action="store", type="string", dest="cmakeargs",
+#                  help="Arguments to `cmake ..`")
+(options, args) = parser.parse_args()
+if options.verbose:
+    os.environ['VERBOSE'] = "1"
+#if options.makeargs:
+#    makeargs = options.makeargs
+
+
+
+def install_build(cmakecall, exitVal=True):
+    if not os.path.isdir(build_dir): 
+        os.mkdir(build_dir)
+    os.chdir(build_dir)
+    subprocess.check_call(cmakecall, exitVal)
+    subprocess.check_call(["make", makeargs])
+    if exitVal == True:
+        raise SystemExit
 	
 def dev_build():
 	cmakecall.insert(1, "-D IN_SRC_BUILD::bool=TRUE")
@@ -68,22 +94,26 @@ def grab_deps():
 	else: 
 		print "Platform not recognized (did not match linux or darwin)"
 		print "Script doesn't download dependencies for this platform"
+        raise SystemExit
 
 def package_source():
-	install_build(cmakecall)
-	subprocess.check_call(["make", "package_source"])
+    install_build(cmakecall, exitVal=False)
+    subprocess.check_call(["make", "package_source"])
+    raise SystemExit
 
 def package():
-	install_build(cmakecall)
-	subprocess.check_call(["make", "package"])
+    install_build(cmakecall, exitVal=False)
+    subprocess.check_call(["make", "package"])
+    raise SystemExit
 
 def remake():
-	if not os.path.isdir(build_dir): 
-		print "Directory '%s' does not exist" % build_dir
-		print "You must make before you can remake."
-		return 1
-	os.chdir(build_dir)
-	subprocess.check_call(["make", makeargs])
+    if not os.path.isdir(build_dir): 
+        print "Directory '%s' does not exist" % build_dir
+        print "You must make before you can remake."
+        return 1
+    os.chdir(build_dir)
+    subprocess.check_call(["make", makeargs])
+    raise SystemExit
 
 def clean():
 	if 'posix' in os.name: 
@@ -118,49 +148,49 @@ def menu():
 	return opt
 
 try: 
-	loop_num = 0
-	# continues until a function raises system exit or ^C
-	while (1): 	
-		if len(sys.argv) == 2 and loop_num == 0:
-			opt = sys.argv[1]
-			loop_num += 1
-		else:
-			opt = menu()
+    loop_num = 0
+    # continues until a function raises system exit or ^C
+    while (1): 	
+        if len(args) == 1:
+            opt = args[0]
+            loop_num += 1
+        else:
+            opt = menu()
 
-		try:
-			opt = int(opt)
-		except ValueError:
-			pass
-			
-		if   opt == 1:
-			print "You chose developer build"
-			dev_build()
-		elif opt == 2:
-			print "You chose install build"
-			install_build(cmakecall)
-		elif opt == 3: 
-			print "You chose to install dependencies"
-			grab_deps()
-		elif opt == 4:
-			print "You chose to package the source"
-			package_source()
-		elif opt == 5:
-			print "You chose to package the binary"
-			package()
-		elif opt == 6:
-			print "You chose to re-call make on the previously configured build"
-			remake()
-		elif opt == 7:
-			print "You chose to clean the build"
-			clean()
-		elif opt == 8:
-			# requires definition in CMakeLists.txt (see def above)
-			print "You chose to compile for gprof"
-			profile()
-		elif opt == 9:
-			raise SystemExit
-		else:
-			print "Invalid option. Please try again: " 
+        try:
+            opt = int(opt)
+        except ValueError:
+            pass
+            
+        if   opt == 1:
+            print "You chose developer build"
+            dev_build()
+        elif opt == 2:
+            print "You chose install build"
+            install_build(cmakecall)
+        elif opt == 3: 
+            print "You chose to install dependencies"
+            grab_deps()
+        elif opt == 4:
+            print "You chose to package the source"
+            package_source()
+        elif opt == 5:
+            print "You chose to package the binary"
+            package()
+        elif opt == 6:
+            print "You chose to re-call make on the previously configured build"
+            remake()
+        elif opt == 7:
+            print "You chose to clean the build"
+            clean()
+        elif opt == 8:
+            # requires definition in CMakeLists.txt (see def above)
+            print "You chose to compile for gprof"
+            profile()
+        elif opt == 9:
+            raise SystemExit
+        else:
+            print "Invalid option. Please try again: " 
 		
 except KeyboardInterrupt: 
 	print "\n" 
