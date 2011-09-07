@@ -39,9 +39,9 @@ include(DefineCompilerFlags)
 include(DefineInstallationPaths)
 
 # cpack
-include(CPack)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "arkTools scicoslab toolbox")
 set(CPACK_PACKAGE_VENDOR "arkTools")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "james.goppert@gmail.com")
 set(CPACK_PACKAGE_CONTACT "james.goppert@gmail.com")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
@@ -67,7 +67,6 @@ elseif(UNIX)
 else()
     message(FATAL_ERROR "unknown operating system")
 endif()
-
 #if(WIN32 and not UNIX)
   ## There is a bug in NSI that does not handle full unix paths properly. Make
   ## sure there is at least one set of four (4) backlasshes.
@@ -83,6 +82,7 @@ endif()
   #set(CPACK_SOURCE_STRIP_FILES "")
 #endif(WIN32 and not UNIX)
 #set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
+include(CPack)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -145,6 +145,7 @@ if( NOT MAVLINK_FOUND)
 		CONFIGURE_COMMAND ""
 		BUILD_COMMAND ""
 		INSTALL_COMMAND ""
+        UPDATE_COMMAND ""
 		BUILD_IN_SOURCE 1
 	)
 	set(MAVLINK_FOUND TRUE)
@@ -155,6 +156,7 @@ if(NOT ARKCOMM_FOUND)
     ExternalProject_Add(arkcomm
         GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
         GIT_TAG ${ARKCOMM_TAG}
+        UPDATE_COMMAND ""
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkcomm
         )
     set(ARKCOMM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkcomm/include)
@@ -162,7 +164,7 @@ if(NOT ARKCOMM_FOUND)
         set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/arkcomm.a)
     elseif(APPLE)
         set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/libarkcomm.a)
-    else(UNIX)
+    elseif(UNIX)
         set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/libarkcomm.a)
     else()
         message(FATAL_ERROR "unknown operating system")
@@ -174,6 +176,7 @@ if(NOT ARKOSG_FOUND)
     ExternalProject_Add(arkosg
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
         GIT_TAG ${ARKOSG_TAG} 
+        UPDATE_COMMAND ""
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkosg
         )
     set(ARKOSG_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkosg/include)
@@ -193,6 +196,7 @@ if(NOT ARKMATH_FOUND)
     ExternalProject_Add(arkmath
         GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
         GIT_TAG ${ARKMATH_TAG} 
+        UPDATE_COMMAND ""
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkmath
         )
     set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkmath/include)
@@ -213,8 +217,9 @@ if(NOT JSBSIM_FOUND)
     ExternalProject_Add(jsbsim
         GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
         GIT_TAG ${JSBSIM_TAG} 
+        UPDATE_COMMAND ""
         CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${EP_BASE_DIR}/Install/jsbsim
-        BUILD_COMMAND make
+        BUILD_COMMAND make -j4
         BUILD_IN_SOURCE 1
         )
     set(JSBSIM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/jsbsim/include
@@ -224,8 +229,10 @@ if(NOT JSBSIM_FOUND)
         set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/JSBSim.a)
     elseif(APPLE)
         set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/libJSBSim.a)
-    else()
+    elseif(UNIX)
         set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/libJSBSim.a)
+    else()
+        message(FATAL_ERROR "unknown operating system")
     endif()
     set(JSBSIM_FOUND TRUE)
 endif()
@@ -241,9 +248,9 @@ if(DEV_MODE)
     set(BINDIR ${CMAKE_BINARY_DIR}/bin)
 else()
     message(STATUS "configuring for install build")
-    set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
-    set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
-    set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
+    set(DATADIR share/${PROJECT_NAME}/data)
+    set(LIBDIR lib)
+    set(BINDIR bin)
 endif()
 
 # install data files

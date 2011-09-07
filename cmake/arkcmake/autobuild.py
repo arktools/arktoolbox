@@ -42,6 +42,7 @@ build_dir = "build"
 
 ## Parse command line options
 ## TODO: add makeargs/cmakeargs etc.
+## (with 'action="append"' to append arg(s) to list)
 usage = "usage: %prog [options] [1-9]"
 parser = OptionParser(usage=usage)
 parser.set_defaults(verbose=False, makeargs="-j8")
