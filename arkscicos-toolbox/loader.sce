@@ -1,6 +1,7 @@
 mode(-1);
 lines(0);
 
+origDir=pwd()
 arkscicosPath=get_absolute_file_path('loader.sce');
 
 chdir(arkscicosPath);
@@ -37,3 +38,7 @@ if isdir('help') then
   exec('loadhelp.sce');
   chdir('..');
 end
+
+chdir(origDir)
+
+clear origDir

@@ -55,7 +55,6 @@ set(CPACK_SOURCE_IGNORE_FILES ${CPACK_SOURCE_IGNORE_FILES}
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
 set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "simgear1.9.1, libplib1, liblapack3gf, arkosg, arkcomm, arkmath, scicoslab-gtk, jsbsim0")
 # find libraries with cmake modules
 
 find_package(SCICOSLAB REQUIRED)

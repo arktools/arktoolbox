@@ -1,6 +1,7 @@
 mode(-1);
 lines(0);
 
+origDir=pwd();
 mainpathB=get_absolute_file_path('builder.sce');
 
 chdir(mainpathB);
@@ -38,7 +39,7 @@ if isdir('scicos') then
   chdir('..');
 end
 
+chdir(origDir)
 
-
-clear mainpathB
+clear mainpathB origDir
 
