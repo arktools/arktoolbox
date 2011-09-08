@@ -16,7 +16,6 @@ mathBlocks=[
 'sci_geoMag';..
 'sci_randn';..
 'sci_invPend';..
-'sci_insDynamics';..
 'sci_eom6Dof';..
 'sci_quadForceMoments';..
 'sci_insErrorDynamics';..

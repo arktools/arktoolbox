@@ -27,30 +27,7 @@ if (Boost_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${Boost_LIBRARIES})
 endif()
 
-set(${PROJECT_NAME}Sources
-	definitions.cpp
-	sci_mavlinkHilSensor.cpp
-	sci_mavlinkHilState.cpp
-	sci_mavlinkHilTracker.cpp
-	sci_invPend.cpp
-	utilities.cpp
-	sci_jsbsimTrim.cpp
-	sci_jsbsimComm.cpp
-	sci_insErrorDynamics.cpp
-	sci_insDynamics.cpp
-	sci_zeroOrderHold.cpp
-	sci_randn.cpp
-	sci_geoMag.cpp
-	sci_magMeasModel.cpp
-	sci_gpsMeasModel.cpp
-	sci_quat2EulerDcm.cpp
-	sci_waypointGuidance.cpp
-	sci_euler2Dcm.cpp
-	sci_quadForceMoments.cpp
-	sci_eom6Dof.cpp
-	sci_navigationEquations.cpp
-	)
-
+set(${PROJECT_NAME}Sources "")
 set(SCICOSLAB_BLOCKS "")
 
 if(ARKCOMM_FOUND)
@@ -67,6 +44,26 @@ endif()
 
 if(ARKMATH_FOUND)
 	list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
+	list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
+	list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
+	list(APPEND ${PROJECT_NAME}Sources
+		sci_euler2Dcm.cpp
+		sci_waypointGuidance.cpp
+		sci_quat2EulerDcm.cpp
+		sci_insErrorDynamics.cpp
+		sci_insDynamics.cpp
+		sci_geoMag.cpp
+		sci_magMeasModel.cpp
+		sci_gpsMeasModel.cpp
+		sci_eom6Dof.cpp
+		sci_navigationEquations.cpp
+		definitions.cpp
+		sci_invPend.cpp
+		utilities.cpp
+		sci_zeroOrderHold.cpp
+		sci_randn.cpp
+		sci_quadForceMoments.cpp
+	)
 	if (LAPACK_FOUND)
 		list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
 		list(APPEND SCICOSLAB_BLOCKS "lapackBlocks")
@@ -91,6 +88,20 @@ endif()
 if(JSBSIM_FOUND)
 	message(STATUS "building jsbsimBlocks")
 	list(APPEND SCICOSLAB_BLOCKS "jsbsimBlocks")
+	list(APPEND ${PROJECT_NAME}Sources
+		sci_jsbsimTrim.cpp
+		sci_jsbsimComm.cpp
+	)
+endif()
+
+if(MAVLINK_FOUND)
+	message(STATUS "building mavlinkBlocks")
+	list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
+	list(APPEND ${PROJECT_NAME}Sources
+		sci_mavlinkHilSensor.cpp
+		sci_mavlinkHilState.cpp
+		sci_mavlinkHilTracker.cpp
+	)
 endif()
 
 set(CMAKE_C_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
@@ -98,7 +109,7 @@ set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
-add_dependencies(${PROJECT_NAME} jsbsim arkosg arkmath arkcomm)
+add_dependencies(${PROJECT_NAME} mavlink jsbsim arkosg arkmath arkcomm)
 
 target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
 

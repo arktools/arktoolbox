@@ -168,19 +168,22 @@ if( NOT MAVLINK_FOUND)
 endif()
 
 if(NOT ARKCOMM_FOUND)
+    set(ARKCOMM_INSTALL_DIR ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
     ExternalProject_Add(arkcomm
         GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
         GIT_TAG ${ARKCOMM_TAG}
         UPDATE_COMMAND ""
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkcomm
+        INSTALL_DIR ${ARKCOMM_INSTALL_DIR}
+        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         )
-    set(ARKCOMM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkcomm/include)
+    set(ARKCOMM_INCLUDE_DIRS ${ARKCOMM_INSTALL_DIR}/include)
     if(WIN32)
-        set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/arkcomm.a)
+        set(ARKCOMM_LIBRARIES ${ARKCOMM_INSTALL_DIR}/lib/arkcomm.a)
     elseif(APPLE)
-        set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/libarkcomm.a)
+        set(ARKCOMM_LIBRARIES ${ARKCOMM_INSTALL_DIR}/lib/libarkcomm.a)
     elseif(UNIX)
-        set(ARKCOMM_LIBRARIES ${EP_BASE_DIR}/Install/arkcomm/lib/libarkcomm.a)
+        set(ARKCOMM_LIBRARIES ${ARKCOMM_INSTALL_DIR}/lib/libarkcomm.a)
     else()
         message(FATAL_ERROR "unknown operating system")
     endif()
@@ -188,19 +191,22 @@ if(NOT ARKCOMM_FOUND)
 endif()
 
 if(NOT ARKOSG_FOUND)
+    set(ARKOSG_INSTALL_DIR ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
     ExternalProject_Add(arkosg
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
         GIT_TAG ${ARKOSG_TAG} 
         UPDATE_COMMAND ""
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkosg
+        INSTALL_DIR ${ARKOSG_INSTALL_DIR}
+        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         )
-    set(ARKOSG_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkosg/include)
+    set(ARKOSG_INCLUDE_DIRS ${ARKOSG_INSTALL_DIR}/include)
     if(WIN32)
-        set(ARKOSG_LIBRARIES ${EP_BASE_DIR}/Install/arkosg/lib/arkosg.a)
+        set(ARKOSG_LIBRARIES ${ARKOSG_INSTALL_DIR}/lib/arkosg.a)
     elseif(APPLE)
-        set(ARKOSG_LIBRARIES ${EP_BASE_DIR}/Install/arkosg/lib/libarkosg.a)
+        set(ARKOSG_LIBRARIES ${ARKOSG_INSTALL_DIR}/lib/libarkosg.a)
     elseif(UNIX)
-        set(ARKOSG_LIBRARIES ${EP_BASE_DIR}/Install/arkosg/lib/libarkosg.a)
+        set(ARKOSG_LIBRARIES ${ARKOSG_INSTALL_DIR}/lib/libarkosg.a)
     else()
         message(FATAL_ERROR "unknown operating system")
     endif()
@@ -208,20 +214,23 @@ if(NOT ARKOSG_FOUND)
 endif() 
 
 if(NOT ARKMATH_FOUND)
+    set(ARKMATH_INSTALL_DIR ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
     ExternalProject_Add(arkmath
         GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
         GIT_TAG ${ARKMATH_TAG} 
         UPDATE_COMMAND ""
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EP_BASE_DIR}/Install/arkmath
+        INSTALL_DIR ${ARKMATH_INSTALL_DIR}
+        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         )
-    set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/Install/arkmath/include)
-    set(ARKMATH_DATA_DIR ${EP_BASE_DIR}/Install/arkmath/share/arkmath/data)
+    set(ARKMATH_INCLUDE_DIRS ${ARKMATH_INSTALL_DIR}/include)
+    set(ARKMATH_DATA_DIR ${ARKMATH_INSTALL_DIR}/share/arkmath/data)
     if(WIN32)
-        set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/Install/arkmath/lib/arkmath.a)
+        set(ARKMATH_LIBRARIES ${ARKMATH_INSTALL_DIR}/lib/arkmath.a)
     elseif(APPLE)
-        set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/Install/arkmath/lib/libarkmath.a)
+        set(ARKMATH_LIBRARIES ${ARKMATH_INSTALL_DIR}/lib/libarkmath.a)
     elseif(UNIX)
-        set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/Install/arkmath/lib/libarkmath.a)
+        set(ARKMATH_LIBRARIES ${ARKMATH_INSTALL_DIR}/lib/libarkmath.a)
     else()
         message(FATAL_ERROR "unknown operating system")
     endif()
@@ -229,23 +238,25 @@ if(NOT ARKMATH_FOUND)
 endif()
 
 if(NOT JSBSIM_FOUND)
+    set(JSBSIM_INSTALL_DIR ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
     ExternalProject_Add(jsbsim
         GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
         GIT_TAG ${JSBSIM_TAG} 
         UPDATE_COMMAND ""
-        CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${EP_BASE_DIR}/Install/jsbsim
+        INSTALL_DIR ${JSBSIM_INSTALL_DIR}
+        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
+        CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${CMAKE_INSTALL_PREFIX}
         BUILD_COMMAND make -j4
         BUILD_IN_SOURCE 1
         )
-    set(JSBSIM_INCLUDE_DIRS ${EP_BASE_DIR}/Install/jsbsim/include
-        ${EP_BASE_DIR}/Install/jsbsim/include/JSBSim)
-    set(JSBSIM_DATA_DIR ${EP_BASE_DIR}/Install/jsbsim/share/jsbsim)
+    set(JSBSIM_INCLUDE_DIRS ${JSBSIM_INSTALL_DIR}/include ${JSBSIM_INSTALL_DIR}/include/JSBSim)
+    set(JSBSIM_DATA_DIR ${JSBSIM_INSTALL_DIR}/share/jsbsim)
     if(WIN32)
-        set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/JSBSim.a)
+        set(JSBSIM_LIBRARIES ${JSBSIM_INSTALL_DIR}/lib/JSBSim.a)
     elseif(APPLE)
-        set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/libJSBSim.a)
+        set(JSBSIM_LIBRARIES ${JSBSIM_INSTALL_DIR}/lib/libJSBSim.a)
     elseif(UNIX)
-        set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/Install/jsbsim/lib/libJSBSim.a)
+        set(JSBSIM_LIBRARIES ${JSBSIM_INSTALL_DIR}/lib/libJSBSim.a)
     else()
         message(FATAL_ERROR "unknown operating system")
     endif()
@@ -263,9 +274,9 @@ if(DEV_MODE)
     set(BINDIR ${CMAKE_BINARY_DIR}/bin)
 else()
     message(STATUS "configuring for install build")
-    set(DATADIR share/${PROJECT_NAME}/data)
-    set(LIBDIR lib)
-    set(BINDIR bin)
+    set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
+    set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
+    set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
 endif()
 
 # install data files
@@ -274,6 +285,11 @@ endif()
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
     DESTINATION ${SCICOSLAB_CONTRIB_DIR}
 	PATTERN "*.git*" EXCLUDE)
+
+# install required external projects
+install(DIRECTORY "${EP_BASE_DIR}/InstallRoot/${CMAKE_INSTALL_PREFIX}/include" DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY "${EP_BASE_DIR}/InstallRoot/${CMAKE_INSTALL_PREFIX}/lib" DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY "${EP_BASE_DIR}/InstallRoot/${CMAKE_INSTALL_PREFIX}/share" DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 # pkgconfig
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
