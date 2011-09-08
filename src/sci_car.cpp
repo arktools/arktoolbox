@@ -28,9 +28,8 @@ class VisCar : public Viewer
 public:
 
     Car * car;
-    VisCar() : car()
+    VisCar() : car(new Car)
     {
-		car = new Car; // throws
         osg::Group * root = new Frame(1,"N","E","D");
         if (car) root->addChild(car);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
@@ -61,7 +60,7 @@ extern "C"
 
 
         // handle flags
-        if (flag==scicos::initialize || flag==scicos::reinitialize)
+        if (flag==scicos::initialize)
         {
 			try
 			{

@@ -18,6 +18,7 @@ mathBlocks=[
 'sci_invPend';..
 'sci_eom6Dof';..
 'sci_quadForceMoments';..
+'sci_insDynamics';..
 'sci_insErrorDynamics';..
 'sci_navigationEquations';..
 'sci_zeroOrderHold'];
