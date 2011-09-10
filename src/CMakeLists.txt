@@ -104,8 +104,8 @@ if(MAVLINK_FOUND)
 	)
 endif()
 
-set(CMAKE_C_FLAGS "-Wl")
-set(CMAKE_CXX_FLAGS "-Wl")
+set(CMAKE_C_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
+set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
