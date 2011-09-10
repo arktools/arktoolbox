@@ -67,7 +67,7 @@ def install_build(cmakecall, exitVal=True):
     if not os.path.isdir(build_dir): 
         os.mkdir(build_dir)
     os.chdir(build_dir)
-    subprocess.check_call(cmakecall, exitVal)
+    subprocess.check_call(cmakecall)
     subprocess.check_call(["make", makeargs])
     if exitVal == True:
         raise SystemExit
