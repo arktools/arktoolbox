@@ -151,7 +151,7 @@ try:
     loop_num = 0
     # continues until a function raises system exit or ^C
     while (1): 	
-        if len(args) == 1:
+        if len(args) == 1 and loop_num == 0:
             opt = args[0]
             loop_num += 1
         else:
