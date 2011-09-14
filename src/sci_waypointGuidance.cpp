@@ -313,7 +313,7 @@ void vincentys(double lat1, double lon1, double lat2, double lon2,
 
         cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSquaredAlpha;
 
-        if (isnan(cos2SigmaM)) {
+        if (std::isnan(cos2SigmaM)) {
             cos2SigmaM = 0;
         }
 

@@ -15,7 +15,7 @@ case 'set' then
   graphics=arg1.graphics;exprs=graphics.exprs
   model=arg1.model;
   while %t do
-    [ok,n,exprs]=getvalue('Set Stop block parameters',..
+    [ok,n,exprs]=getvalue('Set stop block parameters',..
 	['State on stop'],list('vec',1),exprs)
     if ~ok then break,end
     if ok then

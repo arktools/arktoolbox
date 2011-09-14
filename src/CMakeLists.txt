@@ -113,8 +113,11 @@ add_dependencies(${PROJECT_NAME} mavlink jsbsim arkosg arkmath arkcomm)
 
 target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION}
-    SOVERSION ${LIBRARY_SOVERSION})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${LIBRARY_SOVERSION})
+if(NOT APPLE)
+	set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION})
+endif()
 
 if (UNIX AND NOT APPLE)
 	# if using unix add script to see if scicoslab toolbox builds correctly
