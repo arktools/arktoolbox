@@ -73,7 +73,7 @@ def install_build(cmakecall, exitVal=True):
         raise SystemExit
 	
 def dev_build():
-	cmakecall.insert(1, "-D IN_SRC_BUILD::bool=TRUE")
+	cmakecall.insert(1, "-D DEV_MODE::bool=TRUE")
 	install_build(cmakecall)
 
 def grab_deps():
@@ -130,7 +130,7 @@ def clean():
 # set(CMAKE_CXX_FLAGS_PROFILE "-g -pg")
 # set(CMAKE_C_FLAGS_PROFILE "-g -pg")
 def profile():
-	cmakecall.insert(1, "-D IN_SRC_BUILD::bool=TRUE")
+	cmakecall.insert(1, "-D DEV_MODE::bool=TRUE")
 	cmakecall.insert(2, "-D BUILD_TYPE=PROFILE")
 	install_build(cmakecall)
 	
