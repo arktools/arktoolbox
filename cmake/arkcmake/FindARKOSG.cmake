@@ -17,11 +17,11 @@ find_path(ARKOSG_INCLUDE_DIR
 )
 
 # data dir
-find_path(ARKOSG_DATA_DIR
+find_path(ARKOSG_DATA_DIR_SEARCH
 	NAMES arkosg/data/models/plane.ac
 	PATHS ${COMMON_DATA_PATHS_ARKOSG}
 )
-set(ARKOSG_DATA_DIR ${ARKOSG_DATA_DIR}/arkosg/data)
+set(ARKOSG_DATA_DIR ${ARKOSG_DATA_DIR_SEARCH}/arkosg/data)
 
 # the library itself
 find_library(ARKOSG_LIBRARY
