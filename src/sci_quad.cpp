@@ -115,7 +115,7 @@ extern "C"
         }
         else
         {
-            std::cout << "unhandled flag: " << flag << std::endl;
+            //std::cout << "unhandled flag: " << flag << std::endl;
         }
     }
 
