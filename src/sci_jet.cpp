@@ -20,6 +20,7 @@
 #include <iostream>
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
+#include "config.h"
 
 using namespace mavsim::visualization;
 
@@ -28,7 +29,7 @@ class VisJet : public Viewer
 public:
 
     Jet * jet;
-    VisJet() : jet(new Jet)
+    VisJet() : jet(new Jet(std::string(ARKOSG_DATA_DIR)+"/models/jet.ac"))
     {
         osg::Group * root = new Frame(15,"N","E","D");
         root->addChild(jet);
@@ -67,8 +68,8 @@ extern "C"
 			}
 			catch (const std::runtime_error & e)
 			{
+				std::cout << "exception: " << e.what() << std::endl;
 				Coserror((char *)e.what());
-				set_block_error(-16);
 	 			return;
 			}
 			*work = (void *)vis;
@@ -84,10 +85,13 @@ extern "C"
         }
         else if (flag==scicos::computeOutput)
         {
-            vis->lock();
-            vis->jet->setEuler(u[0],u[1],u[2]);
-            vis->jet->setU(u[3],u[4],u[5],u[6]);
-            vis->unlock();
+			if (vis)
+			{
+				vis->lock();
+				vis->jet->setEuler(u[0],u[1],u[2]);
+				vis->jet->setU(u[3],u[4],u[5],u[6]);
+				vis->unlock();
+			}
         }
         else
         {

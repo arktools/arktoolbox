@@ -20,6 +20,7 @@
 #include <iostream>
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
+#include "config.h"
 
 using namespace mavsim::visualization;
 
@@ -28,7 +29,7 @@ class VisPlane : public Viewer
 public:
 
     Plane * plane;
-    VisPlane() : plane(new Plane)
+    VisPlane() : plane(new Plane(std::string(ARKOSG_DATA_DIR)+"/models/plane.ac"))
     {
         osg::Group * root = new Frame(15,"N","E","D");
         root->addChild(plane);
@@ -67,8 +68,8 @@ extern "C"
 			}
 			catch (const std::runtime_error & e)
 			{
+				std::cout << "exception: " << e.what() << std::endl;
 				Coserror((char *)e.what());
-				set_block_error(-16);
 	 			return;
 			}
 			*work = (void *)vis;

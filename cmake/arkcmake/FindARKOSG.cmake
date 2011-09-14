@@ -16,6 +16,12 @@ find_path(ARKOSG_INCLUDE_DIR
 	PATHS ${COMMON_INCLUDE_PATHS_ARKOSG}
 )
 
+# data dir
+find_path(ARKOSG_DATA_DIR
+	NAMES arkosg/data/models/plane.ac
+	PATHS ${COMMON_DATA_PATHS_ARKOSG}
+)
+
 # the library itself
 find_library(ARKOSG_LIBRARY
 	NAMES arkosg

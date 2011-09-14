@@ -20,6 +20,7 @@
 #include <iostream>
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
+#include "config.h"
 
 using namespace mavsim::visualization;
 
@@ -28,7 +29,7 @@ class VisCar : public Viewer
 public:
 
     Car * car;
-    VisCar() : car(new Car)
+    VisCar() : car(new Car(std::string(ARKOSG_DATA_DIR)+"/models/rcTruck.ac"))
     {
         osg::Group * root = new Frame(1,"N","E","D");
         if (car) root->addChild(car);
@@ -68,8 +69,8 @@ extern "C"
 			}
 			catch (const std::runtime_error & e)
 			{
+				std::cout << "exception: " << e.what() << std::endl;
 				Coserror((char *)e.what());
-				set_block_error(-16);
 	 			return;
 			}
 			*work = (void *)vis;
@@ -86,7 +87,7 @@ extern "C"
         else if (flag==scicos::computeOutput)
         {
 			vis = (VisCar *)*work;
-            if (!vis)
+            if (vis)
 			{
 				vis->lock();
 				vis->car->setEuler(u[0],u[1],u[2]);

@@ -21,7 +21,6 @@ find_path(ARKMATH_DATA_DIR
 	NAMES arkmath/data/WMM.COF
 	PATHS ${COMMON_DATA_PATHS_ARKMATH}
 )
-set(ARKMATH_DATA_DIR ${ARKMATH_DATA_DIR})
 
 # the library itself
 find_library(ARKMATH_LIBRARY

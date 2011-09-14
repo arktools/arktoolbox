@@ -10,7 +10,7 @@ set(APPLICATION_NAME ${PROJECT_NAME})
 set(APPLICATION_VERSION_MAJOR "0")
 set(APPLICATION_VERSION_MINOR "1")
 set(APPLICATION_VERSION_PATCH "2")
-set(ARKOSG_TAG "0.1.1")
+set(ARKOSG_TAG "0.1.2")
 set(ARKMATH_TAG "0.1.1")
 set(ARKCOMM_TAG "0.1.1")
 
@@ -155,13 +155,11 @@ set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
 
 # install/developer mode
 if(DEV_MODE)
-    set(EP_DATA_PREFIX ${EP_BASE_DIR}/InstallRoot)
     message(STATUS "configuring for in source build")
     set(DATADIR ${PROJECT_SOURCE_DIR}/data)
     set(LIBDIR ${CMAKE_BINARY_DIR}/bin)
     set(BINDIR ${CMAKE_BINARY_DIR}/bin)
 else()
-    set(EP_DATA_PREFIX ${CMAKE_INSTALL_PREFIX})
     message(STATUS "configuring for install build")
     set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
     set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
@@ -179,6 +177,8 @@ else()
     message(FATAL_ERROR "unknown operating system")
 endif()
 
+set(EP_INSTALL_ROOT ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
+
 if( NOT MAVLINK_FOUND)
     ExternalProject_Add(mavlink
         GIT_REPOSITORY "git://github.com/pixhawk/mavlink.git"
@@ -186,6 +186,7 @@ if( NOT MAVLINK_FOUND)
 		CONFIGURE_COMMAND ""
 		BUILD_COMMAND ""
 		INSTALL_COMMAND ""
+        INSTALL_DIR ${EP_INSTALL_ROOT}
         UPDATE_COMMAND ""
 		BUILD_IN_SOURCE 1
 	)
@@ -194,66 +195,63 @@ if( NOT MAVLINK_FOUND)
 endif()
 
 if(NOT ARKCOMM_FOUND)
-    set(ARKCOMM_INSTALL_DIR ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
     ExternalProject_Add(arkcomm
         GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
         GIT_TAG ${ARKCOMM_TAG}
         UPDATE_COMMAND ""
-        INSTALL_DIR ${ARKCOMM_INSTALL_DIR}
+        INSTALL_DIR ${EP_INSTALL_ROOT}
         INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         )
-    set(ARKCOMM_INCLUDE_DIRS ${ARKCOMM_INSTALL_DIR}/include)
-    set(ARKCOMM_LIBRARIES ${ARKCOMM_INSTALL_DIR}/lib/${STATIC_LIB_PREFIX}arkcomm.a)
+    set(ARKCOMM_INCLUDE_DIRS ${EP_INSTALL_ROOT}/include)
+    set(ARKCOMM_LIBRARIES ${EP_INSTALL_ROOT}/lib/${STATIC_LIB_PREFIX}arkcomm.a)
     set(ARKCOMM_FOUND TRUE)
 endif()
 
 if(NOT ARKOSG_FOUND)
-    set(ARKOSG_INSTALL_DIR ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
     ExternalProject_Add(arkosg
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
         GIT_TAG ${ARKOSG_TAG} 
         UPDATE_COMMAND ""
-        INSTALL_DIR ${ARKOSG_INSTALL_DIR}
+        INSTALL_DIR ${EP_INSTALL_ROOT}
         INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         )
-    set(ARKOSG_INCLUDE_DIRS ${ARKOSG_INSTALL_DIR}/include)
-    set(ARKOSG_LIBRARIES ${ARKOSG_INSTALL_DIR}/lib/${STATIC_LIB_PREFIX}arkosg.a)
+    set(ARKOSG_INCLUDE_DIRS ${EP_INSTALL_ROOT}/include)
+    set(ARKOSG_DATA_DIR ${EP_INSTALL_ROOT}/share/arkosg/data)
+    set(ARKOSG_LIBRARIES ${EP_INSTALL_ROOT}/lib/${STATIC_LIB_PREFIX}arkosg.a)
     set(ARKOSG_FOUND TRUE)
 endif() 
 
 if(NOT ARKMATH_FOUND)
-    set(ARKMATH_INSTALL_DIR ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
     ExternalProject_Add(arkmath
         GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
         GIT_TAG ${ARKMATH_TAG} 
         UPDATE_COMMAND ""
-        INSTALL_DIR ${ARKMATH_INSTALL_DIR}
+        INSTALL_DIR ${EP_INSTALL_ROOT}
         INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         )
-    set(ARKMATH_INCLUDE_DIRS ${ARKMATH_INSTALL_DIR}/include)
-    set(ARKMATH_DATA_DIR ${EP_DATA_PREFIX}/share/arkmath/data)
-    set(ARKMATH_LIBRARIES ${ARKMATH_INSTALL_DIR}/lib/${STATIC_LIB_PREFIX}arkmath.a)
+    set(ARKMATH_INCLUDE_DIRS ${EP_INSTALL_ROOT}/include)
+    set(ARKMATH_DATA_DIR ${EP_INSTALL_ROOT}/share/arkmath/data)
+    set(ARKMATH_LIBRARIES ${EP_INSTALL_ROOT}/lib/${STATIC_LIB_PREFIX}arkmath.a)
     set(ARKMATH_FOUND TRUE)
 endif()
 
 if(NOT JSBSIM_FOUND)
-    set(JSBSIM_INSTALL_DIR ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
     ExternalProject_Add(jsbsim
         GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
         GIT_TAG ${JSBSIM_TAG} 
         UPDATE_COMMAND ""
-        INSTALL_DIR ${JSBSIM_INSTALL_DIR}
+        INSTALL_DIR ${EP_INSTALL_ROOT}
         INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
         CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${CMAKE_INSTALL_PREFIX}
         BUILD_COMMAND make -j4
         BUILD_IN_SOURCE 1
         )
-    set(JSBSIM_INCLUDE_DIRS ${JSBSIM_INSTALL_DIR}/include ${JSBSIM_INSTALL_DIR}/include/JSBSim)
-    set(JSBSIM_DATA_DIR ${EP_DATA_PREFIX}/share/jsbsim)
-    set(JSBSIM_LIBRARIES ${JSBSIM_INSTALL_DIR}/lib/${STATIC_LIB_PREFIX}JSBSim.a)
+    set(JSBSIM_INCLUDE_DIRS ${EP_INSTALL_ROOT}/include ${EP_INSTALL_ROOT}/include/JSBSim)
+    set(JSBSIM_DATA_DIR ${EP_INSTALL_ROOT}/share/jsbsim)
+    set(JSBSIM_LIBRARIES ${EP_INSTALL_ROOT}/lib/${STATIC_LIB_PREFIX}JSBSim.a)
     set(JSBSIM_FOUND TRUE)
 endif()
 

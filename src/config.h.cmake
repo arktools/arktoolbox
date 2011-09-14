@@ -13,6 +13,7 @@
 #cmakedefine SOURCEDIR "${SOURCEDIR}"
 #cmakedefine JSBSIM_DATA_DIR "${JSBSIM_DATA_DIR}"
 #cmakedefine ARKMATH_DATA_DIR "${ARKMATH_DATA_DIR}"
+#cmakedefine ARKOSG_DATA_DIR "${ARKOSG_DATA_DIR}"
 
 /************************** HEADER FILES *************************/
 

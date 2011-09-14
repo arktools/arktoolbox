@@ -36,6 +36,7 @@
 #include <iostream>
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
+#include "config.h"
 
 using namespace mavsim::visualization;
 
@@ -44,9 +45,8 @@ class VisQuad : public Viewer
 public:
 
     Quad * quad;
-    VisQuad() : quad()
+    VisQuad() : quad(new Quad(std::string(ARKOSG_DATA_DIR)+"/models/arducopter.ac"))
     {
-		quad = new Quad; // throws
         osg::Group * root = new Frame(1,"N","E","D");
         if (quad) root->addChild(quad);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
@@ -86,8 +86,8 @@ extern "C"
 			}
 			catch (const std::runtime_error & e)
 			{
+				std::cout << "exception: " << e.what() << std::endl;
 				Coserror((char *)e.what());
-				set_block_error(-16);
 	 			return;
 			}
 			*work = (void *)vis;
