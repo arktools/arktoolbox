@@ -86,10 +86,10 @@ extern "C"
         if (flag==scicos::computeOutput)
         {
             /*
-            basic guidance to waypoint
-            double psiW;
-            double c;
-            vincentys(lat, lon, commandedLat, commandedLon, &c, &psiW);
+               basic guidance to waypoint
+               double psiW;
+               double c;
+               vincentys(lat, lon, commandedLat, commandedLon, &c, &psiW);
              */
 
 
@@ -106,10 +106,10 @@ extern "C"
             double separationWindow = 0.0000075;
 
             /*
-             basic safety zone collision avoidance
-            double dC;
-            double psiC;
-            vincentys(lat, lon, obstacleLat, obstacleLon, &dC, &psiC);
+               basic safety zone collision avoidance
+               double dC;
+               double psiC;
+               vincentys(lat, lon, obstacleLat, obstacleLon, &dC, &psiC);
              */
 
 
@@ -122,95 +122,109 @@ extern "C"
 
 
             double commandPsi = psiW;
+            bool isCollisionCourse = true;
+            double relativeVel_commandPsi;
             // Ignore obstacles that are far away
-            if (dC > 10000) {
-                commandPsi = psiW;
+            if (dC > .01) {
+                isCollisionCourse = false; 
             } else {
 
                 // Find the velocity vector of the vehicle relative to the obstacle.
-                double relativeVel_x = commandedSpeed * cos(commandPsi) - obstacleSpeed * cos(psiC);
-                double relativeVel_y = commandedSpeed * sin(commandPsi) - obstacleSpeed * sin(psiC);
-
+                double relativeVel_x = commandedSpeed * cos(commandPsi) - obstacleSpeed * cos(obstaclePsi);                
+                double relativeVel_y = commandedSpeed * sin(commandPsi) - obstacleSpeed * sin(obstaclePsi);
                 double relativeVel_psi = atan2(relativeVel_y, relativeVel_x);
 
-                // The separation distance has been violated
-                double beta;
-                if (dC < separationWindow) {
-                    beta = M_PI/2;
-                } else {
-                    beta = asin(separationWindow/dC);
-                }
+                // Find the desired bearing of the relative velocity vector
 
-                double gamma = 0;
-
-                // Get the difference between a collision course bearing and the
-                // current relative bearing.
                 double alpha = relativeVel_psi - psiC;
-                if (alpha < -M_PI) {
-                    alpha += 2*M_PI;
-                } else if (alpha > M_PI) {
+                if(alpha > M_PI) {
                     alpha -= 2*M_PI;
+                } else if (alpha < -M_PI) {
+                    alpha += 2*M_PI;
                 }
 
-                double relativeVel_commandPsi = relativeVel_psi;
-                // If the vehicle is on a course that would violate separation
-                if (abs(alpha) < beta) {
+                if (dC < separationWindow) {
+                    // If the separation window has been violated, the relative velocity should be perpendicular
+                    // to the collision course bearing.
 
                     if(alpha < 0) {
-                        gamma = alpha - beta;
+                        relativeVel_commandPsi = psiC - M_PI/2;
                     } else {
-                        gamma = beta - alpha;
+                        relativeVel_commandPsi = psiC + M_PI/2;
                     }
 
-                    // shift the bearing of the relative velocity vector by gamma
-                    relativeVel_commandPsi += gamma;
-                    if(relativeVel_commandPsi > M_PI) {
+                    if (relativeVel_commandPsi > M_PI) {
                         relativeVel_commandPsi -= 2*M_PI;
-                    } else if (relativeVel_commandPsi < -M_PI) {
+                    } else if (relativeVel_commandPsi < M_PI) {
                         relativeVel_commandPsi += 2*M_PI;
                     }
-
-
-                    // Take the commanded relative velocity direction and determine the vehicle velocity direction
-
-                    // The regions for which the tangent of relativeVel_commandPsi is well defined
-                    if ( ((relativeVel_commandPsi > -M_PI/4) && (relativeVel_commandPsi < M_PI/4)) ||
-                            (relativeVel_commandPsi > 3*M_PI/4) || (relativeVel_commandPsi < -3*M_PI/4)) {
-
-                        double d = tan(relativeVel_commandPsi);
-                        double c = obstacleSpeed / Vt * (cos(relativeVel_commandPsi)*d - sin(relativeVel_commandPsi))
-                            / sqrt(1 + d*d);
-
-                        if (c > 1) {
-                            commandPsi = -M_PI/2;
-                        } else if (c < -1) {
-                            commandPsi = M_PI/2;
-                        } else {
-                            commandPsi = asin(c);
-                        }
-                        if (d < 0) {
-                            //commandPsi += M_PI;
-                        }
-                        commandPsi += relativeVel_commandPsi;
-                    }
-                    // The regions for which the cotanget of relativeVel_commandPsi is well defined
-                    else {
-
-                        double d = -1*tan(relativeVel_commandPsi + M_PI/2); // cotangent
-                        double c = obstacleSpeed / Vt * (cos(relativeVel_commandPsi) - d*sin(relativeVel_commandPsi))
-                            / sqrt(1 + d*d);
-
-                        if (c > 1) {
-                            commandPsi = -M_PI/2;
-                        } else if (c < -1) {
-                            commandPsi = M_PI/2;
-                        } else {
-                            commandPsi = asin(c);
-                        }
-                        commandPsi += relativeVel_commandPsi;
-                    }
                 } else {
-                    commandPsi = psiW;
+                    double beta = asin(separationWindow/dC);
+                    double gamma = 0;
+
+                    // If the vehicle is on a course that would violate separation
+                    if (abs(alpha) < beta) {
+
+                        isCollisionCourse = true;
+
+                        if(alpha < 0) {
+                            gamma = alpha - beta;
+                        } else {
+                            gamma = beta - alpha;
+                        }
+
+                        // shift the bearing of the relative velocity vector by gamma
+                        relativeVel_commandPsi = relativeVel_psi + gamma;
+                        if(relativeVel_commandPsi > M_PI) {
+                            relativeVel_commandPsi -= 2*M_PI;
+                        } else if (relativeVel_commandPsi < -M_PI) {
+                            relativeVel_commandPsi += 2*M_PI;
+                        }
+                    } else {
+                        isCollisionCourse = false;
+                    }
+
+                }
+            }
+
+            if(!isCollisionCourse) {
+                commandPsi = psiW;
+            } else {
+
+                // Take the commanded relative velocity direction and determine the vehicle velocity direction
+
+                // The regions for which the tangent of relativeVel_commandPsi is well defined
+                if ( ((relativeVel_commandPsi > -M_PI/4) && (relativeVel_commandPsi < M_PI/4)) ||
+                        (relativeVel_commandPsi > 3*M_PI/4) || (relativeVel_commandPsi < -3*M_PI/4)) {
+
+                    double d = tan(relativeVel_commandPsi);
+                    double c = obstacleSpeed / Vt * (cos(relativeVel_commandPsi)*d - sin(relativeVel_commandPsi))
+                        / sqrt(1 + d*d);
+
+                    if (c > 1) {
+                        commandPsi = M_PI/2;
+                    } else if (c < -1) {
+                        commandPsi = -M_PI/2;
+                    } else {
+                        commandPsi = asin(c);
+                    }
+                    commandPsi += relativeVel_commandPsi;
+                }
+                // The regions for which the cotanget of relativeVel_commandPsi is well defined
+                else {
+
+                    double d = -1*tan(relativeVel_commandPsi + M_PI/2); // cotangent
+                    double c = obstacleSpeed / Vt * (cos(relativeVel_commandPsi) - d*sin(relativeVel_commandPsi))
+                        / sqrt(1 + d*d);
+
+                    if (c > 1) {
+                        commandPsi = M_PI/2;
+                    } else if (c < -1) {
+                        commandPsi = -M_PI/2;
+                    } else {
+                        commandPsi = asin(c);
+                    }
+                    commandPsi += relativeVel_commandPsi;
                 }
             }
 
