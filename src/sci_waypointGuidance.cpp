@@ -39,6 +39,15 @@ extern "C"
 
 
     void vincentys(double, double, double, double,double*, double*); 
+    double getVehicleHeading(double vehSpeed, double vehBearing, double obstSpeed, double obstBearing, double bearingLim1, double bearingLim2);
+
+    void checkAngle(double* alpha) {
+        if(*alpha < -M_PI)
+            *alpha += 2*M_PI;
+        else if (*alpha > M_PI)
+            *alpha -= 2*M_PI;
+    }
+
 
     void sci_waypointGuidance(scicos_block *block, scicos::enumScicosFlags flag)
     {
@@ -122,12 +131,12 @@ extern "C"
 
 
             double commandPsi = psiW;
-            bool isCollisionCourse = true;
-            double relativeVel_commandPsi;
-            // Ignore obstacles that are far away
-            if (dC > .01) {
-                isCollisionCourse = false; 
-            } else {
+            double deltaPsi = 0;
+            double lowerLimit;
+            double upperLimit;
+
+            // Only act if obstacles that are close
+            if (dC < separationWindow * 50) {
 
                 // Find the velocity vector of the vehicle relative to the obstacle.
                 double relativeVel_x = commandedSpeed * cos(commandPsi) - obstacleSpeed * cos(obstaclePsi);                
@@ -136,123 +145,91 @@ extern "C"
 
                 // Find the desired bearing of the relative velocity vector
 
-                double alpha = relativeVel_psi - psiC;
-                if(alpha > M_PI) {
-                    alpha -= 2*M_PI;
-                } else if (alpha < -M_PI) {
-                    alpha += 2*M_PI;
-                }
-
                 if (dC < separationWindow) {
                     // If the separation window has been violated, the relative velocity should be perpendicular
                     // to the collision course bearing.
 
+                    double newPsi;
+
                     if(alpha < 0) {
-                        relativeVel_commandPsi = psiC - M_PI/2;
+                        newPsi = psiC - M_PI/2;
                     } else {
-                        relativeVel_commandPsi = psiC + M_PI/2;
+                        newPsi = psiC + M_PI/2;
                     }
 
-                    if (relativeVel_commandPsi > M_PI) {
-                        relativeVel_commandPsi -= 2*M_PI;
-                    } else if (relativeVel_commandPsi < M_PI) {
-                        relativeVel_commandPsi += 2*M_PI;
-                    }
+                    lowerLimit = newPsi - M_PI/12;
+                    upperLimit = newPsi + M_PI/12;
+                    checkAngle(&lowerLimit);
+                    checkAngle(&upperLimit);
+
                 } else {
                     double beta = asin(separationWindow/dC);
-                    double gamma = 0;
 
-                    // If the vehicle is on a course that would violate separation
-                    if (abs(alpha) < beta) {
+                    lowerLimit = psiC - beta;
+                    upperLimit = psiC + beta;
+                    checkAngle(&lowerLimit);
+                    checkAngle(&upperLimit);
+                }
 
-                        isCollisionCourse = true;
 
-                        if(alpha < 0) {
-                            gamma = alpha - beta;
-                        } else {
-                            gamma = beta - alpha;
-                        }
+                deltaPsi = getVehicleHeading(Vt, commandPsi, obstacleSpeed, obstaclePsi, lowerLimit, upperLimit);
+            }
 
-                        // shift the bearing of the relative velocity vector by gamma
-                        relativeVel_commandPsi = relativeVel_psi + gamma;
-                        if(relativeVel_commandPsi > M_PI) {
-                            relativeVel_commandPsi -= 2*M_PI;
-                        } else if (relativeVel_commandPsi < -M_PI) {
-                            relativeVel_commandPsi += 2*M_PI;
-                        }
-                    } else {
-                        isCollisionCourse = false;
-                    }
+        
 
+        // output
+        eH = commandedAlt - alt;
+        eV = commandedSpeed - Vt;
+        eR = 0 - R;
+        ePhi = 0 - phi;
+
+        ePsi = commandPsi + deltaPsi - psi;
+        checkAngle(&ePsi);
+    }
+    else if (flag==scicos::terminate)
+    {
+    }
+    else if (flag==scicos::initialize || flag==scicos::reinitialize)
+    {
+    }
+    else
+    {
+        std::cout << "unhandled block flag: " << flag << std::endl;
+    }
+}
+
+}
+
+#define NUM_BEARING_CALCS 24 // Must be an even number
+double getVehicleHeading(double vehSpeed, double vehBearing, double obstSpeed, double obstBearing, double bearingLim1, double bearingLim2) {
+
+    double resBearing;
+
+    double deltaBearing;
+
+    for(int i = 0; i < NUM_BEARING_CALCS; i++){
+
+        for(int j = i;;) {
+            deltaBearing = j * M_PI/NUM_BEARING_CALCS;
+            resBearing = atan2(vehSpeed*sin(vehBearing+deltaBearing)-obstSpeed*sin(obstBearing), vehSpeed*cos(vehBearing+deltaBearing)-obstSpeed*cos(obstBearing));
+            if( (resBearing < bearingLim1) || (resBearing > bearingLim2)){
+                return deltaBearing;                
+            }
+            // handle when the limits straddle pi
+            if (bearingLim2 < bearingLim1) {
+                if( (resBearing < bearingLim2) || (resBearing > bearingLim1)) {
+                    return deltaBearing;
                 }
             }
 
-            if(!isCollisionCourse) {
-                commandPsi = psiW;
-            } else {
-
-                // Take the commanded relative velocity direction and determine the vehicle velocity direction
-
-                // The regions for which the tangent of relativeVel_commandPsi is well defined
-                if ( ((relativeVel_commandPsi > -M_PI/4) && (relativeVel_commandPsi < M_PI/4)) ||
-                        (relativeVel_commandPsi > 3*M_PI/4) || (relativeVel_commandPsi < -3*M_PI/4)) {
-
-                    double d = tan(relativeVel_commandPsi);
-                    double c = obstacleSpeed / Vt * (cos(relativeVel_commandPsi)*d - sin(relativeVel_commandPsi))
-                        / sqrt(1 + d*d);
-
-                    if (c > 1) {
-                        commandPsi = M_PI/2;
-                    } else if (c < -1) {
-                        commandPsi = -M_PI/2;
-                    } else {
-                        commandPsi = asin(c);
-                    }
-                    commandPsi += relativeVel_commandPsi;
-                }
-                // The regions for which the cotanget of relativeVel_commandPsi is well defined
-                else {
-
-                    double d = -1*tan(relativeVel_commandPsi + M_PI/2); // cotangent
-                    double c = obstacleSpeed / Vt * (cos(relativeVel_commandPsi) - d*sin(relativeVel_commandPsi))
-                        / sqrt(1 + d*d);
-
-                    if (c > 1) {
-                        commandPsi = M_PI/2;
-                    } else if (c < -1) {
-                        commandPsi = -M_PI/2;
-                    } else {
-                        commandPsi = asin(c);
-                    }
-                    commandPsi += relativeVel_commandPsi;
-                }
-            }
-
-            // output
-            eH = commandedAlt - alt;
-            eV = commandedSpeed - Vt;
-            eR = 0 - R;
-            ePhi = 0 - phi;
-
-            ePsi = commandPsi - psi;
-            if(ePsi > M_PI) {
-                ePsi -= 2*M_PI;
-            } else if(ePsi < -M_PI) {
-                ePsi += 2*M_PI;
-            }
-        }
-        else if (flag==scicos::terminate)
-        {
-        }
-        else if (flag==scicos::initialize || flag==scicos::reinitialize)
-        {
-        }
-        else
-        {
-            std::cout << "unhandled block flag: " << flag << std::endl;
+            if(j > 0)
+                j *= -1;
+            else
+                break;
         }
     }
 
+    return 0;
 }
 
 
