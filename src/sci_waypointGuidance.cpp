@@ -39,7 +39,7 @@ extern "C"
 
 
     void vincentys(double, double, double, double,double*, double*); 
-    double getVehicleHeading(double vehSpeed, double vehBearing, double obstSpeed, double obstBearing, double bearingLim1, double bearingLim2);
+    void getVehicleHeading(double* deltaBearing, double* deltaV, double vehSpeed, double vehBearing, double obstSpeed, double obstBearing, double desiredBearing, double bearingLim1, double bearingLim2, bool outsideLimits); 
 
     void checkAngle(double* alpha) {
         if(*alpha < -M_PI)
@@ -112,7 +112,7 @@ extern "C"
             // The separation window defines the radius that the vehicle will
             // attempt to clear. The hard window is the radius inside which
             // the vehicle will turn 90 degrees to clear.
-            double separationWindow = 0.0000075;
+            double separationWindow = 0.000075;
 
             /*
                basic safety zone collision avoidance
@@ -132,93 +132,129 @@ extern "C"
 
             double commandPsi = psiW;
             double deltaPsi = 0;
+            double deltaV = 0;
+            double desiredPsi = 0;
             double lowerLimit;
             double upperLimit;
+            double outsideLimits;
 
             // Only act if obstacles that are close
-            if (dC < separationWindow * 50) {
+            if (dC < separationWindow * 25) {
 
                 // Find the velocity vector of the vehicle relative to the obstacle.
                 double relativeVel_x = commandedSpeed * cos(commandPsi) - obstacleSpeed * cos(obstaclePsi);                
                 double relativeVel_y = commandedSpeed * sin(commandPsi) - obstacleSpeed * sin(obstaclePsi);
                 double relativeVel_psi = atan2(relativeVel_y, relativeVel_x);
 
+                double alpha = relativeVel_psi - psiC;
+                checkAngle(&alpha);
                 // Find the desired bearing of the relative velocity vector
 
                 if (dC < separationWindow) {
                     // If the separation window has been violated, the relative velocity should be perpendicular
                     // to the collision course bearing.
 
-                    double newPsi;
-
-                    if(alpha < 0) {
-                        newPsi = psiC - M_PI/2;
+                    // If the vehicle is already heading away, just have it go directly away
+                    if( (alpha < -M_PI/2) || (alpha > M_PI/2)) {
+                        desiredPsi = relativeVel_psi;
                     } else {
-                        newPsi = psiC + M_PI/2;
+
+                        if(alpha < 0) {
+                            desiredPsi = psiC - M_PI/2;
+                        } else {
+                            desiredPsi = psiC + M_PI/2;
+                        }
                     }
 
-                    lowerLimit = newPsi - M_PI/12;
-                    upperLimit = newPsi + M_PI/12;
+                    checkAngle(&desiredPsi);
+                    lowerLimit = desiredPsi - M_PI/12;
+                    upperLimit = desiredPsi + M_PI/12;
+                    outsideLimits = false;
                     checkAngle(&lowerLimit);
                     checkAngle(&upperLimit);
 
                 } else {
                     double beta = asin(separationWindow/dC);
+                    double gamma = 0;
 
+                    // Get the desired bearing (needed so that the velocity can be modified if needed)
+                    if(abs(alpha) < beta) {
+                        if(alpha < 0) {
+                            gamma = alpha -beta;
+                        } else {
+                            gamma = beta - alpha;
+                        }
+                    } else {
+                        gamma = 0;
+                    }
+
+                    desiredPsi = relativeVel_psi + gamma;
+                    checkAngle(&desiredPsi);
                     lowerLimit = psiC - beta;
                     upperLimit = psiC + beta;
+                    outsideLimits = true;
                     checkAngle(&lowerLimit);
                     checkAngle(&upperLimit);
                 }
 
-
-                deltaPsi = getVehicleHeading(Vt, commandPsi, obstacleSpeed, obstaclePsi, lowerLimit, upperLimit);
+                getVehicleHeading(&deltaPsi, &deltaV, Vt, commandPsi, obstacleSpeed, obstaclePsi, desiredPsi, lowerLimit, upperLimit, outsideLimits);
             }
 
-        
+            // output
+            eH = commandedAlt - alt;
+            eV = commandedSpeed + deltaV- Vt;
+            eR = 0 - R;
+            ePhi = 0 - phi;
 
-        // output
-        eH = commandedAlt - alt;
-        eV = commandedSpeed - Vt;
-        eR = 0 - R;
-        ePhi = 0 - phi;
-
-        ePsi = commandPsi + deltaPsi - psi;
-        checkAngle(&ePsi);
+            ePsi = commandPsi + deltaPsi - psi;
+            checkAngle(&ePsi);
+        }
+        else if (flag==scicos::terminate)
+        {
+        }
+        else if (flag==scicos::initialize || flag==scicos::reinitialize)
+        {
+        }
+        else
+        {
+            std::cout << "unhandled block flag: " << flag << std::endl;
+        }
     }
-    else if (flag==scicos::terminate)
-    {
-    }
-    else if (flag==scicos::initialize || flag==scicos::reinitialize)
-    {
-    }
-    else
-    {
-        std::cout << "unhandled block flag: " << flag << std::endl;
-    }
-}
 
 }
 
-#define NUM_BEARING_CALCS 24 // Must be an even number
-double getVehicleHeading(double vehSpeed, double vehBearing, double obstSpeed, double obstBearing, double bearingLim1, double bearingLim2) {
+#define NUM_BEARING_CALCS 18 // Must be an even number
+void getVehicleHeading(double* deltaBearing, double* deltaV, double vehSpeed, double vehBearing, double obstSpeed, double obstBearing, double desiredBearing, double bearingLim1, double bearingLim2, bool outsideLimits) {
 
     double resBearing;
 
-    double deltaBearing;
+    *deltaBearing = 0;
+    *deltaV = 0;
 
     for(int i = 0; i < NUM_BEARING_CALCS; i++){
 
         for(int j = i;;) {
-            deltaBearing = j * M_PI/NUM_BEARING_CALCS;
-            resBearing = atan2(vehSpeed*sin(vehBearing+deltaBearing)-obstSpeed*sin(obstBearing), vehSpeed*cos(vehBearing+deltaBearing)-obstSpeed*cos(obstBearing));
-            if( (resBearing < bearingLim1) || (resBearing > bearingLim2)){
-                return deltaBearing;                
-            }
-            // handle when the limits straddle pi
-            if (bearingLim2 < bearingLim1) {
-                if( (resBearing < bearingLim2) || (resBearing > bearingLim1)) {
-                    return deltaBearing;
+            *deltaBearing = j * M_PI/NUM_BEARING_CALCS;
+            resBearing = atan2(vehSpeed*sin(vehBearing+*deltaBearing)-obstSpeed*sin(obstBearing), vehSpeed*cos(vehBearing+*deltaBearing)-obstSpeed*cos(obstBearing));
+            if(outsideLimits) {
+
+                if (bearingLim1 < bearingLim2) {
+                    if( (resBearing < bearingLim1) || (resBearing > bearingLim2)) {
+                        return;
+                    }
+                } else {
+                    if( (resBearing < bearingLim2) || (resBearing > bearingLim1)){
+                        return;                
+                    }
+                }
+            } else {
+                if ( (resBearing > bearingLim1) && (resBearing < bearingLim2)) {
+                    return;
+                }
+                if( bearingLim2 < bearingLim1) {
+                    if ( (resBearing > bearingLim1) || (resBearing < bearingLim2)) {
+                        return;
+                    }
                 }
             }
 
@@ -229,7 +265,13 @@ double getVehicleHeading(double vehSpeed, double vehBearing, double obstSpeed, d
         }
     }
 
-    return 0;
+    // If execution reaches here, the desired resultant bearing cannot be created with a constant vehicle velocity
+    // Set the resultant vector to be the desired direction with a non-trivial magnitude and adjust the vehicle's
+    // velocity and bearing to match it.
+    double vx = obstSpeed * cos(obstBearing) + cos(desiredBearing);
+    double vy = obstSpeed * sin(obstBearing) + sin(desiredBearing);
+    *deltaBearing = atan2(vy,vx) - vehBearing;
+    *deltaV = sqrt(vx*vx + vy*vy) - vehSpeed;
 }
 
 
