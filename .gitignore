@@ -27,3 +27,4 @@ build
 ui_*
 moc_*
 .lock-wafbuild
+.DS_Store
