@@ -202,11 +202,11 @@ extern "C"
 
             // output
             eH = commandedAlt - alt;
-            eV = commandedSpeed + deltaV- Vt;
+            eV = commandedSpeed - Vt;//+ deltaV- Vt;
             eR = 0 - R;
             ePhi = 0 - phi;
 
-            ePsi = commandPsi + deltaPsi - psi;
+            ePsi = commandPsi - psi;// + deltaPsi;
             checkAngle(&ePsi);
         }
         else if (flag==scicos::terminate)
