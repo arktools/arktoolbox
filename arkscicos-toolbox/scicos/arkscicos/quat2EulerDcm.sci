@@ -4,7 +4,7 @@ function [x,y,typ]=quat2EulerDcm(job,arg1,arg2)
 //
 // USAGE:
 //
-// output 1: Cnb (3x3)
+// output 1: Cbn (3x3) (navigation to body frame)
 //
 // output 2: euler angles
 //  [1] phi (rad) <roll>

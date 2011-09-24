@@ -9,10 +9,12 @@ set(APPLICATION_NAME ${PROJECT_NAME})
 # set these for release
 set(APPLICATION_VERSION_MAJOR "0")
 set(APPLICATION_VERSION_MINOR "3")
-set(APPLICATION_VERSION_PATCH "0")
-set(ARKOSG_TAG "0.1.2")
-set(ARKMATH_TAG "0.1.1")
-set(ARKCOMM_TAG "0.1.1")
+set(APPLICATION_VERSION_PATCH "1")
+set(ARKOSG_VERSION "0.1.2")
+set(ARKMATH_VERSION "0.2.0")
+set(ARKCOMM_VERSION "0.1.1")
+set(MAVLINK_VERSION "master")
+set(JSBSIM_VERSION "master")
 
 set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
 set(LIBRARY_VERSION ${APPLICATION_VERSION})
@@ -61,9 +63,9 @@ find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
 find_package(SIMGEAR)
 find_package(PLIB)
 find_package(LAPACK)
-find_package(ARKOSG)
-find_package(ARKCOMM)
-find_package(ARKMATH)
+find_package(ARKOSG ${ARKOSG_VERSION})
+find_package(ARKCOMM ${ARKCOMM_VERSION})
+find_package(ARKMATH ${ARKMATH_VERSION})
 find_package(JSBSIM)
 find_package(MAVLINK)
 find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
@@ -182,7 +184,7 @@ set(EP_INSTALL_ROOT ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
 if( NOT MAVLINK_FOUND)
     ExternalProject_Add(mavlink
         GIT_REPOSITORY "git://github.com/pixhawk/mavlink.git"
-        GIT_TAG ${MAVLINK_TAG}
+		GIT_TAG ${MAVLINK_VERSION}
 		CONFIGURE_COMMAND ""
 		BUILD_COMMAND ""
 		INSTALL_COMMAND ""
@@ -197,7 +199,7 @@ endif()
 if(NOT ARKCOMM_FOUND)
     ExternalProject_Add(arkcomm
         GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
-        GIT_TAG ${ARKCOMM_TAG}
+		GIT_TAG ${ARKCOMM_VERSION}
         UPDATE_COMMAND ""
         INSTALL_DIR ${EP_INSTALL_ROOT}
         INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
@@ -211,7 +213,7 @@ endif()
 if(NOT ARKOSG_FOUND)
     ExternalProject_Add(arkosg
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
-        GIT_TAG ${ARKOSG_TAG} 
+		GIT_TAG ${ARKOSG_VERSION} 
         UPDATE_COMMAND ""
         INSTALL_DIR ${EP_INSTALL_ROOT}
         INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
@@ -226,7 +228,7 @@ endif()
 if(NOT ARKMATH_FOUND)
     ExternalProject_Add(arkmath
         GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
-        GIT_TAG ${ARKMATH_TAG} 
+		GIT_TAG ${ARKMATH_VERSION} 
         UPDATE_COMMAND ""
         INSTALL_DIR ${EP_INSTALL_ROOT}
         INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
@@ -241,7 +243,7 @@ endif()
 if(NOT JSBSIM_FOUND)
     ExternalProject_Add(jsbsim
         GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
-        GIT_TAG ${JSBSIM_TAG} 
+		GIT_TAG ${JSBSIM_VERSION} 
         UPDATE_COMMAND ""
         INSTALL_DIR ${EP_INSTALL_ROOT}
         INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install

@@ -9,7 +9,7 @@ function [x,y,typ]=euler2Dcm(job,arg1,arg2)
 //  [2] theta (rad) <pitch>
 //  [3] psi (rad) <yaw>
 //
-// output 1: Cnb (3x3)
+// output 1: Cbn (3x3) (navigation to body)
 //
 // AUTHOR:
 //

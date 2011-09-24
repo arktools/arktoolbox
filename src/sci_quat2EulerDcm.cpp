@@ -18,7 +18,7 @@
  * u1: a, b, c, d (quaternion)
  * u2: wx, wy, wz (body angular rates)
  *
- * y1: C_nb
+ * y1: C_bn
  * y2: euler
  * y3: eulerRates
  *
