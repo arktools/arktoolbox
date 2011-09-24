@@ -89,8 +89,8 @@ select job
 				out=[3;3;3]
 				out2=[10;3;1]
 			elseif stateMode==1 then
-				out=[3;3]
-				out2=[4;3]
+				out=[3;3;3]
+				out2=[4;3;1]
 			else
 				disp('invalid mode in insDynamcis block')
 				error('invalid mode in insDynamics block')
