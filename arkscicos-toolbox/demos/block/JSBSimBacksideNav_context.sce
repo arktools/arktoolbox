@@ -135,8 +135,8 @@ gps.R = diag([gps.sigVel^2*ones(3,1);gps.sigLatLon^2*ones(2,1);gps.sigAlt^2]);
 
 // mag measurement
 mag.freq = 50; // Hz // can't run at same freq as gps or it won't run
-mag.sigDip=  10*%pi/180; // inclination noise, rad
-mag.sigDec = 10*%pi/180; // declination noise, rad
+mag.sigDip=  0.1*%pi/180; // inclination noise, rad
+mag.sigDec = 0.1*%pi/180; // declination noise, rad
 mag.processNoise = 0*%pi/180; // used to distrust mag
 
 // imu measurement
