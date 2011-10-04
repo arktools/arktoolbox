@@ -36,7 +36,7 @@ public:
         getCameraManipulator()->setHomePosition(osg::Vec3(-30,30,-30),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));
         setSceneData(root);
-        setUpViewInWindow(0,0,800,600);
+        setUpViewInWindow(0,0,400,400);
         run();
     }
     ~VisPlane()
@@ -57,7 +57,7 @@ extern "C"
         // definitions
         double *u=(double*)GetInPortPtrs(block,1);
 		void ** work =  GetPtrWorkPtrs(block);
-		VisPlane * vis;
+		VisPlane * vis = NULL;
 
         // handle flags
         if (flag==scicos::initialize)

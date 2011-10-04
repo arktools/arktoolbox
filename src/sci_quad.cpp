@@ -52,7 +52,7 @@ public:
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));
         if (root) setSceneData(root);
-        setUpViewInWindow(0,0,800,600);
+        setUpViewInWindow(0,0,400,400);
         run();
     }
     ~VisQuad()
@@ -75,7 +75,7 @@ extern "C"
         double *u2=(double*)GetInPortPtrs(block,2);
         double *u3=(double*)GetInPortPtrs(block,3);
         void ** work =  GetPtrWorkPtrs(block);
-		VisQuad * vis;
+		VisQuad * vis = NULL;
 
  		// handle flags
         if (flag==scicos::initialize)

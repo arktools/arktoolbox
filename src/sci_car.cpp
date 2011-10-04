@@ -36,7 +36,7 @@ public:
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));
         if (root) setSceneData(root);
-        setUpViewInWindow(0,0,800,600);
+        setUpViewInWindow(0,0,400,400);
         run();
     }
     ~VisCar()
@@ -57,7 +57,7 @@ extern "C"
         // definitions
         double *u=(double*)GetInPortPtrs(block,1);
 		void ** work =  GetPtrWorkPtrs(block);
-		VisCar * vis;
+		VisCar * vis = NULL;
 
 
         // handle flags

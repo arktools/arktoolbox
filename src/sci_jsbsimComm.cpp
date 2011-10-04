@@ -162,57 +162,50 @@ extern "C"
 
     void sci_jsbsimComm(scicos_block *block, scicos::enumScicosFlags flag)
     {
-        static JSBSim::JSBSimComm * comm = NULL;
-        static JSBSim::FGPropertyManager propManager;
-        static char * root, * modelName, * aircraftPath, * enginePath,
-               * systemsPath, * flightGearHost;
-        static int debugLevel;
-        static int enableFlightGearComm, flightGearPort;
-        static char ** stringArray;
-        static int * intArray;
-
         // data
         double *u=(double*)GetInPortPtrs(block,1);
         double *xOut=(double*)GetOutPortPtrs(block,1);
         double *y=(double*)GetOutPortPtrs(block,2);
         double *x=(double*)GetState(block);
         double *xd=(double*)GetDerState(block);
-        int * ipar=block->ipar;
-
-        // make sure you have initialized the block
-        if (!comm && flag!=scicos::initialize)
-        {
-            sci_jsbsimComm(block,scicos::initialize);
-        }
+		void ** work = GetPtrWorkPtrs(block);
+		JSBSim::JSBSimComm * comm = NULL;
+		int * ipar=block->ipar;
+		char ** stringArray;
+		int * intArray;
+		getIpars(6,3,ipar,&stringArray,&intArray);
+		char * root = stringArray[0];
+		char * aircraftPath = stringArray[1];
+		char * enginePath = stringArray[2];
+		char * systemsPath = stringArray[3];
+		char * modelName = stringArray[4];
+		char * flightGearHost=stringArray[5];
+		int debugLevel = intArray[0];
+		int enableFlightGearComm = intArray[1];
+		int flightGearPort = intArray[2];
 
         //handle flags
-        if (flag==scicos::initialize || flag==scicos::reinitialize)
+        if (flag==scicos::initialize)
         {
-            if (!comm)
-            {
-                getIpars(6,3,ipar,&stringArray,&intArray);
-                root = stringArray[0];
-                aircraftPath = stringArray[1];
-                enginePath = stringArray[2];
-                systemsPath = stringArray[3];
-                modelName = stringArray[4];
-                flightGearHost=stringArray[5];
-                debugLevel = intArray[0];
-                enableFlightGearComm = intArray[1];
-                flightGearPort = intArray[2];
-				try
-				{
-                	comm = new JSBSim::JSBSimComm(root,aircraftPath,enginePath,systemsPath,modelName,x,u,debugLevel,
-                    	enableFlightGearComm,flightGearHost,flightGearPort);
-				}
-				catch (const std::runtime_error & e)
-				{
-					Coserror((char *)e.what());
-				}
-            }
+            //std::cout << "initializing" << std::endl;
+			try 
+			{
+				
+				comm = new JSBSim::JSBSimComm(root,aircraftPath,enginePath,systemsPath,modelName,x,u,debugLevel,
+					enableFlightGearComm,flightGearHost,flightGearPort);
+			}
+			catch (const std::runtime_error & e)
+			{
+				std::cout << "exception: " << e.what() << std::endl;
+				Coserror((char *)e.what());
+	 			return;
+			}
+			*work = (void *)comm;
         }
         else if (flag==scicos::terminate)
         {
+            //std::cout << "terminating" << std::endl;
+			comm = (JSBSim::JSBSimComm *)*work;
             if (comm)
             {
                 delete comm;
@@ -222,6 +215,7 @@ extern "C"
         else if (flag==scicos::updateState)
         {
             //std::cout << "updating state" << std::endl;
+			comm = (JSBSim::JSBSimComm *)*work;
             comm->ss.u.set(u);
             comm->ss.x.set(x);
             if (enableFlightGearComm==1)
@@ -232,11 +226,13 @@ extern "C"
         else if (flag==scicos::computeDeriv)
         {
             //std::cout << "computing deriv" << std::endl;
+			comm = (JSBSim::JSBSimComm *)*work;
             comm->ss.x.getDeriv(xd);
         }
         else if (flag==scicos::computeOutput)
         {
             //std::cout << "computing output" << std::endl;
+			comm = (JSBSim::JSBSimComm *)*work;
             sci_jsbsimComm(block,scicos::updateState);
             comm->ss.x.get(xOut);
             comm->ss.y.get(y);
