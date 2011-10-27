@@ -140,7 +140,7 @@ wz]; //wz
 r = createIndex(["pN","pE","pD","yaw"]);
 m = createIndex(["Vfwd","psi","h","Vside"]);
 x = createIndex(["U","W","pitch","pitchRate","V","roll","rollRate","yaw",..
-	"yawRate","vN","vE","vD","pN","pE","pD"]);
+	"yawRate","vN","vE","vD","lat","lon","alt"]);
 u = createIndex(["SUM","FB","LR","LRFB"]);
 y = x;
-
+ch = createIndex(['mode','right','left','front','back']);
