@@ -26,7 +26,10 @@ fgfs \
 --aircraft=$aircraft \
 --multiplay=in,10,$ip,$portMulti \
 --multiplay=out,10,mpserver05.flightgear.org,5000 \
---native-fdm=socket,in,120,,$portFdm,udp \
+--native-fdm=socket,in,10,,$portFdm,udp \
+--prop:/sim/frame-rate-throttle-hz=10 \
+--timeofday=noon \
+--disable-clouds3d \
 --geometry=400x300 \
 --vc=30 \
 --altitude=1000 \
@@ -38,7 +41,7 @@ fgfs \
 --timeofday=noon \
 --shading-flat \
 --notrim \
---fog-disable \
+--fog-fastest \
 --enable-ai-models \
 --disable-specular-highlight \
 --disable-skyblend \
@@ -46,7 +49,8 @@ fgfs \
 --disable-panel \
 --disable-horizon-effect \
 --disable-clouds \
---disable-anti-alias-hud
+--disable-anti-alias-hud \
+
 }
 for ((num=1; num<=$number; num++))
 do
