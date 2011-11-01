@@ -6,8 +6,9 @@ n=x_choose([
 'EasyStar GPS/INS Extended Kalman Filter based Navigation';
 'Unmanned Ground Vehicle Autopilot Design';
 'Quadrotor Control Demos';
-//'Unmanned Ground Vehicle Hardware in the Loop (Sensor Level)';
-//'Unmanned Ground Vehicle Hardware in the Loop (State Level)';
+'UGV (Sensor Level) Hardware in the Loop';
+'UGV (State Level) Hardware in the Loop';
+'Quadrotor (State Level) Hardware in the Loop';
 ],'arkscicos demos');
 if (n==1)
 	scicos(arkscicosPath+'demos/block/JSBSimBackside.cos');
@@ -27,6 +28,8 @@ elseif (n==8)
 	scicos(arkscicosPath+'demos/block/UgvMavlinkHilSensor.cos');
 elseif (n==9)
 	scicos(arkscicosPath+'demos/block/UgvMavlinkHilState.cos');
+elseif (n==10)
+	scicos(arkscicosPath+'demos/block/quadrotorHil.cos');
 else
 	disp('unknown demo');
 end
