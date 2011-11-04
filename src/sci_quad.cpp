@@ -38,7 +38,7 @@
 #include "arkosg/osgUtils.hpp"
 #include "config.h"
 
-using namespace mavsim::visualization;
+using namespace arkosg;
 
 class VisQuad : public Viewer
 {
@@ -48,6 +48,7 @@ public:
     VisQuad() : quad(new Quad(std::string(ARKOSG_DATA_DIR)+"/models/arducopter.ac"))
     {
         osg::Group * root = new Frame(1,"N","E","D");
+		root->addChild(new Terrain(std::string(ARKOSG_DATA_DIR)+"/images/lz.rgb",osg::Vec3(10,10,0)));
         if (quad) root->addChild(quad);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));

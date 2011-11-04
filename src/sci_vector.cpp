@@ -21,7 +21,7 @@
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
 
-using namespace mavsim::visualization;
+using namespace arkosg;
 
 class VisVector : public Viewer
 {

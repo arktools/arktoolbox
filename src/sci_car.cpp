@@ -22,7 +22,7 @@
 #include "arkosg/osgUtils.hpp"
 #include "config.h"
 
-using namespace mavsim::visualization;
+using namespace arkosg;
 
 class VisCar : public Viewer
 {
