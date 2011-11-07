@@ -56,19 +56,6 @@ set(CPACK_SET_DESTDIR TRUE)
 set(CPACK_SOURCE_IGNORE_FILES ${CPACK_SOURCE_IGNORE_FILES}
 	/.git/;/build/;~$;.*\\\\.bin$;.*\\\\.swp$)
 set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
-# find libraries with cmake modules
-
-find_package(SCICOSLAB REQUIRED)
-find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
-find_package(SIMGEAR)
-find_package(PLIB)
-find_package(LAPACK)
-find_package(ARKOSG ${ARKOSG_VERSION})
-find_package(ARKCOMM ${ARKCOMM_VERSION})
-find_package(ARKMATH ${ARKMATH_VERSION})
-find_package(JSBSIM)
-find_package(MAVLINK)
-find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
 
 if(WIN32)
     set(CPACK_GENERATOR "NSIS")
@@ -144,9 +131,9 @@ find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
 find_package(SIMGEAR)
 find_package(PLIB)
 find_package(LAPACK)
-find_package(ARKOSG)
-find_package(ARKCOMM)
-find_package(ARKMATH)
+find_package(ARKOSG ${ARKOSG_VERSION})
+find_package(ARKCOMM ${ARKCOMM_VERSION})
+find_package(ARKMATH ${ARKMATH_VERSION})
 find_package(JSBSIM)
 find_package(MAVLINK)
 find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
@@ -154,7 +141,8 @@ find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
 # external projects
 set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
-set(EP_INSTALL_ROOT ${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX})
+set(EP_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}-external)
+set(EP_INSTALL_PREFIX_BUILD ${EP_BASE_DIR}/${PROJECT_NAME}-external)
 
 # install/developer mode
 if(DEV_MODE)
@@ -162,13 +150,13 @@ if(DEV_MODE)
     set(DATADIR ${PROJECT_SOURCE_DIR}/data)
     set(LIBDIR ${CMAKE_BINARY_DIR}/bin)
     set(BINDIR ${CMAKE_BINARY_DIR}/bin)
-	set(EP_DATA_ROOT ${EP_INSTALL_ROOT}/share)
+	set(EP_INSTALL_ROOT ${EP_INSTALL_PREFIX_BUILD})
 else()
     message(STATUS "configuring for install build")
     set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
     set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
     set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
-	set(EP_DATA_ROOT ${CMAKE_INSTALL_PREFIX}/share)
+	set(EP_INSTALL_ROOT ${EP_INSTALL_PREFIX})
 endif()
 
 # static lib prefix
@@ -189,7 +177,7 @@ if( NOT MAVLINK_FOUND)
 		CONFIGURE_COMMAND ""
 		BUILD_COMMAND ""
 		INSTALL_COMMAND ""
-        INSTALL_DIR ${EP_INSTALL_ROOT}
+		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
         UPDATE_COMMAND ""
 		BUILD_IN_SOURCE 1
 	)
@@ -202,12 +190,12 @@ if(NOT ARKCOMM_FOUND)
         GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
 		GIT_TAG ${ARKCOMM_VERSION}
         UPDATE_COMMAND ""
-        INSTALL_DIR ${EP_INSTALL_ROOT}
-        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-        )
-    set(ARKCOMM_INCLUDE_DIRS ${EP_INSTALL_ROOT}/include)
-    set(ARKCOMM_LIBRARIES ${EP_INSTALL_ROOT}/lib/${STATIC_LIB_PREFIX}arkcomm.a)
+		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
+		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+		INSTALL_COMMAND make DESTDIR=${EP_INSTALL_PREFIX_BUILD} install
+       )
+   	set(ARKCOMM_INCLUDE_DIRS ${EP_INSTALL_PREFIX_BUILD}/include)
+	set(ARKCOMM_LIBRARIES ${EP_INSTALL_PREFIX_BUILD}/lib/${STATIC_LIB_PREFIX}arkcomm.a)
     set(ARKCOMM_FOUND TRUE)
 endif()
 
@@ -216,13 +204,13 @@ if(NOT ARKOSG_FOUND)
         GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
 		GIT_TAG ${ARKOSG_VERSION} 
         UPDATE_COMMAND ""
-        INSTALL_DIR ${EP_INSTALL_ROOT}
-        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
+		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+		INSTALL_COMMAND make DESTDIR=${EP_INSTALL_PREFIX_BUILD} install
         )
-    set(ARKOSG_INCLUDE_DIRS ${EP_INSTALL_ROOT}/include)
-	set(ARKOSG_DATA_DIR ${EP_DATA_ROOT}/arkosg/data)
-    set(ARKOSG_LIBRARIES ${EP_INSTALL_ROOT}/lib/${STATIC_LIB_PREFIX}arkosg.a)
+   	set(ARKCOMM_INCLUDE_DIRS ${EP_INSTALL_PREFIX_BUILD}/include)
+	set(ARKOSG_DATA_DIR ${EP_INSTALL_ROOT}/share/arkosg/data)
+	set(ARKOSG_LIBRARIES ${EP_INSTALL_PREFIX_BUILD}/lib/${STATIC_LIB_PREFIX}arkosg.a)
     set(ARKOSG_FOUND TRUE)
 endif() 
 
@@ -231,13 +219,13 @@ if(NOT ARKMATH_FOUND)
         GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
 		GIT_TAG ${ARKMATH_VERSION} 
         UPDATE_COMMAND ""
-        INSTALL_DIR ${EP_INSTALL_ROOT}
-        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
+		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+		INSTALL_COMMAND make DESTDIR=${EP_INSTALL_PREFIX_BUILD} install
         )
-    set(ARKMATH_INCLUDE_DIRS ${EP_INSTALL_ROOT}/include)
-	set(ARKMATH_DATA_DIR ${EP_DATA_ROOT}/arkmath/data)
-    set(ARKMATH_LIBRARIES ${EP_INSTALL_ROOT}/lib/${STATIC_LIB_PREFIX}arkmath.a)
+   	set(ARKCOMM_INCLUDE_DIRS ${EP_INSTALL_PREFIX_BUILD}/include)
+	set(ARKMATH_DATA_DIR ${EP_INSTALL_ROOT}/share/arkmath/data)
+	set(ARKMATH_LIBRARIES ${EP_INSTALL_PREFIX_BUILD}/lib/${STATIC_LIB_PREFIX}arkmath.a)
     set(ARKMATH_FOUND TRUE)
 endif()
 
@@ -246,31 +234,29 @@ if(NOT JSBSIM_FOUND)
         GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
 		GIT_TAG ${JSBSIM_VERSION} 
         UPDATE_COMMAND ""
-        INSTALL_DIR ${EP_INSTALL_ROOT}
-        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR}/InstallRoot install
-        CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${CMAKE_INSTALL_PREFIX}
-        BUILD_COMMAND make -j4
+		CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${CMAKE_INSTALL_PREFIX}
+		BUILD_COMMAND make -j4
         BUILD_IN_SOURCE 1
+		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
+		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+		INSTALL_COMMAND make DESTDIR=${EP_INSTALL_PREFIX_BUILD} install
         )
-    set(JSBSIM_INCLUDE_DIRS ${EP_INSTALL_ROOT}/include ${EP_INSTALL_ROOT}/include/JSBSim)
-	set(JSBSIM_DATA_DIR ${EP_DATA_ROOT}/jsbsim)
-    set(JSBSIM_LIBRARIES ${EP_INSTALL_ROOT}/lib/${STATIC_LIB_PREFIX}JSBSim.a)
+	set(JSBSIM_INCLUDE_DIRS ${EP_INSTALL_PREFIX_BUILD}/include ${EP_INSTALL_PREFIX_BUILD}/include/JSBSim)
+	set(JSBSIM_DATA_DIR ${EP_INSTALL_ROOT}/data/jsbsim)
+	set(JSBSIM_LIBRARIES ${EP_INSTALL_PREFIX_BUILD}/lib/${STATIC_LIB_PREFIX}JSBSim.a)
     set(JSBSIM_FOUND TRUE)
 endif()
 
 set(ARKSCICOS_LIBRARIES "")
 
 # install data files
-#install(DIRECTORY "${PROJECT_SOURCE_DIR}/data" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
-
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/projects" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
     DESTINATION ${SCICOSLAB_CONTRIB_DIR}
 	PATTERN "*.git*" EXCLUDE)
 
 # install required dependencies from external projects
-install(DIRECTORY "${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX}/include" DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY "${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX}/lib" DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY "${EP_BASE_DIR}/InstallRoot${CMAKE_INSTALL_PREFIX}/share" DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY "${EP_INSTALL_PREFIX_BUILD}" DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 # pkgconfig
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
