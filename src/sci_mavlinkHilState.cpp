@@ -23,9 +23,9 @@
 #include <stdexcept>
 
 // mavlink system definition and headers
-#include "mavlink_types.h"
+#include "mavlink/mavlink_types.h"
 #include "arkcomm/asio_mavlink_bridge.h"
-#include "common/mavlink.h"
+#include "mavlink/common/mavlink.h"
 
 extern "C"
 {

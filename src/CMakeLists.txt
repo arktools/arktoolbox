@@ -32,17 +32,23 @@ set(SCICOSLAB_BLOCKS "")
 
 if(ARKCOMM_FOUND)
 	list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
-    list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
-	if (SIMGEAR_FOUND)
-		if (PLIB_FOUND) 
-			list(APPEND ARKSCICOS_LIBRARIES ${SIMGEAR_LIBRARIES} ${PLIB_LIBRARY})
-			list(APPEND SCICOSLAB_BLOCKS "simgearBlocks")
-			list(APPEND ${PROJECT_NAME}Sources sci_flightGearComm.cpp)
-		endif()
+    if (SIMGEAR_FOUND AND PLIB_FOUND)
+	    message(STATUS "building flightgear blocks")
+	    list(APPEND ARKSCICOS_LIBRARIES ${SIMGEAR_LIBRARIES} ${PLIB_LIBRARY})
+		list(APPEND SCICOSLAB_BLOCKS "simgearBlocks")
+		list(APPEND ${PROJECT_NAME}Sources sci_flightGearComm.cpp)
 	endif()
+	message(STATUS "building mavlink blocks")
+	list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
+	list(APPEND ${PROJECT_NAME}Sources
+		sci_mavlinkHilSensor.cpp
+		sci_mavlinkHilState.cpp
+		sci_mavlinkHilTracker.cpp
+	)
 endif()
 
 if(ARKMATH_FOUND)
+	message(STATUS "building arkmath blocks")
 	list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
 	list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
 	list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
@@ -65,6 +71,7 @@ if(ARKMATH_FOUND)
 		sci_quadForceMoments.cpp
 	)
 	if (LAPACK_FOUND)
+	    message(STATUS "building lapack blocks")
 		list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
 		list(APPEND SCICOSLAB_BLOCKS "lapackBlocks")
 		list(APPEND ${PROJECT_NAME}Sources
@@ -73,7 +80,8 @@ if(ARKMATH_FOUND)
 	endif()
 endif()
 
-if(ARKOSG_FOUND)
+if(ARKOSG_FOUND AND OPENSCENEGRAPH_FOUND)
+	message(STATUS "building arkosg blocks")
 	list(APPEND ARKSCICOS_LIBRARIES ${ARKOSG_LIBRARIES})
 	list(APPEND SCICOSLAB_BLOCKS "osgBlocks")
 	list(APPEND ${PROJECT_NAME}Sources
@@ -91,16 +99,6 @@ if(JSBSIM_FOUND)
 	list(APPEND ${PROJECT_NAME}Sources
 		sci_jsbsimTrim.cpp
 		sci_jsbsimComm.cpp
-	)
-endif()
-
-if(MAVLINK_FOUND)
-	message(STATUS "building mavlinkBlocks")
-	list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
-	list(APPEND ${PROJECT_NAME}Sources
-		sci_mavlinkHilSensor.cpp
-		sci_mavlinkHilState.cpp
-		sci_mavlinkHilTracker.cpp
 	)
 endif()
 

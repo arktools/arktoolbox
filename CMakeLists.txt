@@ -9,12 +9,12 @@ set(APPLICATION_NAME ${PROJECT_NAME})
 # set these for release
 set(APPLICATION_VERSION_MAJOR "0")
 set(APPLICATION_VERSION_MINOR "3")
-set(APPLICATION_VERSION_PATCH "6")
-set(ARKOSG_VERSION "0.1.5")
-set(ARKMATH_VERSION "0.2.2")
-set(ARKCOMM_VERSION "0.1.1")
-set(MAVLINK_VERSION "50f22e4e58609b41670b9ac86b9d0797d020ed65")
-set(JSBSIM_VERSION "1.0.0-advtrim-8")
+set(APPLICATION_VERSION_PATCH "7")
+set(ARKOSG_VERSION "0.1.6")
+set(ARKMATH_VERSION "0.2.3")
+set(ARKCOMM_VERSION "0.1.3")
+set(JSBSIM_VERSION "1.100.0")
+set(MAVLINK_VERSION "0.9.0")
 
 set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
 set(LIBRARY_VERSION ${APPLICATION_VERSION})
@@ -34,11 +34,23 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake/arkcmake
 )
 
-# add definitions
+# add macros
 include(DefineCMakeDefaults)
 include(DefinePlatformDefaults)
 include(DefineCompilerFlags)
 include(DefineInstallationPaths)
+include(FindMAVLINK)
+include(FindARKOSG)
+include(FindARKMATH)
+include(FindARKCOMM)
+include(FindJSBSIM)
+include(MacroAddPlugin)
+include(MacroCopyFile)
+include(MacroSetDefault)
+include(language_support_v2)
+include(MacroAddLinkFlags)
+include(ExternalProject)
+include(CTest)
 
 # cpack
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "arkTools scicoslab toolbox")
@@ -54,7 +66,7 @@ set(CPACK_PACKAGE_VERSION_PATCH "${APPLICATION_VERSION_PATCH}")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 set(CPACK_SET_DESTDIR TRUE)
 set(CPACK_SOURCE_IGNORE_FILES ${CPACK_SOURCE_IGNORE_FILES}
-	/.git/;/build/;~$;.*\\\\.bin$;.*\\\\.swp$)
+    /.git/;/build/;~$;.*\\\\.bin$;.*\\\\.swp$)
 set(CPACK_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
 if(WIN32)
@@ -69,21 +81,6 @@ elseif(UNIX)
 else()
     message(FATAL_ERROR "unknown operating system")
 endif()
-#if(WIN32 and not UNIX)
-  ## There is a bug in NSI that does not handle full unix paths properly. Make
-  ## sure there is at least one set of four (4) backlasshes.
-  #set(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
-  #set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
-  #set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ${PROJECT_NAME}")
-  #set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
-  #set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
-  #set(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
-  #set(CPACK_NSIS_MODIFY_PATH ON)
-#else(WIN32 and not UNIX)
-  #set(CPACK_STRIP_FILES "bin/MyExecutable")
-  #set(CPACK_SOURCE_STRIP_FILES "")
-#endif(WIN32 and not UNIX)
-#set(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
 include(CPack)
 
 # disallow in-source build
@@ -91,14 +88,6 @@ include(MacroEnsureOutOfSourceBuild)
 macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source build. 
 Please create a separate build directory and run 'cmake /path/to/${PROJECT_NAME} [options]' there.")
 
-# add macros
-include(MacroAddPlugin)
-include(MacroCopyFile)
-include(MacroSetDefault)
-include(language_support_v2)
-include(MacroAddLinkFlags)
-include(ExternalProject)
-include(CTest)
 
 # settings
 option(DEV_MODE "Setup paths for developer testing." OFF)
@@ -119,151 +108,63 @@ endif(NOT CMAKE_BUILD_TYPE)
 enable_language(C)
 enable_language(CXX)
 if(NOT APPLE)
-	enable_language(Fortran)
+    enable_language(Fortran)
 endif()
 
 # add make dist target
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
-# find libraries with cmake modules
-find_package(SCICOSLAB REQUIRED)
-find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
-find_package(SIMGEAR)
-find_package(PLIB)
-find_package(LAPACK)
-find_package(ARKOSG ${ARKOSG_VERSION})
-find_package(ARKCOMM ${ARKCOMM_VERSION})
-find_package(ARKMATH ${ARKMATH_VERSION})
-find_package(JSBSIM)
-find_package(MAVLINK)
-find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
-
-# external projects
-set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
-set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
-set(EP_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}-external)
-set(EP_INSTALL_PREFIX_BUILD ${EP_BASE_DIR}/${PROJECT_NAME}-external)
-
 # install/developer mode
 if(DEV_MODE)
     message(STATUS "configuring for in source build")
     set(DATADIR ${PROJECT_SOURCE_DIR}/data)
-    set(LIBDIR ${CMAKE_BINARY_DIR}/bin)
+    set(LIBDIR ${CMAKE_BINARY_DIR}/lib)
     set(BINDIR ${CMAKE_BINARY_DIR}/bin)
-	set(EP_INSTALL_ROOT ${EP_INSTALL_PREFIX_BUILD})
+    set(EP_DATADIR ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/share)
 else()
     message(STATUS "configuring for install build")
     set(DATADIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/data)
     set(LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
     set(BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
-	set(EP_INSTALL_ROOT ${EP_INSTALL_PREFIX})
+    set(EP_DATADIR ${EP_INSTALL_PREFIX}/share)
 endif()
 
-# static lib prefix
-if(WIN32)
-    set(STATIC_LIB_PREFIX "")
-elseif(APPLE)
-    set(STATIC_LIB_PREFIX "lib")
-elseif(UNIX)
-    set(STATIC_LIB_PREFIX "lib")
-else()
-    message(FATAL_ERROR "unknown operating system")
-endif()
+# external projects
+set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
+set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
+set(EP_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}-external)
 
-if( NOT MAVLINK_FOUND)
-    ExternalProject_Add(mavlink
-        GIT_REPOSITORY "git://github.com/pixhawk/mavlink.git"
-		GIT_TAG ${MAVLINK_VERSION}
-		CONFIGURE_COMMAND ""
-		BUILD_COMMAND ""
-		INSTALL_COMMAND ""
-		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
-        UPDATE_COMMAND ""
-		BUILD_IN_SOURCE 1
-	)
-	set(MAVLINK_FOUND TRUE)
-	set(MAVLINK_INCLUDE_DIRS ${EP_BASE_DIR}/Source/mavlink/include)
-endif()
+# find libraries with cmake modules
+find_package(SCICOSLAB REQUIRED)
+find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
+find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
+find_package(PLIB)
+find_package(SIMGEAR)
+find_package(LAPACK)
+find_or_build_arkcomm(${ARKCOMM_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+find_or_build_arkmath(${ARKMATH_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+find_or_build_arkosg(${ARKOSG_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+find_or_build_jsbsim(${JSBSIM_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+find_or_build_mavlink(${MAVLINK_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
 
-if(NOT ARKCOMM_FOUND)
-    ExternalProject_Add(arkcomm
-        GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
-		GIT_TAG ${ARKCOMM_VERSION}
-        UPDATE_COMMAND ""
-		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
-		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-		INSTALL_COMMAND make DESTDIR=${EP_INSTALL_PREFIX_BUILD} install
-       )
-   	set(ARKCOMM_INCLUDE_DIRS ${EP_INSTALL_PREFIX_BUILD}/include)
-	set(ARKCOMM_LIBRARIES ${EP_INSTALL_PREFIX_BUILD}/lib/${STATIC_LIB_PREFIX}arkcomm.a)
-    set(ARKCOMM_FOUND TRUE)
-endif()
-
-if(NOT ARKOSG_FOUND)
-    ExternalProject_Add(arkosg
-        GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
-		GIT_TAG ${ARKOSG_VERSION} 
-        UPDATE_COMMAND ""
-		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
-		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-		INSTALL_COMMAND make DESTDIR=${EP_INSTALL_PREFIX_BUILD} install
-        )
-   	set(ARKCOMM_INCLUDE_DIRS ${EP_INSTALL_PREFIX_BUILD}/include)
-	set(ARKOSG_DATA_DIR ${EP_INSTALL_ROOT}/share/arkosg/data)
-	set(ARKOSG_LIBRARIES ${EP_INSTALL_PREFIX_BUILD}/lib/${STATIC_LIB_PREFIX}arkosg.a)
-    set(ARKOSG_FOUND TRUE)
-endif() 
-
-if(NOT ARKMATH_FOUND)
-    ExternalProject_Add(arkmath
-        GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
-		GIT_TAG ${ARKMATH_VERSION} 
-        UPDATE_COMMAND ""
-		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
-		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-		INSTALL_COMMAND make DESTDIR=${EP_INSTALL_PREFIX_BUILD} install
-        )
-   	set(ARKCOMM_INCLUDE_DIRS ${EP_INSTALL_PREFIX_BUILD}/include)
-	set(ARKMATH_DATA_DIR ${EP_INSTALL_ROOT}/share/arkmath/data)
-	set(ARKMATH_LIBRARIES ${EP_INSTALL_PREFIX_BUILD}/lib/${STATIC_LIB_PREFIX}arkmath.a)
-    set(ARKMATH_FOUND TRUE)
-endif()
-
-if(NOT JSBSIM_FOUND)
-    ExternalProject_Add(jsbsim
-        GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
-		GIT_TAG ${JSBSIM_VERSION} 
-        UPDATE_COMMAND ""
-		CONFIGURE_COMMAND ${EP_BASE_DIR}/Source/jsbsim/autogen.sh --enable-libraries --prefix=${CMAKE_INSTALL_PREFIX}
-		BUILD_COMMAND make -j4
-        BUILD_IN_SOURCE 1
-		INSTALL_DIR ${EP_INSTALL_PREFIX_BUILD}
-		CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-		INSTALL_COMMAND make DESTDIR=${EP_INSTALL_PREFIX_BUILD} install
-        )
-	set(JSBSIM_INCLUDE_DIRS ${EP_INSTALL_PREFIX_BUILD}/include ${EP_INSTALL_PREFIX_BUILD}/include/JSBSim)
-	set(JSBSIM_DATA_DIR ${EP_INSTALL_ROOT}/data/jsbsim)
-	set(JSBSIM_LIBRARIES ${EP_INSTALL_PREFIX_BUILD}/lib/${STATIC_LIB_PREFIX}JSBSim.a)
-    set(JSBSIM_FOUND TRUE)
-endif()
-
+# initialize list of libraries to build with
 set(ARKSCICOS_LIBRARIES "")
 
 # install data files
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/projects" DESTINATION share/${PROJECT_NAME} PATTERN "*.git*" EXCLUDE)
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
     DESTINATION ${SCICOSLAB_CONTRIB_DIR}
-	PATTERN "*.git*" EXCLUDE)
+    PATTERN "*.git*" EXCLUDE)
 
 # install required dependencies from external projects
-install(DIRECTORY "${EP_INSTALL_PREFIX_BUILD}" DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY ${EP_BASE_DIR}/${EP_INSTALL_PREFIX} DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 # pkgconfig
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
 install(FILES
-	${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
-	DESTINATION lib/pkgconfig
-	)
+    ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
+    DESTINATION lib/pkgconfig
+    )
 
 # subdirectories
 add_subdirectory(src)

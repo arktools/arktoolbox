@@ -24,9 +24,9 @@
  *
  */
 
-#include "JSBSim/FGFDMExec.h"
-#include "JSBSim/models/FGFCS.h"
-#include "JSBSim/math/FGStateSpace.h"
+#include "jsbsim/FGFDMExec.h"
+#include "jsbsim/models/FGFCS.h"
+#include "jsbsim/math/FGStateSpace.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>

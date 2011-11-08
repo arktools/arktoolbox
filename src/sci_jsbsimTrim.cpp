@@ -17,14 +17,14 @@
  */
 
 #include <cstdlib>
-#include "JSBSim/initialization/FGTrimmer.h"
-#include "JSBSim/math/FGStateSpace.h"
+#include "jsbsim/initialization/FGTrimmer.h"
+#include "jsbsim/math/FGStateSpace.h"
 #include <iomanip>
 #include <fstream>
-#include "JSBSim/models/FGAircraft.h"
-#include "JSBSim/models/propulsion/FGEngine.h"
-#include "JSBSim/models/propulsion/FGTurbine.h"
-#include "JSBSim/models/propulsion/FGTurboProp.h"
+#include "jsbsim/models/FGAircraft.h"
+#include "jsbsim/models/propulsion/FGEngine.h"
+#include "jsbsim/models/propulsion/FGTurbine.h"
+#include "jsbsim/models/propulsion/FGTurboProp.h"
 #include "config.h"
 #include <exception>
 
