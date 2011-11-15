@@ -4,26 +4,41 @@ function [x,y,typ]=mavlinkHilState(job,arg1,arg2)
 //
 // USAGE:
 //
-// input: 
-//   airspeed (meters/second)
-//     [1] Vt (true airspeed)
-//   attitude (rad)
-//     [2] roll
-//     [3] pitch
-//     [4] yaw
-//   attitude rates (body frame, rad/second)
-//     [5] rollRate
-//     [6] pitchRate
-//     [7] yawRate 
-//   position
-//     [8] cog (course over ground)
-//     [9] sog (speed over ground)
-//    [10] lat (rad)
-//    [11] lon (rad)
-//    [12] alt (meters)
+// input
 //
-// output: 
-// 	   normalized servos [1]-[8]
+//	// attitude states (rad)
+//	[1] roll 
+//	[2] pitch 
+//	[3] yaw 
+//
+//	// body rates
+//	[4] rollRate 
+//	[5] pitchRate 
+//	[6] yawRate 
+//
+//  // position
+//	[7] lat 
+//	[8] lon 
+//	[9] alt 
+//
+//	// velocity
+//	[10] vn 
+//	[11] ve 
+//	[12] vd 
+//
+//  // acceleration
+//  [13] xacc
+//  [14] yacc
+//  [15] zacc
+//
+// output
+//
+//	[1] roll
+//	[2] pitch
+//	[3] yaw
+//	[4] throttle
+//	[5] mode
+//	[6] nav_mode
 //
 // AUTHOR:
 //
@@ -64,7 +79,7 @@ select job
 				getvalue('Set mavlink HIL Parameters',labels,..
 				list('str',-1,'vec',1),exprs);
 			if ~ok then break,end
-			[model,graphics,ok]=check_io(model,graphics,[12],[8],[1],[])
+			[model,graphics,ok]=check_io(model,graphics,[15],[6],[1],[])
 			if ok then
 				model.ipar=[..
 					length(evstr(device)),ascii(evstr(device)),0,..
@@ -79,8 +94,8 @@ select job
 		// set model properties
 		model=scicos_model()
 		model.sim=list('sci_mavlinkHilState',4)
-		model.in=[12]
-		model.out=[8]
+		model.in=[15]
+		model.out=[6]
 		model.evtin=[1]
 		model.blocktype='c'
 		model.dep_ut=[%t %f]

@@ -15,6 +15,43 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * input
+ *
+ *	// attitude states (rad)
+ *	[1] roll 
+ *	[2] pitch 
+ *	[3] yaw 
+ *
+ *	// body rates
+ *	[4] rollRate 
+ *	[5] pitchRate 
+ *	[6] yawRate 
+ *
+ *	// position
+ *	[7] lat 
+ *	[8] lon 
+ *	[9] alt 
+ *
+ *  // velocity
+ *	[10] vn 
+ *	[11] ve 
+ *	[12] vd 
+ *
+ *  // acceleration
+ *	[13] xacc
+ *	[14] yacc
+ *	[15] zacc
+ *
+ *
+ * output
+ *
+ *	[1] roll
+ *	[2] pitch
+ *	[3] yaw
+ *	[4] throttle
+ *	[5] mode
+ *	[6] nav_mode
+ *
  */
 
 #include "utilities.hpp"
@@ -90,72 +127,50 @@ extern "C"
 
 			// loop rates
 			// TODO: clean this up to use scicos events w/ timers
-            static int attitudeRate = 50;
-            static int positionRate = 10;
-            static int airspeedRate = 1;
+            static int hilRate = 50;
 
 			// initial times
             double scicosTime = get_scicos_time();
-            static double attitudeTimeStamp = scicosTime;
-            static double positionTimeStamp = scicosTime;
-            static double  airspeedTimeStamp = scicosTime;
-
-			// send airspeed message
-            if (scicosTime - airspeedTimeStamp > 1.0/airspeedRate)
-            {
-                airspeedTimeStamp = scicosTime;
-
-				// airspeed (true velocity m/s)
-            	float Vt = u[0];
-                //double rawPress = 1;
-                //double airspeed = 1;
-
-                //mavlink_msg_raw_pressure_send(chan,timeStamp,airspeed,rawPress,0);
-            }
-            else if (scicosTime  - airspeedTimeStamp < 0)
-                airspeedTimeStamp = scicosTime;
+            static double hilTimeStamp = scicosTime;
 
             // send attitude message
-            if (scicosTime - attitudeTimeStamp > 1.0/attitudeRate)
+            if (scicosTime - hilTimeStamp > 1.0/hilRate)
             {
-                attitudeTimeStamp = scicosTime;
+                hilTimeStamp = scicosTime;
 
 				// attitude states (rad)
-				float roll = u[1];
-				float pitch = u[2];
-				float yaw = u[3];
+				float roll = u[0];
+				float pitch = u[1];
+				float yaw = u[2];
 
 				// body rates
-				float rollRate = u[4];
-				float pitchRate = u[5];
-				float yawRate = u[6];
+				float rollRate = u[3];
+				float pitchRate = u[4];
+				float yawRate = u[5];
 
-                mavlink_msg_attitude_send(chan,attitudeTimeStamp,roll,pitch,yaw,
-						rollRate,pitchRate,yawRate);
+				// position
+				int32_t lat = u[6]*rad2deg*1e7;
+                int32_t lon = u[7]*rad2deg*1e7;
+                int16_t alt = u[8]*1e3;
+
+				int16_t vx = u[9]*1e2;
+                int16_t vy = u[10]*1e2;
+                int16_t vz = -u[11]*1e2;
+
+				int16_t xacc = u[12]*1e3;
+                int16_t yacc = u[13]*1e3;
+                int16_t zacc = u[14]*1e3;
+              
+				mavlink_msg_hil_state_send(chan,hilTimeStamp,
+						roll,pitch,yaw,
+						rollRate,pitchRate,yawRate,
+						lat,lon,alt,
+						vx,vy,vz,
+						xacc,yacc,zacc);
             }
-            else if (scicosTime  - attitudeTimeStamp < 0)
-                attitudeTimeStamp = scicosTime;
-
- 		            // send gps mesage
-            if (scicosTime - positionTimeStamp > 1.0/positionRate)
-            {
-                positionTimeStamp = scicosTime;
-
-                // gps
-                double cog = u[7];
-                double sog = u[8];
-                double lat = u[9]*rad2deg;
-                double lon = u[10]*rad2deg;
-                double alt = u[11];
-
-                //double rawPress = 1;
-                //double airspeed = 1;
-
-                mavlink_msg_gps_raw_send(chan,positionTimeStamp,1,lat,lon,alt,2,10,sog,cog);
-                //mavlink_msg_raw_pressure_send(chan,timeStamp,airspeed,rawPress,0);
+            else if (scicosTime  - hilTimeStamp < 0)
+                hilTimeStamp = scicosTime;
             }
-            else if (scicosTime  - positionTimeStamp < 0)
-                positionTimeStamp = scicosTime;
 
             // receive messages
             mavlink_message_t msg;
@@ -170,19 +185,17 @@ extern "C"
                 {
                     switch(msg.msgid)
                     {
-                    case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
+                    case MAVLINK_MSG_ID_HIL_CONTROLS:
                     {
 						//std::cout << "receiving messages" << std::endl;
-        				mavlink_rc_channels_scaled_t rc_channels;
-                        mavlink_msg_rc_channels_scaled_decode(&msg,&rc_channels);
-                        y[0] = rc_channels.chan1_scaled/10000.0f;
-                        y[1] = rc_channels.chan2_scaled/10000.0f;
-                        y[2] = rc_channels.chan3_scaled/10000.0f;
-                        y[3] = rc_channels.chan4_scaled/10000.0f;
-                        y[4] = rc_channels.chan5_scaled/10000.0f;
-                        y[5] = rc_channels.chan6_scaled/10000.0f;
-                        y[6] = rc_channels.chan7_scaled/10000.0f;
-                        y[7] = rc_channels.chan8_scaled/10000.0f;
+						mavlink_hil_controls_t hil_controls;
+                        mavlink_msg_hil_controls_decode(&msg,&hil_controls);
+						y[0] = hil_controls.roll;
+						y[1] = hil_controls.pitch;
+						y[2] = hil_controls.yaw;
+						y[3] = hil_controls.throttle;
+						y[4] = hil_controls.mode;
+						y[5] = hil_controls.nav_mode;
                         break;
                     }
                 }
