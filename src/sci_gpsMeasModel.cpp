@@ -1,6 +1,6 @@
 /*sci_gpsMeasModel.cpp
- * Copyright (C) James Goppert 2011 
- * 
+ * Copyright (C) James Goppert 2011
+ *
  * This file is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
@@ -25,7 +25,7 @@
  *   [2] position error std deviation (unit distance)
  *   [2] altitude error std deviation (unit distance)
  *
- * output 1: 
+ * output 1:
  *
  *  mode (0)
  *   H_gps (6x10)
@@ -58,76 +58,78 @@ extern "C"
 #include <math.h>
 #include "definitions.hpp"
 
-void sci_gpsMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
-{
-    enum ins_mode {INS_FULL_STATE=0,INS_ATT_STATE=1,INS_VP_STATE=2};
-
-    // constants
-
-    // data
-    double * u1=(double*)GetInPortPtrs(block,1);
-    double * u2=(double*)GetInPortPtrs(block,2);
-    double * y1=(double*)GetOutPortPtrs(block,1);
-    double * y2=(double*)GetOutPortPtrs(block,2);
-    int * ipar=block->ipar;
-    double * rpar=block->rpar;
-
-    // alias names
-    double & h = u1[0];
-    double & L = u1[1];
-    double & sigVel = u2[0];
-    double & sigPos = u2[1];
-    double & sigAlt = u2[2];
-
-    int & mode = ipar[0];
-    double & Re = rpar[0];
-
-    // sizes
-    int nX = 0, nZ = 6;
-    if (mode == INS_FULL_STATE) nX = 10;
-    else if (mode == INS_VP_STATE) nX = 6;
-    else Coserror((char *)"unknown mode for insErrorDynamics block");
-
-    // matrices
-    using namespace boost::numeric::ublas;
-    matrix<double,column_major, shallow_array_adaptor<double> > H_gps(nZ,nX,shallow_array_adaptor<double>(nZ*nX,y1));
-    matrix<double,column_major, shallow_array_adaptor<double> > R_gps(nZ,nZ,shallow_array_adaptor<double>(nZ*nZ,y2));
-
-    //handle flags
-    if (flag==scicos::computeOutput)
+    void sci_gpsMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
     {
-        const double cosL = cos(L);
-        const double sigVel2 = sigVel*sigVel;
-        const double sigPos2 = sigPos*sigPos;
-        const double sigAlt2 = sigAlt*sigAlt;
-        const double R = R*R;
+        enum ins_mode {
+            INS_FULL_STATE=0,INS_ATT_STATE=1,INS_VP_STATE=2
+                                       };
 
-        if (mode == INS_FULL_STATE)
+        // constants
+
+        // data
+        double * u1=(double*)GetInPortPtrs(block,1);
+        double * u2=(double*)GetInPortPtrs(block,2);
+        double * y1=(double*)GetOutPortPtrs(block,1);
+        double * y2=(double*)GetOutPortPtrs(block,2);
+        int * ipar=block->ipar;
+        double * rpar=block->rpar;
+
+        // alias names
+        double & h = u1[0];
+        double & L = u1[1];
+        double & sigVel = u2[0];
+        double & sigPos = u2[1];
+        double & sigAlt = u2[2];
+
+        int & mode = ipar[0];
+        double & Re = rpar[0];
+
+        // sizes
+        int nX = 0, nZ = 6;
+        if (mode == INS_FULL_STATE) nX = 10;
+        else if (mode == INS_VP_STATE) nX = 6;
+        else Coserror((char *)"unknown mode for insErrorDynamics block");
+
+        // matrices
+        using namespace boost::numeric::ublas;
+        matrix<double,column_major, shallow_array_adaptor<double> > H_gps(nZ,nX,shallow_array_adaptor<double>(nZ*nX,y1));
+        matrix<double,column_major, shallow_array_adaptor<double> > R_gps(nZ,nZ,shallow_array_adaptor<double>(nZ*nZ,y2));
+
+        //handle flags
+        if (flag==scicos::computeOutput)
         {
-            #include "arkmath/gen_cpp/ins_H_gps.hpp" 
+            const double cosL = cos(L);
+            const double sigVel2 = sigVel*sigVel;
+            const double sigPos2 = sigPos*sigPos;
+            const double sigAlt2 = sigAlt*sigAlt;
+            const double R = R*R;
+
+            if (mode == INS_FULL_STATE)
+            {
+#include "arkmath/gen_cpp/ins_H_gps.hpp"
+            }
+            else if (mode == INS_VP_STATE)
+            {
+#define H_gps_vp H_gps
+#include "arkmath/gen_cpp/ins_H_gps_vp.hpp"
+            }
+            else
+            {
+                Coserror((char *)"unknown mode for gpsMeasModel block");
+                return;
+            }
         }
-        else if (mode == INS_VP_STATE)
+        else if (flag==scicos::terminate)
         {
-            #define H_gps_vp H_gps
-            #include "arkmath/gen_cpp/ins_H_gps_vp.hpp" 
+        }
+        else if (flag==scicos::initialize || flag==scicos::reinitialize)
+        {
         }
         else
         {
-            Coserror((char *)"unknown mode for gpsMeasModel block");
-            return;
+            std::cout << "unhandled block flag: " << flag << std::endl;
         }
     }
-    else if (flag==scicos::terminate)
-    {
-    }
-    else if (flag==scicos::initialize || flag==scicos::reinitialize)
-    {
-    }
-    else
-    {
-        std::cout << "unhandled block flag: " << flag << std::endl;
-    }
-}
 
 } // extern c
 

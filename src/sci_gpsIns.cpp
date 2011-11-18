@@ -40,43 +40,43 @@ extern "C"
 
     void sci_gpsIns(scicos_block *block, scicos::enumScicosFlags flag)
     {
-		static mavsim::GpsIns* gpsIns = NULL;
+        static mavsim::GpsIns* gpsIns = NULL;
 
-		// constants
-		bool useGravity = false;
+        // constants
+        bool useGravity = false;
 
-	 	// data
+        // data
         double * u1=(double*)GetInPortPtrs(block,1);
-		double * u2=(double*)GetInPortPtrs(block,2);
+        double * u2=(double*)GetInPortPtrs(block,2);
         double * xOut=(double*)GetOutPortPtrs(block,1);
         double * rpar=block->rpar;
 
-		// alias names
-		double * fbx = &u1[0];
-		double * fby = &u1[1];
-		double * fbz = &u1[2];
-		double * wbx = &u1[3];
-		double * wby = &u1[4];
-		double * wbz = &u1[5];
+        // alias names
+        double * fbx = &u1[0];
+        double * fby = &u1[1];
+        double * fbz = &u1[2];
+        double * wbx = &u1[3];
+        double * wby = &u1[4];
+        double * wbz = &u1[5];
 
-		double * lat = &u2[0];
-		double * lon = &u2[1];
-		double * height = &u2[2];
-		double * roll = &u2[3];
-		double * pitch = &u2[4];
-		double * yaw = &u2[5];
-		double * Vn = &u2[6];
-		double * Ve = &u2[7];
-		double * Vd = &u2[8];
+        double * lat = &u2[0];
+        double * lon = &u2[1];
+        double * height = &u2[2];
+        double * roll = &u2[3];
+        double * pitch = &u2[4];
+        double * yaw = &u2[5];
+        double * Vn = &u2[6];
+        double * Ve = &u2[7];
+        double * Vd = &u2[8];
 
-		double * sigmaPos = &rpar[0];
-		double * sigmaAlt = &rpar[1];
-		double * sigmaVel = &rpar[2];
-		double * sigmaAccelG = &rpar[3];
-		double * sigmaGyro = &rpar[4];
+        double * sigmaPos = &rpar[0];
+        double * sigmaAlt = &rpar[1];
+        double * sigmaVel = &rpar[2];
+        double * sigmaAccelG = &rpar[3];
+        double * sigmaGyro = &rpar[4];
 
-	
-		// make sure you have initialized the block
+
+        // make sure you have initialized the block
         if (!gpsIns && flag!=scicos::initialize)
         {
             sci_gpsIns(block,scicos::initialize);
@@ -88,15 +88,15 @@ extern "C"
             //std::cout << "initializing" << std::endl;
             if (!gpsIns)
             {
-			
-				try
-				{
-                	gpsIns = new mavsim::GpsIns(*lat,*lon,*height,*roll,*pitch,*yaw,*Vn,*Ve,*Vd,*sigmaPos,*sigmaAlt,*sigmaVel,*sigmaAccelG,*sigmaGyro,useGravity);
-				}
-				catch (const std::runtime_error & e)
-				{
-					Coserror((char *)e.what());
-				}
+
+                try
+                {
+                    gpsIns = new mavsim::GpsIns(*lat,*lon,*height,*roll,*pitch,*yaw,*Vn,*Ve,*Vd,*sigmaPos,*sigmaAlt,*sigmaVel,*sigmaAccelG,*sigmaGyro,useGravity);
+                }
+                catch (const std::runtime_error & e)
+                {
+                    Coserror((char *)e.what());
+                }
             }
         }
         else if (flag==scicos::terminate)
@@ -111,17 +111,17 @@ extern "C"
         else if (flag==scicos::updateState)
         {
             //std::cout << "updating state" << std::endl;
-		
+
         }
         else if (flag==scicos::computeOutput)
         {
             //std::cout << "computing Output" << std::endl;
-			if(gpsIns)
-			{
-				gpsIns->updateAll(*fbx, *fby, *fbz, *wbx, *wby,
-						*wbz, *lat, *lon, *height, *Vn, *Ve, *Vd);
-				gpsIns->getState(xOut);
-			}
+            if(gpsIns)
+            {
+                gpsIns->updateAll(*fbx, *fby, *fbz, *wbx, *wby,
+                                  *wbz, *lat, *lon, *height, *Vn, *Ve, *Vd);
+                gpsIns->getState(xOut);
+            }
         }
         else
         {

@@ -1,6 +1,6 @@
 /*sci_waypointGuidance.cpp
- * Copyright (C) Alan Kim, James Goppert 2011 
- * 
+ * Copyright (C) Alan Kim, James Goppert 2011
+ *
  * This file is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
@@ -16,7 +16,7 @@
  *
  *
  * u1: lat, lon, alt, velocity (destination)
- * u2: x 
+ * u2: x
  * u3: lat, lon, alt, velocity, heading (obstacle)
  *
  * Out1 = eH, eV, eR, ePsi, ePhi
@@ -38,8 +38,8 @@ extern "C"
 #include "definitions.hpp"
 
 
-    void vincentys(double, double, double, double,double*, double*); 
-    void getVehicleHeading(double* deltaBearing, double* deltaV, double vehSpeed, double vehBearing, double obstSpeed, double obstBearing, double desiredBearing, double bearingLim1, double bearingLim2, bool outsideLimits); 
+    void vincentys(double, double, double, double,double*, double*);
+    void getVehicleHeading(double* deltaBearing, double* deltaV, double vehSpeed, double vehBearing, double obstSpeed, double obstBearing, double desiredBearing, double bearingLim1, double bearingLim2, bool outsideLimits);
 
     void checkAngle(double* alpha) {
         if(*alpha < -M_PI)
@@ -103,7 +103,7 @@ extern "C"
 
 
             double dLon = commandedLon - lon;
-            double y = sin(dLon) * cos(commandedLat);	            
+            double y = sin(dLon) * cos(commandedLat);
             double x = cos(lat)*sin(commandedLat) - sin(lat)*cos(commandedLat)*cos(dLon);
             double c = sqrt(x*x + y*y);
             double psiW = atan2(y,x);
@@ -142,7 +142,7 @@ extern "C"
             if (dC < separationWindow * 25) {
 
                 // Find the velocity vector of the vehicle relative to the obstacle.
-                double relativeVel_x = commandedSpeed * cos(commandPsi) - obstacleSpeed * cos(obstaclePsi);                
+                double relativeVel_x = commandedSpeed * cos(commandPsi) - obstacleSpeed * cos(obstaclePsi);
                 double relativeVel_y = commandedSpeed * sin(commandPsi) - obstacleSpeed * sin(obstaclePsi);
                 double relativeVel_psi = atan2(relativeVel_y, relativeVel_x);
 
@@ -231,7 +231,7 @@ void getVehicleHeading(double* deltaBearing, double* deltaV, double vehSpeed, do
     *deltaBearing = 0;
     *deltaV = 0;
 
-    for(int i = 0; i < NUM_BEARING_CALCS; i++){
+    for(int i = 0; i < NUM_BEARING_CALCS; i++) {
 
         for(int j = i;;) {
             *deltaBearing = j * M_PI/NUM_BEARING_CALCS;
@@ -243,8 +243,8 @@ void getVehicleHeading(double* deltaBearing, double* deltaV, double vehSpeed, do
                         return;
                     }
                 } else {
-                    if( (resBearing < bearingLim2) || (resBearing > bearingLim1)){
-                        return;                
+                    if( (resBearing < bearingLim2) || (resBearing > bearingLim1)) {
+                        return;
                     }
                 }
             } else {
@@ -281,7 +281,7 @@ void getVehicleHeading(double* deltaBearing, double* deltaV, double vehSpeed, do
 #define ITERATION_LIMIT 100
 
 void vincentys(double lat1, double lon1, double lat2, double lon2,
-        double *distance, double *bearing) {
+               double *distance, double *bearing) {
 
     int iterationCount = 0;
     double   L;
@@ -325,11 +325,11 @@ void vincentys(double lat1, double lon1, double lat2, double lon2,
         cosLambda = cos(lambda);
 
         sinSigma = sqrt(
-                (cosU2 * sinLambda) *
-                (cosU2 * sinLambda) +
-                (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda) *
-                (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
-                );
+                       (cosU2 * sinLambda) *
+                       (cosU2 * sinLambda) +
+                       (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda) *
+                       (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+                   );
 
         if (sinSigma == 0) {
             *distance = -1;
@@ -337,7 +337,7 @@ void vincentys(double lat1, double lon1, double lat2, double lon2,
         }
 
         cosSigma = (sinU1 * sinU2) +
-            (cosU1 * cosU2 * cosLambda);
+                   (cosU1 * cosU2 * cosLambda);
 
         sigma = atan2(sinSigma, cosSigma);
 
@@ -357,16 +357,16 @@ void vincentys(double lat1, double lon1, double lat2, double lon2,
 
         lambdaP = lambda;
         lambda  = L +
-            (1 - C) *
-            FLATTENING * sinAlpha *
-            (sigma + C * sinSigma *
-             (cos2SigmaM + C * cosSigma *
-              (-1 + 2 * cos2SigmaM * cos2SigmaM)
-             )
-            );
+                  (1 - C) *
+                  FLATTENING * sinAlpha *
+                  (sigma + C * sinSigma *
+                   (cos2SigmaM + C * cosSigma *
+                    (-1 + 2 * cos2SigmaM * cos2SigmaM)
+                   )
+                  );
 
     } while ( (fabs(lambda - lambdaP) > .000000000001) &&
-            (++iterationCount       < ITERATION_LIMIT));
+              (++iterationCount       < ITERATION_LIMIT));
 
     if (iterationCount == ITERATION_LIMIT) {
         *distance = -1;
@@ -374,8 +374,8 @@ void vincentys(double lat1, double lon1, double lat2, double lon2,
     }
 
     uSquared = cosSquaredAlpha *
-        (MAJOR_AXIS_LENGTH * MAJOR_AXIS_LENGTH - MINOR_AXIS_LENGTH * MINOR_AXIS_LENGTH) /
-        (MINOR_AXIS_LENGTH * MINOR_AXIS_LENGTH);
+               (MAJOR_AXIS_LENGTH * MAJOR_AXIS_LENGTH - MINOR_AXIS_LENGTH * MINOR_AXIS_LENGTH) /
+               (MINOR_AXIS_LENGTH * MINOR_AXIS_LENGTH);
 
     A = 1 + uSquared / 16384 *
         (4096 + uSquared *
@@ -392,12 +392,12 @@ void vincentys(double lat1, double lon1, double lat2, double lon2,
         );
 
     deltaSigma = B * sinSigma *
-        (cos2SigmaM + B / 4 *
-         (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
-          B / 6 * cos2SigmaM * 
-          (-3 + 4 * sinSigma * sinSigma) *
-          (-3 + 4 * cos2SigmaM * cos2SigmaM))
-        );
+                 (cos2SigmaM + B / 4 *
+                  (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) -
+                   B / 6 * cos2SigmaM *
+                   (-3 + 4 * sinSigma * sinSigma) *
+                   (-3 + 4 * cos2SigmaM * cos2SigmaM))
+                 );
 
     *distance = MINOR_AXIS_LENGTH * A * (sigma - deltaSigma);
 

@@ -1,6 +1,6 @@
 /*sci_magMeasModel.cpp
- * Copyright (C) Alan Kim, James Goppert 2011 
- * 
+ * Copyright (C) Alan Kim, James Goppert 2011
+ *
  * This file is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
@@ -31,7 +31,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include "arkmath/GpsIns.hpp" 
+#include "arkmath/GpsIns.hpp"
 #include "arkmath/storage_adaptors.hpp"
 #include "utilities.hpp"
 #include <stdexcept>
@@ -45,83 +45,85 @@ extern "C"
 #include <math.h>
 #include "definitions.hpp"
 
-void sci_magMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
-{
-    enum ins_mode {INS_FULL_STATE=0,INS_ATT_STATE=1,INS_VP_STATE=2};
-
-    // constants
-
-    // data
-    double * u1=(double*)GetInPortPtrs(block,1);
-    double * u2=(double*)GetInPortPtrs(block,2);
-    double * u3=(double*)GetInPortPtrs(block,3);
-    double * y1=(double*)GetOutPortPtrs(block,1);
-    double * y2=(double*)GetOutPortPtrs(block,2);
-    double * y3=(double*)GetOutPortPtrs(block,3);
-    int * ipar=block->ipar;
-
-    // alias names
-    double & dip = u1[0];
-    double & dec = u1[1];
-    double & sigDip = u2[0];
-    double & sigDec = u2[1];
-
-    // Note that l = lon, and not in the equations but left here
-    // for ease of use with full state vector x
-    double & a      = u3[0];
-    double & b      = u3[1];
-    double & c      = u3[2];
-    double & d      = u3[3];
-            
-    int & mode = ipar[0];
-
-    // sizes
-    int nX = 0, nZ = 0;
-    if (mode == INS_FULL_STATE) nX = 10, nZ = 3;
-    else if (mode == INS_ATT_STATE) nX = 4, nZ = 3;
-    else Coserror((char *)"unknown mode for insErrorDynamics block");
-
-    // matrices
-    using namespace boost::numeric::ublas;
-    matrix<double,column_major, shallow_array_adaptor<double> > H_mag(nZ,nX,shallow_array_adaptor<double>(nZ*nX,y1));
-    matrix<double,column_major, shallow_array_adaptor<double> > R_mag_n(nZ,nZ,shallow_array_adaptor<double>(nZ*nZ,y2));
-    matrix<double,column_major, shallow_array_adaptor<double> > z_mag(nZ,1,shallow_array_adaptor<double>(nZ,y3));
-
-    //handle flags
-    if (flag==scicos::computeOutput)
+    void sci_magMeasModel(scicos_block *block, scicos::enumScicosFlags flag)
     {
-        double sigDec2 = sigDec*sigDec;
-        double sigDip2 = sigDip*sigDip;
-        double cosDec = cos(dec), sinDec = sin(dec);
-        double cosDec2 = cosDec*cosDec, sinDec2 = sinDec*sinDec;
-        double cosDip = cos(dip), sinDip = sin(dip);
-        double cosDip2 = cosDip*cosDip, sinDip2 = sinDip*sinDip;
-        double Bn = cosDec*cosDip;
-        double Be = sinDec*cosDip;
-        double Bd = sinDip;
-        double aa = a*a;
-        double bb = b*b;
-        double cc = c*c;
-        double dd = d*d;
+        enum ins_mode {
+            INS_FULL_STATE=0,INS_ATT_STATE=1,INS_VP_STATE=2
+                                       };
 
-        // we can use the same file for both modes
-        // this works since non zero elements are ignored and 
-        // the states are the first 4 (quaternions in ATT mode)
-        #include "arkmath/gen_cpp/ins_H_mag.hpp" 
-        #include "arkmath/gen_cpp/ins_R_mag_n.hpp" 
-        #include "arkmath/gen_cpp/z_mag.hpp" 
+        // constants
+
+        // data
+        double * u1=(double*)GetInPortPtrs(block,1);
+        double * u2=(double*)GetInPortPtrs(block,2);
+        double * u3=(double*)GetInPortPtrs(block,3);
+        double * y1=(double*)GetOutPortPtrs(block,1);
+        double * y2=(double*)GetOutPortPtrs(block,2);
+        double * y3=(double*)GetOutPortPtrs(block,3);
+        int * ipar=block->ipar;
+
+        // alias names
+        double & dip = u1[0];
+        double & dec = u1[1];
+        double & sigDip = u2[0];
+        double & sigDec = u2[1];
+
+        // Note that l = lon, and not in the equations but left here
+        // for ease of use with full state vector x
+        double & a      = u3[0];
+        double & b      = u3[1];
+        double & c      = u3[2];
+        double & d      = u3[3];
+
+        int & mode = ipar[0];
+
+        // sizes
+        int nX = 0, nZ = 0;
+        if (mode == INS_FULL_STATE) nX = 10, nZ = 3;
+        else if (mode == INS_ATT_STATE) nX = 4, nZ = 3;
+        else Coserror((char *)"unknown mode for insErrorDynamics block");
+
+        // matrices
+        using namespace boost::numeric::ublas;
+        matrix<double,column_major, shallow_array_adaptor<double> > H_mag(nZ,nX,shallow_array_adaptor<double>(nZ*nX,y1));
+        matrix<double,column_major, shallow_array_adaptor<double> > R_mag_n(nZ,nZ,shallow_array_adaptor<double>(nZ*nZ,y2));
+        matrix<double,column_major, shallow_array_adaptor<double> > z_mag(nZ,1,shallow_array_adaptor<double>(nZ,y3));
+
+        //handle flags
+        if (flag==scicos::computeOutput)
+        {
+            double sigDec2 = sigDec*sigDec;
+            double sigDip2 = sigDip*sigDip;
+            double cosDec = cos(dec), sinDec = sin(dec);
+            double cosDec2 = cosDec*cosDec, sinDec2 = sinDec*sinDec;
+            double cosDip = cos(dip), sinDip = sin(dip);
+            double cosDip2 = cosDip*cosDip, sinDip2 = sinDip*sinDip;
+            double Bn = cosDec*cosDip;
+            double Be = sinDec*cosDip;
+            double Bd = sinDip;
+            double aa = a*a;
+            double bb = b*b;
+            double cc = c*c;
+            double dd = d*d;
+
+            // we can use the same file for both modes
+            // this works since non zero elements are ignored and
+            // the states are the first 4 (quaternions in ATT mode)
+#include "arkmath/gen_cpp/ins_H_mag.hpp"
+#include "arkmath/gen_cpp/ins_R_mag_n.hpp"
+#include "arkmath/gen_cpp/z_mag.hpp"
+        }
+        else if (flag==scicos::terminate)
+        {
+        }
+        else if (flag==scicos::initialize || flag==scicos::reinitialize)
+        {
+        }
+        else
+        {
+            std::cout << "unhandled block flag: " << flag << std::endl;
+        }
     }
-    else if (flag==scicos::terminate)
-    {
-    }
-    else if (flag==scicos::initialize || flag==scicos::reinitialize)
-    {
-    }
-    else
-    {
-        std::cout << "unhandled block flag: " << flag << std::endl;
-    }
-}
 
 } // extern c
 

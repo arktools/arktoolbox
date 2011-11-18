@@ -25,67 +25,67 @@ extern "C"
 #include <stdio.h>
 #include <string.h>
 
-void sci_zeroOrderHold(scicos_block *block,scicos::enumScicosFlags flag)
-{
-    // get block data pointers, etc
-    double *_z=GetDstate(block);
-    double *_u1=GetRealInPortPtrs(block,1);
-    double *_u2=GetRealInPortPtrs(block,2);
-    double *_y1=GetRealOutPortPtrs(block,1);
-    int *_ipar=GetIparPtrs(block);
-    int & evtFlag = GetNevIn(block);
-    int & evtPortTime = _ipar[0];
-    int & evtPortReset = _ipar[1];
+    void sci_zeroOrderHold(scicos_block *block,scicos::enumScicosFlags flag)
+    {
+        // get block data pointers, etc
+        double *_z=GetDstate(block);
+        double *_u1=GetRealInPortPtrs(block,1);
+        double *_u2=GetRealInPortPtrs(block,2);
+        double *_y1=GetRealOutPortPtrs(block,1);
+        int *_ipar=GetIparPtrs(block);
+        int & evtFlag = GetNevIn(block);
+        int & evtPortTime = _ipar[0];
+        int & evtPortReset = _ipar[1];
 
-    // compute flags
-    int evtFlagTime = scicos::evtPortNumToFlag(evtPortTime);
-    int evtFlagReset = scicos::evtPortNumToFlag(evtPortReset);
-  
-    // loop over all rows of data
-    int i,j;
-    int nRows = GetInPortRows(block,1);
-    int nCols = GetInPortCols(block,1);
-    size_t nBytes = sizeof(double)*nRows*nCols;
-    for(i=0;i<nRows;i++){
+        // compute flags
+        int evtFlagTime = scicos::evtPortNumToFlag(evtPortTime);
+        int evtFlagReset = scicos::evtPortNumToFlag(evtPortReset);
 
-        for(j=0;j<nCols;j++){
-        
-            if (flag ==scicos::computeOutput || flag ==scicos::reinitialize || flag ==scicos::initialize)
-                memcpy(_y1,_z,nBytes);
+        // loop over all rows of data
+        int i,j;
+        int nRows = GetInPortRows(block,1);
+        int nCols = GetInPortCols(block,1);
+        size_t nBytes = sizeof(double)*nRows*nCols;
+        for(i=0; i<nRows; i++) {
 
-            else if (flag == scicos::updateState)
-            {
-                // bitwise comparison for flag
-                if(evtFlag & evtFlagReset && _u2)
+            for(j=0; j<nCols; j++) {
+
+                if (flag ==scicos::computeOutput || flag ==scicos::reinitialize || flag ==scicos::initialize)
+                    memcpy(_y1,_z,nBytes);
+
+                else if (flag == scicos::updateState)
                 {
-                    memcpy(_z,_u2,nBytes);
+                    // bitwise comparison for flag
+                    if(evtFlag & evtFlagReset && _u2)
+                    {
+                        memcpy(_z,_u2,nBytes);
+                    }
+                    else if(evtFlag & evtFlagTime && _u1)
+                    {
+                        memcpy(_z,_u1,nBytes);
+                    }
+                    else
+                    {
+                        printf("\nunhandled event flat %d\n",evtFlag);
+                        printf("\nknown flags:\n");
+                        printf("\ttime flag: %d\n",evtFlagTime);
+                        printf("\ttime flag & event flag: %d\n",evtFlagTime & evtFlag);
+                        printf("\treset flag: %d\n",evtFlagReset);
+                        printf("\treset flag & event flag: %d\n",evtFlagReset & evtFlag);
+                    }
                 }
-                else if(evtFlag & evtFlagTime && _u1)
+                else if (flag == scicos::terminate)
                 {
-                    memcpy(_z,_u1,nBytes);
                 }
                 else
                 {
-                    printf("\nunhandled event flat %d\n",evtFlag);
-                    printf("\nknown flags:\n");
-                    printf("\ttime flag: %d\n",evtFlagTime);
-                    printf("\ttime flag & event flag: %d\n",evtFlagTime & evtFlag);
-                    printf("\treset flag: %d\n",evtFlagReset);
-                    printf("\treset flag & event flag: %d\n",evtFlagReset & evtFlag);
+                    char msg[50];
+                    sprintf(msg,"unhandled block flag %d\n",flag);
+                    Coserror(msg);
                 }
-            }
-            else if (flag == scicos::terminate)
-            {
-            }
-            else
-            {
-                char msg[50];
-                sprintf(msg,"unhandled block flag %d\n",flag);
-                Coserror(msg);
             }
         }
     }
-}
 
 }
 

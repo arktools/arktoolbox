@@ -65,41 +65,41 @@ void getIpars(int nStrings, int nInts, int * ipar, char *** stringArray, int ** 
     }
 }
 
-extern "C" 
+extern "C"
 {
 
-void cMatrix2FortranVector(double ** cMatrix, const int & rows, const int & cols, double * fVector)
-{
-	for (int i=0;i<rows;i++) for (int j=0;j<cols;j++) fVector[i+rows*j] = cMatrix[i][j];
-}
+    void cMatrix2FortranVector(double ** cMatrix, const int & rows, const int & cols, double * fVector)
+    {
+        for (int i=0; i<rows; i++) for (int j=0; j<cols; j++) fVector[i+rows*j] = cMatrix[i][j];
+    }
 
-void allocateCMatrix(double ** cMatrix, const int & rows, const int & cols)
-{
-	cMatrix = (double **)malloc(rows*sizeof(double*));
-	if(cMatrix == NULL)
-	{
-		fprintf(stderr, "out of memory\n");
-		return;
-	}
+    void allocateCMatrix(double ** cMatrix, const int & rows, const int & cols)
+    {
+        cMatrix = (double **)malloc(rows*sizeof(double*));
+        if(cMatrix == NULL)
+        {
+            fprintf(stderr, "out of memory\n");
+            return;
+        }
 
-	for(int i = 0; i < rows; i++)
-	{
-		cMatrix[i] = (double *)malloc(cols*sizeof(double));
-		if(cMatrix[i] == NULL)
-		{
-			fprintf(stderr, "out of memory\n");
-			return;
-		}
-	}
-	memset((void*)cMatrix,0,rows*cols*sizeof(double));
-}
+        for(int i = 0; i < rows; i++)
+        {
+            cMatrix[i] = (double *)malloc(cols*sizeof(double));
+            if(cMatrix[i] == NULL)
+            {
+                fprintf(stderr, "out of memory\n");
+                return;
+            }
+        }
+        memset((void*)cMatrix,0,rows*cols*sizeof(double));
+    }
 
-void freeCMatrix(double ** matrix, const int & nRows, const int & nCols)
-{
-    if (!matrix) return;
-    for(int i = 0; i < nRows; i++) free(matrix[i]);
-	free(matrix);
-}
+    void freeCMatrix(double ** matrix, const int & nRows, const int & nCols)
+    {
+        if (!matrix) return;
+        for(int i = 0; i < nRows; i++) free(matrix[i]);
+        free(matrix);
+    }
 
 }
 

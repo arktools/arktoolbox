@@ -56,43 +56,43 @@ extern "C"
     {
         // definitions
         double *u=(double*)GetInPortPtrs(block,1);
-		void ** work =  GetPtrWorkPtrs(block);
-		VisPlane * vis = NULL;
+        void ** work =  GetPtrWorkPtrs(block);
+        VisPlane * vis = NULL;
 
         // handle flags
         if (flag==scicos::initialize)
         {
-			try
-			{
-				vis = new VisPlane;
-			}
-			catch (const std::runtime_error & e)
-			{
-				std::cout << "exception: " << e.what() << std::endl;
-				Coserror((char *)e.what());
-	 			return;
-			}
-			*work = (void *)vis;
-		}
+            try
+            {
+                vis = new VisPlane;
+            }
+            catch (const std::runtime_error & e)
+            {
+                std::cout << "exception: " << e.what() << std::endl;
+                Coserror((char *)e.what());
+                return;
+            }
+            *work = (void *)vis;
+        }
         else if (flag==scicos::terminate)
         {
-			vis = (VisPlane *)*work;
+            vis = (VisPlane *)*work;
             if (vis)
             {
-				delete vis;
+                delete vis;
                 vis = NULL;
             }
         }
         else if (flag==scicos::computeOutput)
         {
-			vis = (VisPlane *)*work;
-			if (vis)
-			{
-				vis->lock();
-				vis->plane->setEuler(u[0],u[1],u[2]);
-				vis->plane->setU(u[3],u[4],u[5],u[6]);
-				vis->unlock();
-			}
+            vis = (VisPlane *)*work;
+            if (vis)
+            {
+                vis->lock();
+                vis->plane->setEuler(u[0],u[1],u[2]);
+                vis->plane->setU(u[3],u[4],u[5],u[6]);
+                vis->unlock();
+            }
         }
         else
         {

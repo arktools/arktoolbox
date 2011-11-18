@@ -18,16 +18,16 @@
 
 extern "C" {
 
-namespace scicos
-{
+    namespace scicos
+    {
 
-int evtPortNumToFlag(int portNum)
-{
-	if (portNum > 0) return 1 << (portNum-1); //  return the bit flag equivalent
-	else return -9; // if port is not there return a value that won't match
-}
+    int evtPortNumToFlag(int portNum)
+    {
+        if (portNum > 0) return 1 << (portNum-1); //  return the bit flag equivalent
+        else return -9; // if port is not there return a value that won't match
+    }
 
-}
+    }
 
 } // extern C
 

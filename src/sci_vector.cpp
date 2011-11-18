@@ -36,17 +36,17 @@ public:
         setUpViewInWindow(0,0,800,600);
         run();
     }
-	void set(double x, double y, double z) {
-		lock();
-		_vector->set(osg::Vec3(0,0,0),osg::Vec3(x,y,z));
-		unlock();
-	}
+    void set(double x, double y, double z) {
+        lock();
+        _vector->set(osg::Vec3(0,0,0),osg::Vec3(x,y,z));
+        unlock();
+    }
     ~VisVector()
     {
         setDone(true);
     }
 private:
-	Vector3 * _vector;
+    Vector3 * _vector;
 };
 
 extern "C"
@@ -61,43 +61,43 @@ extern "C"
         // definitions
         double *u1=(double*)GetInPortPtrs(block,1);
         void ** work =  GetPtrWorkPtrs(block);
-		VisVector * vis;
+        VisVector * vis;
 
-		// aliases
-		double & x = u1[0];
-		double & y = u1[1];
-		double & z = u1[2];
+        // aliases
+        double & x = u1[0];
+        double & y = u1[1];
+        double & z = u1[2];
 
         // handle flags
         if (flag==scicos::initialize)
         {
-			try
-			{
-				vis = new VisVector;
-			}
-			catch (const std::runtime_error & e)
-			{
-				Coserror((char *)e.what());
-				set_block_error(-16);
-	 			return;
-			}
-			*work = (void *)vis;
-		}
+            try
+            {
+                vis = new VisVector;
+            }
+            catch (const std::runtime_error & e)
+            {
+                Coserror((char *)e.what());
+                set_block_error(-16);
+                return;
+            }
+            *work = (void *)vis;
+        }
         else if (flag==scicos::terminate)
         {
-			vis = (VisVector *)*work;
+            vis = (VisVector *)*work;
             if (vis)
             {
-				delete vis;
+                delete vis;
                 vis = NULL;
             }
         }
         else if (flag==scicos::computeOutput)
         {
-			vis = (VisVector *)*work;
-			if (vis) {
-				vis->set(x,y,z);
-			}
+            vis = (VisVector *)*work;
+            if (vis) {
+                vis->set(x,y,z);
+            }
         }
         else
         {

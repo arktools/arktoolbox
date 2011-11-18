@@ -85,8 +85,8 @@ extern "C"
             // channel
             mavlink_channel_t chan = MAVLINK_COMM_1;
 
-			// loop rates
-			// TODO: cleanup to use scicos timers
+            // loop rates
+            // TODO: cleanup to use scicos timers
             static int imuRate = 50;
             static int gpsRate = 1;
 
@@ -107,20 +107,20 @@ extern "C"
             // send imu message
             if (scicosTime - imuTimeStamp > 1.0/imuRate)
             {
-				// accelerometer in milli g's
-				int16_t ax = u[0]*1000/9.81;
-				int16_t ay = u[1]*1000/9.81;
-				int16_t az = u[2]*1000/9.81;
+                // accelerometer in milli g's
+                int16_t ax = u[0]*1000/9.81;
+                int16_t ay = u[1]*1000/9.81;
+                int16_t az = u[2]*1000/9.81;
 
-				// gyros
-				int16_t gx = u[3]*1000;
-				int16_t gy = u[4]*1000;
-				int16_t gz = u[5]*1000;
+                // gyros
+                int16_t gx = u[3]*1000;
+                int16_t gy = u[4]*1000;
+                int16_t gz = u[5]*1000;
 
-				// magnetometer
-				int16_t mx = u[6]*1000;
-				int16_t my = u[7]*1000;
-				int16_t mz = u[8]*1000;
+                // magnetometer
+                int16_t mx = u[6]*1000;
+                int16_t my = u[7]*1000;
+                int16_t mz = u[8]*1000;
 
                 mavlink_msg_raw_imu_send(chan,timeStamp,ax,ay,az,gx,gy,gz,mx,my,mz);
                 imuTimeStamp = scicosTime;
@@ -163,7 +163,7 @@ extern "C"
                     {
                     case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
                     {
-        				mavlink_rc_channels_scaled_t rc_channels;
+                        mavlink_rc_channels_scaled_t rc_channels;
                         mavlink_msg_rc_channels_scaled_decode(&msg,&rc_channels);
                         y[0] = rc_channels.chan1_scaled/10000.0f;
                         y[1] = rc_channels.chan2_scaled/10000.0f;
@@ -175,10 +175,10 @@ extern "C"
                         y[7] = rc_channels.chan8_scaled/10000.0f;
                         break;
                     }
-					case MAVLINK_MSG_ID_GLOBAL_POSITION:
-					{
-						mavlink_global_position_t global_position;
-						mavlink_msg_global_position_decode(&msg,&global_position);
+                    case MAVLINK_MSG_ID_GLOBAL_POSITION:
+                    {
+                        mavlink_global_position_t global_position;
+                        mavlink_msg_global_position_decode(&msg,&global_position);
                         y[8] = global_position.lat;
                         y[9] = global_position.lon;
                         y[10] = global_position.alt;
@@ -187,10 +187,10 @@ extern "C"
                         y[13] = global_position.vz;
                         break;
                     }
-					case MAVLINK_MSG_ID_ATTITUDE:
-					{
-						mavlink_attitude_t attitude;
-						mavlink_msg_attitude_decode(&msg,&attitude);
+                    case MAVLINK_MSG_ID_ATTITUDE:
+                    {
+                        mavlink_attitude_t attitude;
+                        mavlink_msg_attitude_decode(&msg,&attitude);
                         y[14] = attitude.roll;
                         y[15] = attitude.pitch;
                         y[16] = attitude.yaw;
@@ -199,14 +199,14 @@ extern "C"
                         y[19] = attitude.yawspeed;
                         break;
                     }
-                }
+                    }
 
-                // update packet drop counter
-                packet_drops += status.packet_rx_drop_count;
+                    // update packet drop counter
+                    packet_drops += status.packet_rx_drop_count;
+                }
             }
         }
-   	 }
-  }
+    }
 
 } // extern c
 

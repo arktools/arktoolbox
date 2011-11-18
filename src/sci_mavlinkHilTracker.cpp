@@ -26,7 +26,7 @@
 #include "mavlink/mavlink_types.h"
 #include "arkcomm/asio_mavlink_bridge.h"
 #include "mavlink/common/mavlink.h"
-	
+
 extern "C"
 {
 #include <scicos/scicos_block4.h>
@@ -88,15 +88,15 @@ extern "C"
             // channel
             mavlink_channel_t chan = MAVLINK_COMM_2;
 
-			// loop rates
-			// TODO: clean this up to use scicos events w/ timers
+            // loop rates
+            // TODO: clean this up to use scicos events w/ timers
             static int positionRate = 10;
 
-			// initial times
+            // initial times
             double scicosTime = get_scicos_time();
             static double positionTimeStamp = scicosTime;
- 		    
-			// send global position
+
+            // send global position
             if (scicosTime - positionTimeStamp > 1.0/positionRate)
             {
                 positionTimeStamp = scicosTime;
@@ -110,7 +110,7 @@ extern "C"
                 double vD = u[5];
 
                 mavlink_msg_global_position_send(chan,positionTimeStamp,lat,lon,alt,vN,vE,vD);
-				//std::cout << "sending global position" << std::endl;
+                //std::cout << "sending global position" << std::endl;
             }
             else if (scicosTime  - positionTimeStamp < 0)
                 positionTimeStamp = scicosTime;
@@ -121,7 +121,7 @@ extern "C"
 
             while(comm_get_available(MAVLINK_COMM_2))
             {
-				//std::cout << "serial available" << std::endl;
+                //std::cout << "serial available" << std::endl;
                 uint8_t c = comm_receive_ch(MAVLINK_COMM_2);
 
                 // try to get new message
@@ -131,8 +131,8 @@ extern "C"
                     {
                     case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
                     {
-						//std::cout << "receiving messages" << std::endl;
-        				mavlink_rc_channels_scaled_t rc_channels;
+                        //std::cout << "receiving messages" << std::endl;
+                        mavlink_rc_channels_scaled_t rc_channels;
                         mavlink_msg_rc_channels_scaled_decode(&msg,&rc_channels);
                         y[0] = rc_channels.chan1_scaled/10000.0f;
                         y[1] = rc_channels.chan2_scaled/10000.0f;
@@ -144,14 +144,14 @@ extern "C"
                         y[7] = rc_channels.chan8_scaled/10000.0f;
                         break;
                     }
-                }
+                    }
 
-                // update packet drop counter
-                packet_drops += status.packet_rx_drop_count;
+                    // update packet drop counter
+                    packet_drops += status.packet_rx_drop_count;
+                }
             }
         }
-   	 }
-  }
+    }
 
 } // extern c
 

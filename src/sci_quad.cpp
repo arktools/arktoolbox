@@ -48,7 +48,7 @@ public:
     VisQuad() : quad(new Quad(std::string(ARKOSG_DATA_DIR)+"/models/arducopter.ac"))
     {
         osg::Group * root = new Frame(1,"N","E","D");
-		root->addChild(new Terrain(std::string(ARKOSG_DATA_DIR)+"/images/lz.rgb",osg::Vec3(10,10,0)));
+        root->addChild(new Terrain(std::string(ARKOSG_DATA_DIR)+"/images/lz.rgb",osg::Vec3(10,10,0)));
         if (quad) root->addChild(quad);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));
@@ -76,43 +76,43 @@ extern "C"
         double *u2=(double*)GetInPortPtrs(block,2);
         double *u3=(double*)GetInPortPtrs(block,3);
         void ** work =  GetPtrWorkPtrs(block);
-		VisQuad * vis = NULL;
+        VisQuad * vis = NULL;
 
- 		// handle flags
+        // handle flags
         if (flag==scicos::initialize)
         {
-			try
-			{
-				vis = new VisQuad;
-			}
-			catch (const std::runtime_error & e)
-			{
-				std::cout << "exception: " << e.what() << std::endl;
-				Coserror((char *)e.what());
-	 			return;
-			}
-			*work = (void *)vis;
-		}
+            try
+            {
+                vis = new VisQuad;
+            }
+            catch (const std::runtime_error & e)
+            {
+                std::cout << "exception: " << e.what() << std::endl;
+                Coserror((char *)e.what());
+                return;
+            }
+            *work = (void *)vis;
+        }
         else if (flag==scicos::terminate)
         {
-			vis = (VisQuad *)*work;
+            vis = (VisQuad *)*work;
             if (vis)
             {
-				delete vis;
+                delete vis;
                 vis = NULL;
             }
         }
         else if (flag==scicos::computeOutput)
         {
-			vis = (VisQuad *)*work;
-			if (vis)
-			{
-				vis->lock();
-				vis->quad->setEuler(u1[0],u1[1],u1[2]);
-				vis->quad->setPositionScalars(u2[0],u2[1],u2[2]);
-				vis->quad->setU(u3[0],u3[1],u3[2],u3[3]);
-				vis->unlock();
-			}
+            vis = (VisQuad *)*work;
+            if (vis)
+            {
+                vis->lock();
+                vis->quad->setEuler(u1[0],u1[1],u1[2]);
+                vis->quad->setPositionScalars(u2[0],u2[1],u2[2]);
+                vis->quad->setU(u3[0],u3[1],u3[2],u3[3]);
+                vis->unlock();
+            }
         }
         else
         {

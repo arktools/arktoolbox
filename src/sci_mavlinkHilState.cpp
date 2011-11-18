@@ -17,40 +17,40 @@
  *
  * input
  *
- *	// attitude states (rad)
- *	[1] roll 
- *	[2] pitch 
- *	[3] yaw 
+ *  // attitude states (rad)
+ *  [1] roll
+ *  [2] pitch
+ *  [3] yaw
  *
- *	// body rates
- *	[4] rollRate 
- *	[5] pitchRate 
- *	[6] yawRate 
+ *  // body rates
+ *  [4] rollRate
+ *  [5] pitchRate
+ *  [6] yawRate
  *
- *	// position
- *	[7] lat 
- *	[8] lon 
- *	[9] alt 
+ *  // position
+ *  [7] lat
+ *  [8] lon
+ *  [9] alt
  *
  *  // velocity
- *	[10] vn 
- *	[11] ve 
- *	[12] vd 
+ *  [10] vn
+ *  [11] ve
+ *  [12] vd
  *
  *  // acceleration
- *	[13] xacc
- *	[14] yacc
- *	[15] zacc
+ *  [13] xacc
+ *  [14] yacc
+ *  [15] zacc
  *
  *
  * output
  *
- *	[1] roll
- *	[2] pitch
- *	[3] yaw
- *	[4] throttle
- *	[5] mode
- *	[6] nav_mode
+ *  [1] roll
+ *  [2] pitch
+ *  [3] yaw
+ *  [4] throttle
+ *  [5] mode
+ *  [6] nav_mode
  *
  */
 
@@ -125,11 +125,11 @@ extern "C"
             // channel
             mavlink_channel_t chan = MAVLINK_COMM_0;
 
-			// loop rates
-			// TODO: clean this up to use scicos events w/ timers
+            // loop rates
+            // TODO: clean this up to use scicos events w/ timers
             static int hilRate = 50;
 
-			// initial times
+            // initial times
             double scicosTime = get_scicos_time();
             static double hilTimeStamp = scicosTime;
 
@@ -138,75 +138,75 @@ extern "C"
             {
                 hilTimeStamp = scicosTime;
 
-				// attitude states (rad)
-				float roll = u[0];
-				float pitch = u[1];
-				float yaw = u[2];
+                // attitude states (rad)
+                float roll = u[0];
+                float pitch = u[1];
+                float yaw = u[2];
 
-				// body rates
-				float rollRate = u[3];
-				float pitchRate = u[4];
-				float yawRate = u[5];
+                // body rates
+                float rollRate = u[3];
+                float pitchRate = u[4];
+                float yawRate = u[5];
 
-				// position
-				int32_t lat = u[6]*rad2deg*1e7;
+                // position
+                int32_t lat = u[6]*rad2deg*1e7;
                 int32_t lon = u[7]*rad2deg*1e7;
                 int16_t alt = u[8]*1e3;
 
-				int16_t vx = u[9]*1e2;
+                int16_t vx = u[9]*1e2;
                 int16_t vy = u[10]*1e2;
                 int16_t vz = -u[11]*1e2;
 
-				int16_t xacc = u[12]*1e3;
+                int16_t xacc = u[12]*1e3;
                 int16_t yacc = u[13]*1e3;
                 int16_t zacc = u[14]*1e3;
-              
-				mavlink_msg_hil_state_send(chan,hilTimeStamp,
-						roll,pitch,yaw,
-						rollRate,pitchRate,yawRate,
-						lat,lon,alt,
-						vx,vy,vz,
-						xacc,yacc,zacc);
+
+                mavlink_msg_hil_state_send(chan,hilTimeStamp,
+                                           roll,pitch,yaw,
+                                           rollRate,pitchRate,yawRate,
+                                           lat,lon,alt,
+                                           vx,vy,vz,
+                                           xacc,yacc,zacc);
             }
             else if (scicosTime  - hilTimeStamp < 0)
                 hilTimeStamp = scicosTime;
-            }
+        }
 
-            // receive messages
-            mavlink_message_t msg;
-            mavlink_status_t status;
+        // receive messages
+        mavlink_message_t msg;
+        mavlink_status_t status;
 
-            while(comm_get_available(MAVLINK_COMM_0))
+        while(comm_get_available(MAVLINK_COMM_0))
+        {
+            uint8_t c = comm_receive_ch(MAVLINK_COMM_0);
+
+            // try to get new message
+            if(mavlink_parse_char(MAVLINK_COMM_0,c,&msg,&status))
             {
-                uint8_t c = comm_receive_ch(MAVLINK_COMM_0);
-
-                // try to get new message
-                if(mavlink_parse_char(MAVLINK_COMM_0,c,&msg,&status))
+                switch(msg.msgid)
                 {
-                    switch(msg.msgid)
-                    {
-                    case MAVLINK_MSG_ID_HIL_CONTROLS:
-                    {
-						//std::cout << "receiving messages" << std::endl;
-						mavlink_hil_controls_t hil_controls;
-                        mavlink_msg_hil_controls_decode(&msg,&hil_controls);
-						y[0] = hil_controls.roll;
-						y[1] = hil_controls.pitch;
-						y[2] = hil_controls.yaw;
-						y[3] = hil_controls.throttle;
-						y[4] = hil_controls.mode;
-						y[5] = hil_controls.nav_mode;
-                        break;
-                    }
+
+                case MAVLINK_MSG_ID_HIL_CONTROLS:
+                {
+                    //std::cout << "receiving messages" << std::endl;
+                    mavlink_hil_controls_t hil_controls;
+                    mavlink_msg_hil_controls_decode(&msg,&hil_controls);
+                    y[0] = hil_controls.roll_ailerons;
+                    y[1] = hil_controls.pitch_elevator;
+                    y[2] = hil_controls.yaw_rudder;
+                    y[3] = hil_controls.throttle;
+                    y[4] = hil_controls.mode;
+                    y[5] = hil_controls.nav_mode;
+                    break;
                 }
 
-                // update packet drop counter
-                packet_drops += status.packet_rx_drop_count;
+                }
             }
-        }
-   	 }
-  }
 
+            // update packet drop counter
+            packet_drops += status.packet_rx_drop_count;
+        }
+    }
 } // extern c
 
-// vim:ts=4:sw=4
+// vim:ts=4:sw=4:expandtab
