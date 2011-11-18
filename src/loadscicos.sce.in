@@ -36,10 +36,8 @@ else
 end
 
 genlib('lib_arkscicos',pwd()+'/arkscicos');
-if (~scicoslabInstallSettings) then 
-	create_palette('arkscicos');
-	add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');
-end;
+create_palette('arkscicos');
+add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');
 
 printf("arkscicos toolbox loaded\n\n");
 printf("\nredefinition warnings above are ok, any errors are a problem.\n")
