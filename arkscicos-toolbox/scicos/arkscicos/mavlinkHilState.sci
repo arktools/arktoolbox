@@ -102,7 +102,7 @@ select job
 
 		// jsbsim parameters
 		device="""/dev/ttyUSB0""";
-		baudRate=115200;
+		baudRate=57600;
 		model.ipar=[..
 					length(evstr(device)),ascii(evstr(device)),0,..
 					baudRate];

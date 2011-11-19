@@ -89,7 +89,7 @@ extern "C"
         static uint16_t packet_drops = 0;
 
         //handle flags
-        if (flag==scicos::initialize || flag==scicos::reinitialize)
+        if (flag==scicos::initialize)
         {
             if (mavlink_comm_0_port == NULL)
             {
@@ -122,89 +122,94 @@ extern "C"
         }
         else if (flag==scicos::computeOutput)
         {
-            // channel
-            mavlink_channel_t chan = MAVLINK_COMM_0;
-
-            // loop rates
-            // TODO: clean this up to use scicos events w/ timers
-            static int hilRate = 50;
-
-            // initial times
-            double scicosTime = get_scicos_time();
-            static double hilTimeStamp = scicosTime;
-
-            // send attitude message
-            if (scicosTime - hilTimeStamp > 1.0/hilRate)
+            if (mavlink_comm_0_port) 
             {
-                hilTimeStamp = scicosTime;
+                // channel
+                mavlink_channel_t chan = MAVLINK_COMM_0;
 
-                // attitude states (rad)
-                float roll = u[0];
-                float pitch = u[1];
-                float yaw = u[2];
+                // loop rates
+                // TODO: clean this up to use scicos events w/ timers
+                static int hilRate = 50;
 
-                // body rates
-                float rollRate = u[3];
-                float pitchRate = u[4];
-                float yawRate = u[5];
+                // initial times
+                double scicosTime = get_scicos_time();
+                static double hilTimeStamp = scicosTime;
 
-                // position
-                int32_t lat = u[6]*rad2deg*1e7;
-                int32_t lon = u[7]*rad2deg*1e7;
-                int16_t alt = u[8]*1e3;
-
-                int16_t vx = u[9]*1e2;
-                int16_t vy = u[10]*1e2;
-                int16_t vz = -u[11]*1e2;
-
-                int16_t xacc = u[12]*1e3;
-                int16_t yacc = u[13]*1e3;
-                int16_t zacc = u[14]*1e3;
-
-                mavlink_msg_hil_state_send(chan,hilTimeStamp,
-                                           roll,pitch,yaw,
-                                           rollRate,pitchRate,yawRate,
-                                           lat,lon,alt,
-                                           vx,vy,vz,
-                                           xacc,yacc,zacc);
-            }
-            else if (scicosTime  - hilTimeStamp < 0)
-                hilTimeStamp = scicosTime;
-        }
-
-        // receive messages
-        mavlink_message_t msg;
-        mavlink_status_t status;
-
-        while(comm_get_available(MAVLINK_COMM_0))
-        {
-            uint8_t c = comm_receive_ch(MAVLINK_COMM_0);
-
-            // try to get new message
-            if(mavlink_parse_char(MAVLINK_COMM_0,c,&msg,&status))
-            {
-                switch(msg.msgid)
+                // send attitude message
+                if (scicosTime - hilTimeStamp > 1.0/hilRate)
                 {
+                    std::cout << "sending hil" << std::endl;
+                    hilTimeStamp = scicosTime;
 
-                case MAVLINK_MSG_ID_HIL_CONTROLS:
-                {
-                    //std::cout << "receiving messages" << std::endl;
-                    mavlink_hil_controls_t hil_controls;
-                    mavlink_msg_hil_controls_decode(&msg,&hil_controls);
-                    y[0] = hil_controls.roll_ailerons;
-                    y[1] = hil_controls.pitch_elevator;
-                    y[2] = hil_controls.yaw_rudder;
-                    y[3] = hil_controls.throttle;
-                    y[4] = hil_controls.mode;
-                    y[5] = hil_controls.nav_mode;
-                    break;
-                }
+                    // attitude states (rad)
+                    float roll = u[0];
+                    float pitch = u[1];
+                    float yaw = u[2];
 
+                    // body rates
+                    float rollRate = u[3];
+                    float pitchRate = u[4];
+                    float yawRate = u[5];
+
+                    // position
+                    int32_t lat = u[6]*rad2deg*1e7;
+                    int32_t lon = u[7]*rad2deg*1e7;
+                    int16_t alt = u[8]*1e3;
+
+                    int16_t vx = u[9]*1e2;
+                    int16_t vy = u[10]*1e2;
+                    int16_t vz = -u[11]*1e2;
+
+                    int16_t xacc = u[12]*1e3;
+                    int16_t yacc = u[13]*1e3;
+                    int16_t zacc = u[14]*1e3;
+
+                    mavlink_msg_hil_state_send(chan,hilTimeStamp,
+                                               roll,pitch,yaw,
+                                               rollRate,pitchRate,yawRate,
+                                               lat,lon,alt,
+                                               vx,vy,vz,
+                                               xacc,yacc,zacc);
                 }
+                else if (scicosTime  - hilTimeStamp < 0)
+                    hilTimeStamp = scicosTime;
             }
 
-            // update packet drop counter
-            packet_drops += status.packet_rx_drop_count;
+            // receive messages
+            mavlink_message_t msg;
+            mavlink_status_t status;
+
+            while(comm_get_available(MAVLINK_COMM_0))
+            {
+                uint8_t c = comm_receive_ch(MAVLINK_COMM_0);
+
+                // try to get new message
+                if(mavlink_parse_char(MAVLINK_COMM_0,c,&msg,&status))
+                {
+                    std::cout << "receiving hil" << std::endl;
+                    switch(msg.msgid)
+                    {
+
+                    case MAVLINK_MSG_ID_HIL_CONTROLS:
+                    {
+                        //std::cout << "receiving messages" << std::endl;
+                        mavlink_hil_controls_t hil_controls;
+                        mavlink_msg_hil_controls_decode(&msg,&hil_controls);
+                        y[0] = hil_controls.roll_ailerons;
+                        y[1] = hil_controls.pitch_elevator;
+                        y[2] = hil_controls.yaw_rudder;
+                        y[3] = hil_controls.throttle;
+                        y[4] = hil_controls.mode;
+                        y[5] = hil_controls.nav_mode;
+                        break;
+                    }
+
+                    }
+                }
+
+                // update packet drop counter
+                packet_drops += status.packet_rx_drop_count;
+            }
         }
     }
 } // extern c
