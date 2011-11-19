@@ -131,6 +131,8 @@ extern "C"
                 // TODO: clean this up to use scicos events w/ timers
                 static int hilRate = 50;
 
+                static float g0 = 9.81;
+
                 // initial times
                 double scicosTime = get_scicos_time();
                 static double hilTimeStamp = scicosTime;
@@ -160,9 +162,9 @@ extern "C"
                     int16_t vy = u[10]*1e2;
                     int16_t vz = -u[11]*1e2;
 
-                    int16_t xacc = u[12]*1e3;
-                    int16_t yacc = u[13]*1e3;
-                    int16_t zacc = u[14]*1e3;
+                    int16_t xacc = u[12]*1e3/g0;
+                    int16_t yacc = u[13]*1e3/g0;
+                    int16_t zacc = u[14]*1e3/g0;
 
                     mavlink_msg_hil_state_send(chan,hilTimeStamp,
                                                roll,pitch,yaw,
