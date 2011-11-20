@@ -33,12 +33,28 @@ function [x,y,typ]=mavlinkHilState(job,arg1,arg2)
 //
 // output
 //
-//	[1] roll
-//	[2] pitch
-//	[3] yaw
-//	[4] throttle
-//	[5] mode
-//	[6] nav_mode
+// (option 1, recommended)
+// // rc channels scaled
+//  [1] ch1
+//  [2] ch2
+//  [3] ch3
+//  [4] ch4
+//  [5] ch5
+//  [6] ch6
+//  [7] ch7
+//  [8] ch8
+//
+// (option 2, not recommended, more constrictive, not 
+// supported by ArduPilotOne)
+// // hil controls packet
+//  [1] roll
+//  [2] pitch
+//  [3] yaw
+//  [4] throttle
+//  [5] mode
+//  [6] nav_mode
+//  [7] 0
+//  [8] 0
 //
 // AUTHOR:
 //
@@ -79,7 +95,7 @@ select job
 				getvalue('Set mavlink HIL Parameters',labels,..
 				list('str',-1,'vec',1),exprs);
 			if ~ok then break,end
-			[model,graphics,ok]=check_io(model,graphics,[15],[6],[1],[])
+			[model,graphics,ok]=check_io(model,graphics,[15],[8],[1],[])
 			if ok then
 				model.ipar=[..
 					length(evstr(device)),ascii(evstr(device)),0,..
@@ -95,14 +111,14 @@ select job
 		model=scicos_model()
 		model.sim=list('sci_mavlinkHilState',4)
 		model.in=[15]
-		model.out=[6]
+		model.out=[8]
 		model.evtin=[1]
 		model.blocktype='c'
 		model.dep_ut=[%t %f]
 
 		// jsbsim parameters
-		device="""/dev/ttyUSB0""";
-		baudRate=57600;
+		device="""/dev/ttyUSB2""";
+		baudRate=115200;
 		model.ipar=[..
 					length(evstr(device)),ascii(evstr(device)),0,..
 					baudRate];

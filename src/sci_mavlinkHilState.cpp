@@ -45,12 +45,28 @@
  *
  * output
  *
+ * (option 1, recommended)
+ * // rc channels scaled
+ *  [1] ch1
+ *  [2] ch2
+ *  [3] ch3
+ *  [4] ch4
+ *  [5] ch5
+ *  [6] ch6
+ *  [7] ch7
+ *  [8] ch8
+ *
+ * (option 2, not recommended, more constrictive, not 
+ * supported by ArduPilotOne)
+ * // hil controls packet
  *  [1] roll
  *  [2] pitch
  *  [3] yaw
  *  [4] throttle
  *  [5] mode
  *  [6] nav_mode
+ *  [7] 0
+ *  [8] 0
  *
  */
 
@@ -140,7 +156,6 @@ extern "C"
                 // send attitude message
                 if (scicosTime - hilTimeStamp > 1.0/hilRate)
                 {
-                    std::cout << "sending hil" << std::endl;
                     hilTimeStamp = scicosTime;
 
                     // attitude states (rad)
@@ -188,21 +203,40 @@ extern "C"
                 // try to get new message
                 if(mavlink_parse_char(MAVLINK_COMM_0,c,&msg,&status))
                 {
-                    std::cout << "receiving hil" << std::endl;
                     switch(msg.msgid)
                     {
 
+                    // this packet seems to me more constrictive so I
+                    // recommend using rc channels scaled instead
                     case MAVLINK_MSG_ID_HIL_CONTROLS:
                     {
-                        //std::cout << "receiving messages" << std::endl;
-                        mavlink_hil_controls_t hil_controls;
-                        mavlink_msg_hil_controls_decode(&msg,&hil_controls);
-                        y[0] = hil_controls.roll_ailerons;
-                        y[1] = hil_controls.pitch_elevator;
-                        y[2] = hil_controls.yaw_rudder;
-                        y[3] = hil_controls.throttle;
-                        y[4] = hil_controls.mode;
-                        y[5] = hil_controls.nav_mode;
+                        //std::cout << "receiving hil controls packet" << std::endl;
+                        mavlink_hil_controls_t packet;
+                        mavlink_msg_hil_controls_decode(&msg,&packet);
+                        y[0] = packet.roll_ailerons;
+                        y[1] = packet.pitch_elevator;
+                        y[2] = packet.yaw_rudder;
+                        y[3] = packet.throttle;
+                        y[4] = packet.mode;
+                        y[5] = packet.nav_mode;
+                        y[6] = 0;
+                        y[7] = 0;
+                        break;
+                    }
+
+                    case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
+                    {
+                        //std::cout << "receiving rc channels scaled packet" << std::endl;
+                        mavlink_rc_channels_scaled_t packet;
+                        mavlink_msg_rc_channels_scaled_decode(&msg,&packet);
+                        y[0] = packet.chan1_scaled/1.0e4;
+                        y[1] = packet.chan2_scaled/1.0e4;
+                        y[2] = packet.chan3_scaled/1.0e4;
+                        y[3] = packet.chan4_scaled/1.0e4;
+                        y[4] = packet.chan5_scaled/1.0e4;
+                        y[5] = packet.chan6_scaled/1.0e4;
+                        y[6] = packet.chan7_scaled/1.0e4;
+                        y[7] = packet.chan8_scaled/1.0e4;
                         break;
                     }
 
