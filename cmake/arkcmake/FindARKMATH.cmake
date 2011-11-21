@@ -54,7 +54,7 @@ macro(find_or_build_arkmath TAG EP_BASE_DIR EP_INSTALL_PREFIX EP_DATADIR)
             INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
            )
         set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/include)
-        set(ARKMATH_DATA_DIR ${EP_DATADIR}/arkmath)
+        set(ARKMATH_DATA_DIR ${EP_DATADIR}/arkmath/data)
         # static lib prefix
         if(WIN32)
             set(STATIC_LIB_PREFIX "")

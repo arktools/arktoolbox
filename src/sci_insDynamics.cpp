@@ -92,7 +92,7 @@ extern "C"
         if (mode == INS_FULL_STATE) nY = 10;
         else if (mode == INS_ATT_STATE) nY = 4;
         else if (mode == INS_VP_STATE) nY = 6;
-        else Coserror((char *)"unknown mode for insErrorDynamics block");
+        else Coserror((char *)"unknown mode for insDynamics block");
 
         // matrices
         using namespace boost::numeric::ublas;
