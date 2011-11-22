@@ -143,110 +143,98 @@ extern "C"
                 // channel
                 mavlink_channel_t chan = MAVLINK_COMM_0;
 
-                // loop rates
-                // TODO: clean this up to use scicos events w/ timers
-                static int hilRate = 50;
-
                 static float g0 = 9.81;
 
-                // initial times
-                double scicosTime = get_scicos_time();
-                static double hilTimeStamp = scicosTime;
+                double timeStamp = get_scicos_time();
 
-                // send attitude message
-                if (scicosTime - hilTimeStamp > 1.0/hilRate)
+                // attitude states (rad)
+                float roll = u[0];
+                float pitch = u[1];
+                float yaw = u[2];
+
+                // body rates
+                float rollRate = u[3];
+                float pitchRate = u[4];
+                float yawRate = u[5];
+
+                // position
+                int32_t lat = u[6]*rad2deg*1e7;
+                int32_t lon = u[7]*rad2deg*1e7;
+                int16_t alt = u[8]*1e3;
+
+                int16_t vx = u[9]*1e2;
+                int16_t vy = u[10]*1e2;
+                int16_t vz = -u[11]*1e2;
+
+                int16_t xacc = u[12]*1e3/g0;
+                int16_t yacc = u[13]*1e3/g0;
+                int16_t zacc = u[14]*1e3/g0;
+
+                mavlink_msg_hil_state_send(chan,timeStamp,
+                                           roll,pitch,yaw,
+                                           rollRate,pitchRate,yawRate,
+                                           lat,lon,alt,
+                                           vx,vy,vz,
+                                           xacc,yacc,zacc);
+
+                // receive messages
+                mavlink_message_t msg;
+                mavlink_status_t status;
+
+                while(comm_get_available(MAVLINK_COMM_0))
                 {
-                    hilTimeStamp = scicosTime;
+                    uint8_t c = comm_receive_ch(MAVLINK_COMM_0);
 
-                    // attitude states (rad)
-                    float roll = u[0];
-                    float pitch = u[1];
-                    float yaw = u[2];
-
-                    // body rates
-                    float rollRate = u[3];
-                    float pitchRate = u[4];
-                    float yawRate = u[5];
-
-                    // position
-                    int32_t lat = u[6]*rad2deg*1e7;
-                    int32_t lon = u[7]*rad2deg*1e7;
-                    int16_t alt = u[8]*1e3;
-
-                    int16_t vx = u[9]*1e2;
-                    int16_t vy = u[10]*1e2;
-                    int16_t vz = -u[11]*1e2;
-
-                    int16_t xacc = u[12]*1e3/g0;
-                    int16_t yacc = u[13]*1e3/g0;
-                    int16_t zacc = u[14]*1e3/g0;
-
-                    mavlink_msg_hil_state_send(chan,hilTimeStamp,
-                                               roll,pitch,yaw,
-                                               rollRate,pitchRate,yawRate,
-                                               lat,lon,alt,
-                                               vx,vy,vz,
-                                               xacc,yacc,zacc);
-                }
-                else if (scicosTime  - hilTimeStamp < 0)
-                    hilTimeStamp = scicosTime;
-            }
-
-            // receive messages
-            mavlink_message_t msg;
-            mavlink_status_t status;
-
-            while(comm_get_available(MAVLINK_COMM_0))
-            {
-                uint8_t c = comm_receive_ch(MAVLINK_COMM_0);
-
-                // try to get new message
-                if(mavlink_parse_char(MAVLINK_COMM_0,c,&msg,&status))
-                {
-                    switch(msg.msgid)
+                    // try to get new message
+                    if(mavlink_parse_char(MAVLINK_COMM_0,c,&msg,&status))
                     {
+                        switch(msg.msgid)
+                        {
 
-                    // this packet seems to me more constrictive so I
-                    // recommend using rc channels scaled instead
-                    case MAVLINK_MSG_ID_HIL_CONTROLS:
-                    {
-                        //std::cout << "receiving hil controls packet" << std::endl;
-                        mavlink_hil_controls_t packet;
-                        mavlink_msg_hil_controls_decode(&msg,&packet);
-                        y[0] = packet.roll_ailerons;
-                        y[1] = packet.pitch_elevator;
-                        y[2] = packet.yaw_rudder;
-                        y[3] = packet.throttle;
-                        y[4] = packet.mode;
-                        y[5] = packet.nav_mode;
-                        y[6] = 0;
-                        y[7] = 0;
-                        break;
-                    }
+                        // this packet seems to me more constrictive so I
+                        // recommend using rc channels scaled instead
+                        case MAVLINK_MSG_ID_HIL_CONTROLS:
+                        {
+                            //std::cout << "receiving hil controls packet" << std::endl;
+                            mavlink_hil_controls_t packet;
+                            mavlink_msg_hil_controls_decode(&msg,&packet);
+                            y[0] = packet.roll_ailerons;
+                            y[1] = packet.pitch_elevator;
+                            y[2] = packet.yaw_rudder;
+                            y[3] = packet.throttle;
+                            y[4] = packet.mode;
+                            y[5] = packet.nav_mode;
+                            y[6] = 0;
+                            y[7] = 0;
+                            break;
+                        }
 
-                    case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
-                    {
-                        //std::cout << "receiving rc channels scaled packet" << std::endl;
-                        mavlink_rc_channels_scaled_t packet;
-                        mavlink_msg_rc_channels_scaled_decode(&msg,&packet);
-                        y[0] = packet.chan1_scaled/1.0e4;
-                        y[1] = packet.chan2_scaled/1.0e4;
-                        y[2] = packet.chan3_scaled/1.0e4;
-                        y[3] = packet.chan4_scaled/1.0e4;
-                        y[4] = packet.chan5_scaled/1.0e4;
-                        y[5] = packet.chan6_scaled/1.0e4;
-                        y[6] = packet.chan7_scaled/1.0e4;
-                        y[7] = packet.chan8_scaled/1.0e4;
-                        break;
-                    }
+                        case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
+                        {
+                            //std::cout << "receiving rc channels scaled packet" << std::endl;
+                            mavlink_rc_channels_scaled_t packet;
+                            mavlink_msg_rc_channels_scaled_decode(&msg,&packet);
+                            y[0] = packet.chan1_scaled/1.0e4;
+                            y[1] = packet.chan2_scaled/1.0e4;
+                            y[2] = packet.chan3_scaled/1.0e4;
+                            y[3] = packet.chan4_scaled/1.0e4;
+                            y[4] = packet.chan5_scaled/1.0e4;
+                            y[5] = packet.chan6_scaled/1.0e4;
+                            y[6] = packet.chan7_scaled/1.0e4;
+                            y[7] = packet.chan8_scaled/1.0e4;
+                            break;
+                        } 
 
-                    }
-                }
+                        } // switch msgid
 
-                // update packet drop counter
-                packet_drops += status.packet_rx_drop_count;
-            }
-        }
+                    } // still parsing
+
+                    // update packet drop counter
+                    packet_drops += status.packet_rx_drop_count;
+
+                } // packets available
+            } // port exists
+        } // compute output
     }
 } // extern c
 
