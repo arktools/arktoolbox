@@ -164,7 +164,7 @@ extern "C"
 
                 int16_t vx = u[9]*1e2;
                 int16_t vy = u[10]*1e2;
-                int16_t vz = -u[11]*1e2;
+                int16_t vz = u[11]*1e2;
 
                 int16_t xacc = u[12]*1e3/g0;
                 int16_t yacc = u[13]*1e3/g0;
