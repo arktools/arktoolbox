@@ -23,7 +23,7 @@ mathBlocks=[
 'sci_navigationEquations';..
 'sci_zeroOrderHold'];
 simgearBlocks=['sci_flightGearComm'];
-osgBlocks=['sci_jet';'sci_car';'sci_quad';'sci_plane';'sci_vector'];
+osgBlocks=['sci_jet';'sci_car';'sci_quad';'sci_sailboat';'sci_plane';'sci_vector'];
 jsbsimBlocks=['sci_jsbsimTrim';'sci_jsbsimComm'];
 lapackBlocks=['sci_gpsIns'];
 mavlinkBlocks=['sci_mavlinkHilSensor';'sci_mavlinkHilState';'sci_mavlinkHilTracker'];

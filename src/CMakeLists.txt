@@ -89,6 +89,7 @@ if(ARKOSG_FOUND AND OPENSCENEGRAPH_FOUND)
 		sci_plane.cpp
 		sci_car.cpp
 		sci_quad.cpp
+		sci_sailboat.cpp
 		sci_vector.cpp
 	)
 endif()

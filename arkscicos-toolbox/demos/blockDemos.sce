@@ -9,6 +9,7 @@ n=x_choose([
 'UGV (Sensor Level) Hardware in the Loop';
 'UGV (State Level) Hardware in the Loop';
 'Quadrotor (State Level) Hardware in the Loop';
+'Sailboat Autopilot';
 ],'arkscicos demos');
 if (n==1)
 	scicos(arkscicosPath+'demos/block/JSBSimBackside.cos');
@@ -30,6 +31,8 @@ elseif (n==9)
 	scicos(arkscicosPath+'demos/block/UgvMavlinkHilState.cos');
 elseif (n==10)
 	scicos(arkscicosPath+'demos/block/quadrotorHil.cos');
+elseif (n==11)
+	scicos(arkscicosPath+'demos/block/sailboat.cos');
 else
 	disp('unknown demo');
 end
