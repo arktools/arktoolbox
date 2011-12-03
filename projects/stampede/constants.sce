@@ -1,7 +1,7 @@
 mode(-1)
 
-x = createIndex(['V','roll','pitch','yaw','rollRate','pitchRate','yawRate','cog','sog','lat','lon','alt']);
-u = createIndex(['STR','THR','MODE','MISC']);
+x = createIndex(['V','roll','pitch','yaw','rollRate','pitchRate','yawRate','cog','sog','lat','lon','alt','VN','VE','VD']);
+u = createIndex(['STR','THR']);
 y = x;
 r = createIndex(['yaw','V']);
 
