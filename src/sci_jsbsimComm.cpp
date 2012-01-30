@@ -26,12 +26,13 @@
 
 #include "jsbsim/FGFDMExec.h"
 #include "jsbsim/models/FGFCS.h"
+#include "jsbsim/models/FGOutput.h"
 #include "jsbsim/math/FGStateSpace.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include "input_output/FGPropertyManager.h"
-#include "input_output/flightGearIO.h"
+#include "input_output/FGfdmSocket.h"
 #include "utilities.hpp"
 #include <stdexcept>
 
@@ -45,7 +46,7 @@ public:
                char * systemsPath, char * modelName,
                double * x0, double * u0, int debugLevel,
                bool enableFlightGearComm, char * flightGearHost, int flightGearPort) :
-        prop(), fdm(&prop), ss(fdm), socket()
+        prop(), fdm(&prop), ss(&fdm), socket()
     {
         //std::cout << "initializing JSBSim" << std::endl;
         fdm.SetDebugLevel(debugLevel);
@@ -61,8 +62,7 @@ public:
 
         if (enableFlightGearComm)
         {
-            //std::cout << "initializing FlightGear communication" << std::endl;
-            socket = new FGfdmSocket(flightGearHost,flightGearPort,FGfdmSocket::ptUDP);
+            socket = new FGOutput(&fdm);
             if (!socket) throw std::runtime_error("unable to open FlightGear socket");
         }
 
@@ -138,17 +138,13 @@ public:
     }
     void sendToFlightGear()
     {
-        FGNetFDM netFdm;
-        JSBSim2FlightGearNetFDM(fdm,netFdm);
-        if (socket) socket->Send((char *)(& netFdm), sizeof(netFdm));
-        //std::cout << ss << std::endl;
-        //std::cout << ss.x.getDeriv() << std::endl;
+        if (socket) socket->FlightGearSocketOutput();
     }
 public:
     FGPropertyManager prop;
     FGFDMExec fdm;
     FGStateSpace ss;
-    FGfdmSocket * socket;
+    FGOutput * socket;
 };
 
 } // JSBSim

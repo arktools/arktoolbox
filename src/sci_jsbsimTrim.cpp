@@ -194,14 +194,14 @@ void trimFunction ()
 
     try {
         // solve
-        FGTrimmer trimmer(fdm, constraints);
-        FGNelderMead solver(trimmer,initialGuess, lowerBound, upperBound, initialStepSize,
+        FGTrimmer trimmer(&fdm, &constraints);
+        FGNelderMead solver(&trimmer,initialGuess, lowerBound, upperBound, initialStepSize,
                             iterMax,rtol,abstol,speed,random,showConvergeStatus,showSimplex,pause);
 
         while(solver.status()==1) solver.update();
 
         // output
-        trimmer.printSolution(solver.getSolution()); // this also loads the solution into the fdm
+        trimmer.printSolution(std::cout,solver.getSolution()); // this also loads the solution into the fdm
 
         //std::cout << "\nsimulating flight to determine trim stability" << std::endl;
 
@@ -214,7 +214,7 @@ void trimFunction ()
         //trimmer.printState();
 
         std::cout << "\nlinearization: " << std::endl;
-        FGStateSpace ss(fdm);
+        FGStateSpace ss(&fdm);
 
         // longitudinal states
         ss.x.add(new FGStateSpace::Vt);
