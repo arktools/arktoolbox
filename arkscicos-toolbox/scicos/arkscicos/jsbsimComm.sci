@@ -122,7 +122,7 @@ select job
 		model.dep_ut=[%f %t]
 
 		// jsbsim parameters
-		Root="jsbsimDataPath+""/aircraft/easystar""";
+		Root="arkhangarDataPath+""/aircraft/easystar""";
 		ModelName="""easystar-datcom""";
 		AircraftPath="""""";
 		EnginePath="""""";

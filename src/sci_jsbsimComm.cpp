@@ -34,6 +34,7 @@
 #include "input_output/FGPropertyManager.h"
 #include "input_output/FGfdmSocket.h"
 #include "utilities.hpp"
+#include <boost/lexical_cast.hpp>
 #include <stdexcept>
 
 namespace JSBSim
@@ -63,7 +64,12 @@ public:
         if (enableFlightGearComm)
         {
             socket = new FGOutput(&fdm);
-            if (!socket) throw std::runtime_error("unable to open FlightGear socket");
+            int subSystems = 1;
+            if (!socket->Load(subSystems,"UDP","FLIGHTGEAR",
+                        boost::lexical_cast<std::string>(flightGearPort),
+                        flightGearHost,120)) {
+                throw std::runtime_error("unable to open FlightGear socket");
+            }
         }
 
         // defaults

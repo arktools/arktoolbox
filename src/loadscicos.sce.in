@@ -3,6 +3,7 @@ lines(0);
 
 arkscicosDataPath='@DATADIR@'
 jsbsimDataPath='@JSBSIM_DATA_DIR@'
+arkhangarDataPath='@ARKHANGAR_DATA_DIR@'
 
 // whether or not to configure for final installation
 scicoslabInstallSettings = @SCICOSLAB_INSTALL_SETTINGS@;

@@ -59,7 +59,7 @@ void trimFunction ()
     std::string aircraftPath="aircraft/easystar";
     std::string enginePath="aircraft/easystar/Engines";
     std::string systemsPath="systems";
-    std::string root=std::string(JSBSIM_DATA_DIR);
+    std::string root=std::string(ARKHANGAR_DATA_DIR);
     double rtol = 10*std::numeric_limits<float>::epsilon();
     double abstol = 10*std::numeric_limits<double>::epsilon();
     double random = 0;

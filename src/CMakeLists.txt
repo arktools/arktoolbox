@@ -108,7 +108,7 @@ set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
-add_dependencies(${PROJECT_NAME} mavlink jsbsim arkosg arkmath arkcomm)
+add_dependencies(${PROJECT_NAME} mavlink jsbsim arkosg arkmath arkcomm arkhangar)
 
 target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
 
