@@ -65,9 +65,10 @@ public:
         {
             socket = new FGOutput(&fdm);
             int subSystems = 1;
+            std::vector<FGPropertyManager *> outputProperties;
             if (!socket->Load(subSystems,"UDP","FLIGHTGEAR",
                         boost::lexical_cast<std::string>(flightGearPort),
-                        flightGearHost,120)) {
+                        flightGearHost,120,outputProperties)) {
                 throw std::runtime_error("unable to open FlightGear socket");
             }
         }
