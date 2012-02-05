@@ -24,6 +24,10 @@
  *
  */
 
+#include "config.h"
+
+#ifdef WITH_LAPACK
+
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -131,5 +135,17 @@ extern "C"
     }
 
 } // extern c
+
+# else // WITH_LAPACK
+
+extern "C"
+{
+
+#include <scicos/scicos_block4.h>
+#include "definitions.hpp"
+    void sci_gpsIns(scicos_block *block, scicos::enumScicosFlags flag) {}
+}
+
+#endif // WITH_LAPACK
 
 // vim:ts=4:sw=4

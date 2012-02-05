@@ -142,7 +142,10 @@ endif()
 # find libraries with cmake modules
 find_package(SCICOSLAB REQUIRED)
 find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
-find_package(LAPACK)
+
+if (WITH_LAPACK)
+    find_package(LAPACK)
+endif()
 
 find_package(ARKCOMM ${ARKCOMM_VERSION})
 if (NOT ARKCOMM_FOUND)

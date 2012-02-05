@@ -39,8 +39,8 @@
 
 /**************************** OPTIONS ****************************/
 
-#cmakedefine WITH_ARKOSG "${WITH_ARKOSG}"
-#cmakedefine WITH_LAPACK "${WITH_LAPACK}"
+#cmakedefine WITH_ARKOSG 1
+#cmakedefine WITH_LAPACK 1
 
 /*************************** ENDIAN *****************************/
 

@@ -16,7 +16,9 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if WITH_ARKOSG
+#include "config.h"
+
+#ifdef WITH_ARKOSG
 
 #include <iostream>
 #include "arkosg/Viewer.hpp"
