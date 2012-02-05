@@ -30,6 +30,7 @@
  * 	2: rudder (rad/s)
  */
 
+#if WITH_ARKOSG
 
 #include <iostream>
 #include "arkosg/Viewer.hpp"
@@ -119,5 +120,17 @@ extern "C"
     }
 
 }
+
+# else // WITH_ARKOSG
+
+extern "C"
+{
+
+#include <scicos/scicos_block4.h>
+#include "definitions.hpp"
+    void sci_sailboat(scicos_block *block, scicos::enumScicosFlags flag) {}
+}
+
+#endif // WITH_ARKOSG
 
 // vim:ts=4:sw=4

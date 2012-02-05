@@ -39,11 +39,8 @@
 
 /**************************** OPTIONS ****************************/
 
-/* Define to 1 if you want to enable openscenegraph */
-#cmakedefine WITH_OSG 1
-
-/* Define to 1 if you want to enable scicoslab */
-#cmakedefine WITH_SCICOS 1
+#cmakedefine WITH_ARKOSG "${WITH_ARKOSG}"
+#cmakedefine WITH_LAPACK "${WITH_LAPACK}"
 
 /*************************** ENDIAN *****************************/
 

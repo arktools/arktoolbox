@@ -71,7 +71,7 @@ extern "C"
         double & g      = u2[0];
 
         double & Omega = rpar[0];
-        double & Re = rpar[1];
+        double & R0 = rpar[1];
         int & mode = ipar[0];
 
         // Note that l = lon, and not in the equations but left here
@@ -85,7 +85,7 @@ extern "C"
         double & Vd     = u3[6];
         double & L      = u3[7];
         double & l      = u3[8];
-        double & alt    = u3[9];
+        double & h      = u3[9];
 
         // sizes
         int nY = 0;
@@ -104,7 +104,7 @@ extern "C"
             const double cosL = cos(L);
             const double sinL = sin(L);
             const double tanL = sinL/cosL;
-            const double R = Re+alt;
+            const double R = R0+h;
             const double aa=a*a, bb=b*b, cc=c*c, dd=d*d;
 
             if (mode == INS_FULL_STATE)

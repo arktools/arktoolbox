@@ -14,9 +14,6 @@ include_directories(
 	.
 	)
 
-if (OPENSCENEGRAPH_FOUND)
-    list(APPEND ARKSCICOS_LIBRARIES ${OPENSCENEGRAPH_LIBRARIES})
-endif()
 if (LAPACK_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${LAPACK_LIBRARIES})
 endif()
@@ -26,82 +23,69 @@ endif()
 if (Boost_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${Boost_LIBRARIES})
 endif()
+if (ARKOSG_FOUND)
+	list(APPEND ARKSCICOS_LIBRARIES ${ARKOSG_LIBRARIES})
+endif()
+if (OPENSCENEGRAPH_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${OPENSCENEGRAPH_LIBRARIES})
+endif()
+if (ARKMATH_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
+endif()
+if (ARKCOMM_FOUND)
+	list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
+endif()
 
 set(${PROJECT_NAME}Sources "")
 set(SCICOSLAB_BLOCKS "")
 
-if(ARKCOMM_FOUND)
-	list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
-    if (SIMGEAR_FOUND AND PLIB_FOUND)
-	    message(STATUS "building flightgear blocks")
-	    list(APPEND ARKSCICOS_LIBRARIES ${SIMGEAR_LIBRARIES} ${PLIB_LIBRARY})
-		list(APPEND SCICOSLAB_BLOCKS "simgearBlocks")
-		list(APPEND ${PROJECT_NAME}Sources sci_flightGearComm.cpp)
-	endif()
-	message(STATUS "building mavlink blocks")
-	list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
-	list(APPEND ${PROJECT_NAME}Sources
-		sci_mavlinkHilSensor.cpp
-		sci_mavlinkHilState.cpp
-		sci_mavlinkHilTracker.cpp
-	)
-endif()
+list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
+list(APPEND ${PROJECT_NAME}Sources
+    sci_mavlinkHilSensor.cpp
+    sci_mavlinkHilState.cpp
+    sci_mavlinkHilTracker.cpp
+)
 
-if(ARKMATH_FOUND)
-	message(STATUS "building arkmath blocks")
-	list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
-	list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
-	list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
-	list(APPEND ${PROJECT_NAME}Sources
-		sci_euler2Dcm.cpp
-		sci_waypointGuidance.cpp
-		sci_quat2EulerDcm.cpp
-		sci_insErrorDynamics.cpp
-		sci_insDynamics.cpp
-		sci_geoMag.cpp
-		sci_magMeasModel.cpp
-		sci_gpsMeasModel.cpp
-		sci_eom6Dof.cpp
-		sci_navigationEquations.cpp
-		definitions.cpp
-		sci_invPend.cpp
-		utilities.cpp
-		sci_zeroOrderHold.cpp
-		sci_randn.cpp
-		sci_quadForceMoments.cpp
-	)
-	if (LAPACK_FOUND)
-	    message(STATUS "building lapack blocks")
-		list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
-		list(APPEND SCICOSLAB_BLOCKS "lapackBlocks")
-		list(APPEND ${PROJECT_NAME}Sources
-			sci_gpsIns.cpp
-		)
-	endif()
-endif()
+list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
+list(APPEND ${PROJECT_NAME}Sources
+    sci_euler2Dcm.cpp
+    sci_waypointGuidance.cpp
+    sci_quat2EulerDcm.cpp
+    sci_insErrorDynamics.cpp
+    sci_insDynamics.cpp
+    sci_geoMag.cpp
+    sci_magMeasModel.cpp
+    sci_gpsMeasModel.cpp
+    sci_eom6Dof.cpp
+    sci_navigationEquations.cpp
+    definitions.cpp
+    sci_invPend.cpp
+    utilities.cpp
+    sci_zeroOrderHold.cpp
+    sci_randn.cpp
+    sci_quadForceMoments.cpp
+)
 
-if(ARKOSG_FOUND AND OPENSCENEGRAPH_FOUND)
-	message(STATUS "building arkosg blocks")
-	list(APPEND ARKSCICOS_LIBRARIES ${ARKOSG_LIBRARIES})
-	list(APPEND SCICOSLAB_BLOCKS "osgBlocks")
-	list(APPEND ${PROJECT_NAME}Sources
-		sci_jet.cpp
-		sci_plane.cpp
-		sci_car.cpp
-		sci_quad.cpp
-		sci_sailboat.cpp
-		sci_vector.cpp
-	)
-endif()
+list(APPEND SCICOSLAB_BLOCKS "lapackBlocks")
+list(APPEND ${PROJECT_NAME}Sources
+    sci_gpsIns.cpp
+)
 
-if(JSBSIM_FOUND)
-	message(STATUS "building jsbsimBlocks")
-	list(APPEND SCICOSLAB_BLOCKS "jsbsimBlocks")
-	list(APPEND ${PROJECT_NAME}Sources
-		sci_jsbsimTrim.cpp
-		sci_jsbsimComm.cpp
-	)
-endif()
+list(APPEND SCICOSLAB_BLOCKS "osgBlocks")
+list(APPEND ${PROJECT_NAME}Sources
+    sci_jet.cpp
+    sci_plane.cpp
+    sci_car.cpp
+    sci_quad.cpp
+    sci_sailboat.cpp
+    sci_vector.cpp
+)
+
+list(APPEND SCICOSLAB_BLOCKS "jsbsimBlocks")
+list(APPEND ${PROJECT_NAME}Sources
+    sci_jsbsimTrim.cpp
+    sci_jsbsimComm.cpp
+)
 
 set(CMAKE_C_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")

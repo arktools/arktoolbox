@@ -11,9 +11,9 @@ set(APPLICATION_VERSION_MAJOR "0")
 set(APPLICATION_VERSION_MINOR "4")
 set(APPLICATION_VERSION_PATCH "0")
 set(ARKOSG_VERSION "0.1.7")
-set(ARKMATH_VERSION "0.2.4")
-set(ARKCOMM_VERSION "0.1.3")
-set(JSBSIM_VERSION "1.0.0.100")
+set(ARKMATH_VERSION "0.2.5")
+set(ARKCOMM_VERSION "0.1.4")
+set(JSBSIM_VERSION "1.0.0.101")
 set(MAVLINK_VERSION "0.9.0")
 set(ARKHANGAR_VERSION "0.1.0")
 
@@ -94,6 +94,8 @@ Please create a separate build directory and run 'cmake /path/to/${PROJECT_NAME}
 # settings
 option(DEV_MODE "Setup paths for developer testing." OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries instead of static." OFF)
+option(WITH_ARKOSG "Enable osg graphics windows" OFF)
+option(WITH_LAPACK "Use lapack libraries" OFF)
 
 # built variables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -139,17 +141,41 @@ endif()
 
 # find libraries with cmake modules
 find_package(SCICOSLAB REQUIRED)
-find_package(OpenSceneGraph 2.8.0 COMPONENTS osgGA osgDB osgUtil osgViewer)
 find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
-find_package(PLIB)
-find_package(SIMGEAR)
 find_package(LAPACK)
-find_or_build_arkcomm(${ARKCOMM_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
-find_or_build_arkmath(${ARKMATH_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
-find_or_build_arkosg(${ARKOSG_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
-find_or_build_arkhangar(${ARKHANGAR_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
-find_or_build_jsbsim(${JSBSIM_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
-find_or_build_mavlink(${MAVLINK_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+
+find_package(ARKCOMM ${ARKCOMM_VERSION})
+if (NOT ARKCOMM_FOUND)
+    build_arkcomm(${ARKCOMM_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+endif()
+
+find_package(ARKMATH ${ARKMATH_VERSION})
+if (NOT ARKMATH_FOUND)
+    build_arkmath(${ARKMATH_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+endif()
+
+if (WITH_ARKOSG)
+    find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgGA osgDB osgUtil osgViewer)
+    find_package(ARKOSG ${ARKOSG_VERSION})
+    if (NOT ARKOSG_FOUND)
+        build_arkosg(${ARKOSG_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+    endif()
+endif()
+
+find_package(ARKHANGAR ${ARKHANGAR_VERSION})
+if (NOT ARKHANGAR_FOUND)
+    build_arkhangar(${ARKHANGAR_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+endif()
+
+find_package(JSBSIM ${JSBSIM_VERSION})
+if (NOT JSBSIM_FOUND)
+    build_jsbsim(${JSBSIM_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+endif()
+
+find_package(MAVLINK ${MAVLINK_VERSION})
+if (NOT MAVLINK_FOUND)
+    build_mavlink(${MAVLINK_VERSION} ${EP_BASE_DIR} ${EP_INSTALL_PREFIX} ${EP_DATADIR})
+endif()
 
 # initialize list of libraries to build with
 set(ARKSCICOS_LIBRARIES "")

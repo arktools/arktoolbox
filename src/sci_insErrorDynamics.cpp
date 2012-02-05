@@ -80,10 +80,10 @@ extern "C"
         double & Vd     = u2[6];
         double & L      = u2[7];
         double & l      = u2[8];
-        double & alt    = u2[9];
+        double & h    = u2[9];
 
         double & Omega = rpar[0];
-        double & Re = rpar[1];
+        double & R0 = rpar[1];
         int & mode = ipar[0];
 
         // sizes
@@ -107,7 +107,7 @@ extern "C"
             const double tanL = cosL/sinL;
             const double cosLcosL = cosL*cosL;
             const double secLsecL = 1/cosLcosL;
-            const double R = Re+alt;
+            const double R = R0+h;
             const double aa = a*a;
             const double bb = b*b;
             const double cc = c*c;
