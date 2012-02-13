@@ -23,7 +23,7 @@ libfind_process(MAVLINK)
 macro(build_mavlink TAG EP_BASE_DIR EP_INSTALL_PREFIX EP_DATADIR)
     if( NOT MAVLINK_FOUND)
         ExternalProject_Add(mavlink
-            GIT_REPOSITORY "git://github.com/pixhawk/mavlink.git"
+            GIT_REPOSITORY "git://github.com/mavlink/mavlink.git"
             GIT_TAG ${TAG}
             UPDATE_COMMAND ""
             INSTALL_DIR ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}
