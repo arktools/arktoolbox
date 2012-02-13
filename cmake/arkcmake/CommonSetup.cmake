@@ -1,23 +1,6 @@
-# Requried cmake version
-cmake_minimum_required (VERSION 2.6)
-
 # global needed variables
 set(APPLICATION_NAME ${PROJECT_NAME})
-
-# set for release
-set(APPLICATION_VERSION_MAJOR "0")
-set(APPLICATION_VERSION_MINOR "1")
-set(APPLICATION_VERSION_PATCH "4")
-set(MAVLINK_VERSION "3eb931")
-
 set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
-set(LIBRARY_VERSION ${APPLICATION_VERSION})
-
-# where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
-set(CMAKE_MODULE_PATH
-	${CMAKE_SOURCE_DIR}/cmake
-	${CMAKE_SOURCE_DIR}/cmake/arkcmake
-)
 
 # modules
 include(DefineCMakeDefaults)
