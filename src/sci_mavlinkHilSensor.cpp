@@ -20,9 +20,9 @@
 #include "utilities.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "mavlink/mavlink_types.h"
+#include "mavlink/v0.9/mavlink_types.h"
 #include "arkcomm/asio_mavlink_bridge.h"
-#include "mavlink/common/mavlink.h"
+#include "mavlink/v0.9/common/mavlink.h"
 
 extern "C"
 {
