@@ -113,7 +113,7 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
     PATTERN "*.git*" EXCLUDE)
 
 # install required dependencies from external projects
-install(DIRECTORY ${EP_BASE_DIR}/${EP_INSTALL_PREFIX} DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/ DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 # pkgconfig
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc)
