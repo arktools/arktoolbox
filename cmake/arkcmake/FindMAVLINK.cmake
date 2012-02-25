@@ -11,7 +11,7 @@ MacroCommonPaths(MAVLINK)
 
 # Include dir
 find_path(MAVLINK_INCLUDE_DIR
-    NAMES mavlink/mavlink_types.h
+    NAMES mavlink/v1.0/mavlink_types.h
     PATHS ${COMMON_INCLUDE_PATHS_MAVLINK}
 )
 
@@ -20,23 +20,13 @@ find_path(MAVLINK_INCLUDE_DIR
 set(MAVLINK_PROCESS_INCLUDES MAVLINK_INCLUDE_DIR)
 libfind_process(MAVLINK)
 
-macro(build_mavlink TAG EP_BASE_DIR EP_INSTALL_PREFIX EP_DATADIR)
-    if( NOT MAVLINK_FOUND)
-        ExternalProject_Add(mavlink
-            GIT_REPOSITORY "git://github.com/mavlink/mavlink.git"
-            GIT_TAG ${TAG}
-            UPDATE_COMMAND ""
-            INSTALL_DIR ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}
-            CMAKE_ARGS
-                -DEP_BASE_DIR=${EP_BASE_DIR}
-                -DEP_INSTALL_PREFIX=${EP_INSTALL_PREFIX}
-                -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                -DCMAKE_INSTALL_PREFIX=${EP_INSTALL_PREFIX}
-            INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
-        )
-        set(MAVLINK_INCLUDE_DIRS ${EP_INCLUDEDIR})
-        set(MAVLINK_DATA_DIR "")
-        set(MAVLINK_LIBRARIES "")
-        set(MAVLINK_FOUND TRUE)
-    endif()
+macro(build_mavlink TAG EP_BASE_DIR CMAKE_ARGS)
+    ExternalProject_Add(mavlink
+        GIT_REPOSITORY "git://github.com/mavlink/mavlink.git"
+        GIT_TAG ${TAG}
+        UPDATE_COMMAND ""
+        INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+        CMAKE_ARGS ${CMAKE_ARGS}
+        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
+    )
 endmacro()

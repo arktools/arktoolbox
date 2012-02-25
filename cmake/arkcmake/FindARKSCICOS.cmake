@@ -34,3 +34,14 @@ set(ARKSCICOS_LIB_IMPORT ${ARKSCICOS_LIBRARY_DIR}/arkscicos/arkscicos-targets.cm
 set(ARKSCICOS_PROCESS_INCLUDES ARKSCICOS_INCLUDE_DIR)
 set(ARKSCICOS_PROCESS_LIBS ARKSCICOS_LIBRARY ARKSCICOS_LIBRARIES)
 libfind_process(ARKSCICOS)
+
+macro(build_arkscicos TAG EP_BASE_DIR CMAKE_ARGS)
+    ExternalProject_Add(arkscicos
+        GIT_REPOSITORY "git://github.com/arktools/arkscicos.git"
+        GIT_TAG ${TAG}
+        UPDATE_COMMAND ""
+        INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+        CMAKE_ARGS ${CMAKE_ARGS}
+        INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+       )
+endmacro()

@@ -38,23 +38,13 @@ set(JSBSIM_INCLUDES ${JSBSIM_INCLUDES} ${JSBSIM_INCLUDE_DIR}/JSBSim)
 
 libfind_process(JSBSIM)
 
-macro(build_jsbsim TAG EP_BASE_DIR EP_INSTALL_PREFIX EP_DATADIR)
-    if(NOT JSBSIM_FOUND)
-        ExternalProject_Add(jsbsim
-            GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
-            GIT_TAG ${TAG}
-            UPDATE_COMMAND ""
-            INSTALL_DIR ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}
-            CMAKE_ARGS
-                -DEP_BASE_DIR=${EP_BASE_DIR}
-                -DEP_INSTALL_PREFIX=${EP_INSTALL_PREFIX}
-                -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                -DCMAKE_INSTALL_PREFIX=${EP_INSTALL_PREFIX}
-            INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
-            )
-        set(JSBSIM_INCLUDE_DIRS  ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/include ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/include/jsbsim)
-        set(JSBSIM_DATA_DIR ${EP_DATADIR}/jsbsim)
-        set(JSBSIM_LIBRARIES ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/lib/libjsbsim.a)
-        set(JSBSIM_FOUND TRUE)
-    endif()
+macro(build_jsbsim TAG EP_BASE_DIR CMAKE_ARGS)
+    ExternalProject_Add(jsbsim
+        GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
+        GIT_TAG ${TAG}
+        UPDATE_COMMAND ""
+        INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+        CMAKE_ARGS ${CMAKE_ARGS}
+        INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
+        )
 endmacro()

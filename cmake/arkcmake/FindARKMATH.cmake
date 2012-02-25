@@ -42,23 +42,13 @@ set(ARKMATH_PROCESS_INCLUDES ARKMATH_INCLUDE_DIR)
 set(ARKMATH_PROCESS_LIBS ARKMATH_LIBRARY ARKMATH_LIBRARIES)
 libfind_process(ARKMATH)
 
-macro(build_arkmath TAG EP_BASE_DIR EP_INSTALL_PREFIX EP_DATADIR)
-    if(NOT ARKMATH_FOUND)
-        ExternalProject_Add(arkmath
-            GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
-            GIT_TAG ${TAG}
-            UPDATE_COMMAND ""
-            INSTALL_DIR ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}
-            CMAKE_ARGS
-                -DEP_BASE_DIR=${EP_BASE_DIR}
-                -DEP_INSTALL_PREFIX=${EP_INSTALL_PREFIX}
-                -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                -DCMAKE_INSTALL_PREFIX=${EP_INSTALL_PREFIX}
-            INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
-           )
-        set(ARKMATH_INCLUDE_DIRS ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/include)
-        set(ARKMATH_DATA_DIR ${EP_DATADIR}/arkmath/data)
-        set(ARKMATH_LIBRARIES ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/lib/libarkmath.a)
-        set(ARKMATH_FOUND TRUE)
-    endif()
+macro(build_arkmath TAG EP_BASE_DIR CMAKE_ARGS)
+    ExternalProject_Add(arkmath
+        GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
+        GIT_TAG ${TAG}
+        UPDATE_COMMAND ""
+        INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+        CMAKE_ARGS ${CMAKE_ARGS}
+        INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+       )
 endmacro()
