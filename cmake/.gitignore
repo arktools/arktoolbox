@@ -16,4 +16,5 @@ arkcmake/*
 !arkcmake/FindARKCOMM.cmake
 !arkcmake/FindJSBSIM.cmake
 !arkcmake/FindARKHANGAR.cmake
+!arkcmake/FindSCICOSLAB.cmake
 !arkcmake/language_support_v2.cmake
