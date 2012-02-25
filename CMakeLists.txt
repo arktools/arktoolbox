@@ -273,11 +273,11 @@ get_target_property(ARKSCICOS_SCICOS_LOCATION ${PROJECT_NAME} LOCATION)
 set(SCICOSLAB_INSTALL_SETTINGS 0)
 configure_file(src/loadscicos.sce.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
 set(SCICOSLAB_INSTALL_SETTINGS 1)
-configure_file(src/loadscicos.sce.in ${CMAKE_CURRENT_BINARY_DIR}/src/loadscicos.sce)
+configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/src/loadscicos.sce)
 
 configure_file(src/VERSION.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/VERSION)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/loadscicos.sce DESTINATION
+install(FILES ${CMAKE_BINARY_DIR}/src/loadscicos.sce DESTINATION
 	${SCICOSLAB_CONTRIB_DIR}/arkscicos-toolbox/scicos)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib COMPONENT Runtime)
