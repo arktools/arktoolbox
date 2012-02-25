@@ -3,7 +3,7 @@ project (arkscicos C CXX)
 # Requried cmake version
 cmake_minimum_required (VERSION 2.8.2)
 set(PROJECT_VERSION_MAJOR "0")
-set(PROJECT_VERSION_MINOR "4")
+set(PROJECT_VERSION_MINOR "5")
 set(PROJECT_VERSION_PATCH "0")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(PROJECT_CONTACT_EMAIL james.goppert@gmail.com)
@@ -20,9 +20,8 @@ set(ARKHANGAR_VERSION "5b26b872ea4e2667ee82acfe7beb43bf50c95357")
 # options
 option(WITH_BUILD_DEPS "Build dependencies." ON)
 option(WITH_BUILD_STATIC "Build preferring static linking." ON)
-option(WITH_ARKOSG "Build arkosg graphics." ON)
-option(WITH_LAPACK "Use lapack libraries" ON)
-
+option(WITH_ARKOSG "Build arkosg graphics." OFF)
+option(WITH_LAPACK "Use lapack libraries" OFF)
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
 set(INSTALLED_TARGETS "")
@@ -32,6 +31,10 @@ list(APPEND CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake
     ${CMAKE_SOURCE_DIR}/cmake/arkcmake
     )
+if (WITH_LAPACK)
+    include(language_support_v2)
+    enable_language(Fortran)
+endif()
 include(BundleUtilities)
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
@@ -54,7 +57,7 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         "-DROOT_THREAD=FALSE"
         "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
         "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
-        "-DWITH_BUILD_DEPS=${WITH_BUILD_STATIC}"
+        "-DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}"
         "-DWITH_BUILD_STATIC=${WITH_BUILD_STATIC}"
         "-DWITH_ARKOSG=${WITH_ARKOSG}"
         "-DWITH_LAPACK=${WITH_LAPACK}"
@@ -250,10 +253,8 @@ set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
-add_dependencies(${PROJECT_NAME} mavlink jsbsim arkosg arkmath arkcomm arkhangar)
-
+add_dependencies(${PROJECT_NAME} arkcomm arkmath arkhangar arkosg jsbsim)
 target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
-
 
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${LIBRARY_SOVERSION})
 if(NOT APPLE)
