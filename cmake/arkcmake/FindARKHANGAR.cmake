@@ -11,13 +11,13 @@ MacroCommonPaths(ARKHANGAR)
 
 # Include dir
 find_path(ARKHANGAR_INCLUDE_DIR
-    NAMES arkhangar/easystar/easystar-windtunnel.xml
+    NAMES arkhangar/aircraft/easystar/easystar-windtunnel.xml
     PATHS ${COMMON_DATA_PATHS_ARKHANGAR}
 )
 
 # data dir
 find_path(ARKHANGAR_DATA_DIR_SEARCH
-    NAMES arkhangar/easystar/easystar-windtunnel.xml
+    NAMES arkhangar/aircraft/easystar/easystar-windtunnel.xml
     PATHS ${COMMON_DATA_PATHS_ARKHANGAR}
 )
 set(ARKHANGAR_DATA_DIR ${ARKHANGAR_DATA_DIR_SEARCH}/arkhangar)
