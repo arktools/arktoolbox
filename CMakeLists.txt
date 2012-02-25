@@ -20,8 +20,8 @@ set(ARKHANGAR_VERSION "5b26b872ea4e2667ee82acfe7beb43bf50c95357")
 # options
 option(WITH_BUILD_DEPS "Build dependencies." ON)
 option(WITH_BUILD_STATIC "Build preferring static linking." ON)
-option(WITH_ARKOSG "Build arkosg graphics." OFF)
-option(WITH_LAPACK "Use lapack libraries" OFF)
+option(WITH_ARKOSG "Build arkosg graphics." ON)
+option(WITH_LAPACK "Use lapack libraries" ON)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
@@ -56,7 +56,6 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
         "-DWITH_BUILD_DEPS=${WITH_BUILD_STATIC}"
         "-DWITH_BUILD_STATIC=${WITH_BUILD_STATIC}"
-        "-DWITH_GUI=${WITH_GUI}"
         "-DWITH_ARKOSG=${WITH_ARKOSG}"
         "-DWITH_LAPACK=${WITH_LAPACK}"
         RESULT_VARIABLE ERROR)
