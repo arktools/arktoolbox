@@ -43,6 +43,7 @@ set(ARKMATH_PROCESS_LIBS ARKMATH_LIBRARY ARKMATH_LIBRARIES)
 libfind_process(ARKMATH)
 
 macro(build_arkmath TAG EP_BASE_DIR CMAKE_ARGS)
+    list(APPEND CMAKE_ARGS "-DEP_BASE_DIR=${EP_BASE_DIR}")
     ExternalProject_Add(arkmath
         GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
         GIT_TAG ${TAG}

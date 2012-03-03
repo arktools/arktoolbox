@@ -27,6 +27,7 @@ set(ARKHANGAR_PROCESS_INCLUDES ARKHANGAR_INCLUDE_DIR)
 libfind_process(ARKHANGAR)
 
 macro(build_arkhangar TAG EP_BASE_DIR CMAKE_MAKE_ARGS)
+    list(APPEND CMAKE_ARGS "-DEP_BASE_DIR=${EP_BASE_DIR}")
     ExternalProject_Add(arkhangar
         GIT_REPOSITORY "git://github.com/arktools/arkhangar.git"
         GIT_TAG ${TAG}
