@@ -1,7 +1,7 @@
 project (arkscicos C CXX)
 
 # Requried cmake version
-cmake_minimum_required (VERSION 2.8.2)
+cmake_minimum_required (VERSION 2.8)
 set(PROJECT_VERSION_MAJOR "0")
 set(PROJECT_VERSION_MINOR "5")
 set(PROJECT_VERSION_PATCH "0")
@@ -11,17 +11,19 @@ set(PROJECT_CONTACT_VENDOR arktools)
 set(LIBRARY_VERSION ${PROJECT_VERSION})
 set(LIBRARY_SOVERSION "0.0.0")
 
-set(ARKOSG_VERSION "9001fbbfe8cf2b0b43d7c3a92247e8e8fdb0b263")
-set(ARKMATH_VERSION "ff34296dcc92bb00eb4fcd36422b1069a77e7df8")
-set(ARKCOMM_VERSION "0266e0406ae1a913dd8140f804699a277f86626c")
-set(JSBSIM_VERSION "d1f5868d303f776e92a4947feb72003053229c44")
+# third party
+set(ARKMATH_VERSION "508d2cf1cbcd378c439bec1dd4f6699fb820fa1b")
+set(JSBSIM_VERSION "903229557d92863667a3e3a62a23873f0ab98311")
 set(ARKHANGAR_VERSION "5b26b872ea4e2667ee82acfe7beb43bf50c95357")
+set(ARKOSG_VERSION "1c740212829d5805d8c2e3e16bf4f1c69f0e4d23")
+set(ARKCOMM_VERSION "0fd65130d19ad4296788e2e59acbb10ee572960c")
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." ON)
-option(WITH_BUILD_STATIC "Build preferring static linking." ON)
+option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." OFF)
 option(WITH_LAPACK "Use lapack libraries" OFF)
+
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
 set(INSTALLED_TARGETS "")
@@ -54,19 +56,20 @@ include(FindARKHANGAR)
 # spawn new cmake to build deps
 if (WITH_BUILD_DEPS AND ROOT_THREAD)
     execute_process(COMMAND ${CMAKE_COMMAND} "${CMAKE_SOURCE_DIR}"
-        "-DROOT_THREAD=FALSE"
         "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
         "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+        "-DEP_BASE_DIR=${EP_BASE_DIR}"
         "-DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}"
-        "-DWITH_BUILD_STATIC=${WITH_BUILD_STATIC}"
+        "-DWITH_PREFER_STATIC=${WITH_PREFER_STATIC}"
         "-DWITH_ARKOSG=${WITH_ARKOSG}"
         "-DWITH_LAPACK=${WITH_LAPACK}"
+        "-DROOT_THREAD=FALSE"
         RESULT_VARIABLE ERROR)
     if (ERROR)
         message(FATAL_ERROR "error, recursing loop returned error code: ${ERROR}")
     endif()
     message("** Making dependencies")
-    execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} "-j4" "-f${CMAKE_BINARY_DIR}/Makefile")
+    execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} "-j1" "-f${CMAKE_BINARY_DIR}/Makefile")
     message("** Configuring ${PROJECT_NAME}")
 endif()
 
@@ -78,7 +81,7 @@ list(APPEND CMAKE_FIND_ROOT_PATH ${EP_BASE_DIR})
 
 # prefer static packages if building static library
 message("** Finding libraries")
-if (WITH_BUILD_STATIC)
+if (WITH_PREFER_STATIC)
     set(BOOST_USE_STATIC_LIBS ON)
     # prefer static libs
     if(WIN32)
@@ -255,13 +258,12 @@ set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
 add_dependencies(${PROJECT_NAME} arkcomm arkmath arkhangar arkosg jsbsim)
 target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    SOVERSION ${LIBRARY_SOVERSION}
+    VERSION ${LIBRARY_VERSION}
+    )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${LIBRARY_SOVERSION})
-if(NOT APPLE)
-	set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${LIBRARY_VERSION})
-endif()
-
-if (UNIX AND NOT APPLE)
+if (UNIX)
 	# if using unix add script to see if scicoslab toolbox builds correctly
 	add_custom_target(toolbox ALL
 		DEPENDS ${PROJECT_NAME}
@@ -301,7 +303,7 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
     )
 
 # install required dependencies from external projects
-install(DIRECTORY ${EP_BASE_DIR}/${EP_INSTALL_PREFIX}/
+install(DIRECTORY ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}/
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     COMPONENT Runtime
     )
