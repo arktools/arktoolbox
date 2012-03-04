@@ -13,9 +13,9 @@ set(LIBRARY_SOVERSION "0.0.0")
 
 # third party
 set(ARKMATH_VERSION "508d2cf1cbcd378c439bec1dd4f6699fb820fa1b")
-set(JSBSIM_VERSION "903229557d92863667a3e3a62a23873f0ab98311")
+set(JSBSIM_VERSION "2d20e80cfea5e6f8ac7a8d544a7cbe7a9e6af15e")
 set(ARKHANGAR_VERSION "5b26b872ea4e2667ee82acfe7beb43bf50c95357")
-set(ARKOSG_VERSION "1c740212829d5805d8c2e3e16bf4f1c69f0e4d23")
+set(ARKOSG_VERSION "4965a3bd28373162a9922b2d1de34e5c0ecd4cd5")
 set(ARKCOMM_VERSION "0fd65130d19ad4296788e2e59acbb10ee572960c")
 
 # options
@@ -69,7 +69,7 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         message(FATAL_ERROR "error, recursing loop returned error code: ${ERROR}")
     endif()
     message("** Making dependencies")
-    execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} "-j1" "-f${CMAKE_BINARY_DIR}/Makefile")
+    execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} "-j4" "-f${CMAKE_BINARY_DIR}/Makefile")
     message("** Configuring ${PROJECT_NAME}")
 endif()
 
@@ -160,10 +160,17 @@ endif()
 #check_symbol_exists(LC_MESSAGES "locale.h" HAVE_LC_MESSAGES) 
 #check_library_exists(arkosg  attachNode "" HAVE_ARKOSG)
 
-# initialize list of libraries to build with
-set(ARKSCICOS_LIBRARIES "")
-
+# config files
 configure_file(src/config.h.cmake src/config.h)
+
+# build settings
+if (WITH_PREFER_STATIC OR MINGW)
+    add_definitions(-DOSG_LIBRARY_STATIC)
+endif()
+
+set(ARKSCICOS_LIBRARIES
+    "/usr/lib/osgPlugins-2.8.3/libosgdb_bmp.a"
+    )
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/src 
@@ -237,6 +244,7 @@ list(APPEND ${PROJECT_NAME}Sources
 
 list(APPEND SCICOSLAB_BLOCKS "osgBlocks")
 list(APPEND ${PROJECT_NAME}Sources
+    #src/osgPlugins.cpp
     src/sci_jet.cpp
     src/sci_plane.cpp
     src/sci_car.cpp
@@ -257,6 +265,7 @@ set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 
 add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
 add_dependencies(${PROJECT_NAME} arkcomm arkmath arkhangar arkosg jsbsim)
+message(STATUS "scicos libraries: ${ARKSCICOS_LIBRARIES}")
 target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES
     SOVERSION ${LIBRARY_SOVERSION}
