@@ -22,7 +22,8 @@ set(ARKCOMM_VERSION "0fd65130d19ad4296788e2e59acbb10ee572960c")
 option(WITH_BUILD_DEPS "Build dependencies." ON)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." OFF)
-option(WITH_LAPACK "Use lapack libraries" OFF)
+option(WITH_LAPACK "Use lapack libraries." OFF)
+option(WITH_SCICOS_VERIFY "Verify scicos library loads correctly." OFF)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
@@ -92,6 +93,10 @@ if (WITH_PREFER_STATIC)
 endif()
 
 # find libraries with cmake modules
+set(REQUIRED_IF_ROOT_THREAD)
+if (ROOT_THREAD)
+    set(REQUIRED_IF_ROOT_THREAD "REQUIRED")
+endif()
 find_package(SCICOSLAB REQUIRED)
 find_package(Boost 1.42 REQUIRED COMPONENTS thread-mt system-mt)
 if (WITH_LAPACK)
@@ -100,24 +105,12 @@ endif()
 if (WITH_ARKOSG)
     find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
     find_package(OpenGL REQUIRED)
+    find_package(ARKOSG ${REQUIRED_IF_ROOT_THREAD})
 endif()
-if (ROOT_THREAD)
-    find_package(ARKCOMM REQUIRED)
-    find_package(ARKMATH REQUIRED)
-    if (WITH_ARKOSG)
-        find_package(ARKOSG REQUIRED)
-    endif()
-    find_package(ARKHANGAR REQUIRED)
-    find_package(JSBSIM REQUIRED)
-else()
-    find_package(ARKCOMM)
-    find_package(ARKMATH)
-    if (WITH_ARKOSG)
-        find_package(ARKOSG)
-    endif()
-    find_package(ARKHANGAR)
-    find_package(JSBSIM)
-endif()
+find_package(ARKCOMM ${REQUIRED_IF_ROOT_THREAD})
+find_package(ARKMATH ${REQUIRED_IF-ROOT_THREAD})
+find_package(ARKHANGAR ${REQUIRED_IF_ROOT_THREAD})
+find_package(JSBSIM ${REQUIRED_IF_ROOT_THREAD})
 
 # build dependencies
 if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
@@ -131,23 +124,58 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
         )
 
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
-        build_arkosg(${ARKOSG_VERSION} ${EP_BASE_DIR} "${CMAKE_EP_DEFAULT_ARGS}")
+        ExternalProject_Add(arkosg
+            GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
+            GIT_TAG ${TAG}
+            UPDATE_COMMAND ""
+            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+        )
     endif()
 
     if (NOT ARKHANGAR_FOUND)
-        build_arkhangar(${ARKHANGAR_VERSION} ${EP_BASE_DIR} "${CMAKE_EP_DEFAULT_ARGS}")
+        ExternalProject_Add(arkhangar
+            GIT_REPOSITORY "git://github.com/arktools/arkhangar.git"
+            GIT_TAG ${TAG}
+            UPDATE_COMMAND ""
+            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
+            INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
+        )
     endif()
 
     if (NOT ARKMATH_FOUND)
-        build_arkmath(${ARKMATH_VERSION} ${EP_BASE_DIR} "${CMAKE_EP_DEFAULT_ARGS}")
+        ExternalProject_Add(arkmath
+            GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
+            GIT_TAG ${TAG}
+            UPDATE_COMMAND ""
+            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+           )
     endif()
 
     if (NOT ARKCOMM_FOUND)
-        build_arkcomm(${ARKCOMM_VERSION} ${EP_BASE_DIR} "${CMAKE_EP_DEFAULT_ARGS}")
+        ExternalProject_Add(arkcomm
+            GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
+            GIT_TAG ${TAG}
+            UPDATE_COMMAND ""
+            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+           )
     endif()
 
     if (NOT JSBSIM_FOUND)
-        build_jsbsim(${JSBSIM_VERSION} ${EP_BASE_DIR} "${CMAKE_EP_DEFAULT_ARGS}")
+        ExternalProject_Add(jsbsim
+            GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
+            GIT_TAG ${TAG}
+            UPDATE_COMMAND ""
+            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+            )
     endif()
 
     # terminate non root cmake thread
@@ -161,7 +189,8 @@ endif()
 #check_library_exists(arkosg  attachNode "" HAVE_ARKOSG)
 
 # config files
-configure_file(src/config.h.cmake src/config.h)
+set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/arkscicos")
+configure_file(src/config.h.in src/config.h)
 
 # build settings
 if (WITH_PREFER_STATIC OR MINGW)
@@ -207,18 +236,18 @@ if (Boost_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${Boost_LIBRARIES})
 endif()
 
-set(${PROJECT_NAME}Sources "")
+set(ARKSCICOS_SRCS "")
 set(SCICOSLAB_BLOCKS "")
 
 list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
-list(APPEND ${PROJECT_NAME}Sources
+list(APPEND ARKSCICOS_SRCS
     src/sci_mavlinkHilSensor.cpp
     src/sci_mavlinkHilState.cpp
     src/sci_mavlinkHilTracker.cpp
 )
 
 list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
-list(APPEND ${PROJECT_NAME}Sources
+list(APPEND ARKSCICOS_SRCS
     src/sci_euler2Dcm.cpp
     src/sci_waypointGuidance.cpp
     src/sci_quat2EulerDcm.cpp
@@ -238,12 +267,12 @@ list(APPEND ${PROJECT_NAME}Sources
 )
 
 list(APPEND SCICOSLAB_BLOCKS "lapackBlocks")
-list(APPEND ${PROJECT_NAME}Sources
+list(APPEND ARKSCICOS_SRCS
     src/sci_gpsIns.cpp
 )
 
 list(APPEND SCICOSLAB_BLOCKS "osgBlocks")
-list(APPEND ${PROJECT_NAME}Sources
+list(APPEND ARKSCICOS_SRCS
     #src/osgPlugins.cpp
     src/sci_jet.cpp
     src/sci_plane.cpp
@@ -254,7 +283,7 @@ list(APPEND ${PROJECT_NAME}Sources
 )
 
 list(APPEND SCICOSLAB_BLOCKS "jsbsimBlocks")
-list(APPEND ${PROJECT_NAME}Sources
+list(APPEND ARKSCICOS_SRCS
     src/sci_jsbsimTrim.cpp
     src/sci_jsbsimComm.cpp
 )
@@ -263,23 +292,22 @@ set(CMAKE_C_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
 
-add_library(${PROJECT_NAME} MODULE ${${PROJECT_NAME}Sources})
-add_dependencies(${PROJECT_NAME} arkcomm arkmath arkhangar arkosg jsbsim)
-message(STATUS "scicos libraries: ${ARKSCICOS_LIBRARIES}")
-target_link_libraries(${PROJECT_NAME} ${ARKSCICOS_LIBRARIES})
-set_target_properties(${PROJECT_NAME} PROPERTIES
+add_library(arkscicos MODULE ${ARKSCICOS_SRCS})
+add_dependencies(arkscicos arkcomm arkmath arkhangar arkosg jsbsim)
+target_link_libraries(arkscicos ${ARKSCICOS_LIBRARIES})
+set_target_properties(arkscicos PROPERTIES
     SOVERSION ${LIBRARY_SOVERSION}
     VERSION ${LIBRARY_VERSION}
     )
 
-if (UNIX)
+if (UNIX AND WITH_SCICOS_VERIFY)
 	# if using unix add script to see if scicoslab toolbox builds correctly
 	add_custom_target(toolbox ALL
-		DEPENDS ${PROJECT_NAME}
+		DEPENDS arkscicos
 		COMMAND cd ${PROJECT_SOURCE_DIR}/arkscicos-toolbox && ./build.sh)
 endif()
 
-get_target_property(ARKSCICOS_SCICOS_LOCATION ${PROJECT_NAME} LOCATION)
+get_target_property(ARKSCICOS_SCICOS_LOCATION arkscicos LOCATION)
 
 set(SCICOSLAB_INSTALL_SETTINGS 0)
 configure_file(src/loadscicos.sce.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
@@ -289,9 +317,9 @@ configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/src/loadscicos.sce)
 configure_file(src/VERSION.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/VERSION)
 
 install(FILES ${CMAKE_BINARY_DIR}/src/loadscicos.sce DESTINATION
-	${SCICOSLAB_CONTRIB_DIR}/arkscicos-toolbox/scicos)
+	${SCICOSLAB_CONTRIB_DIR}/arkscicos-toolbox/scicos COMPONENT Runtime)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION lib COMPONENT Runtime)
+install(TARGETS arkscicos DESTINATION lib COMPONENT Runtime)
 
 install(FILES
     src/definitions.hpp
@@ -301,7 +329,7 @@ install(FILES
     )
 
 # install data files
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/projects" DESTINATION share/${PROJECT_NAME}
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/projects" DESTINATION share/arkscicos
     COMPONENT Runtime 
     PATTERN "*.git*" EXCLUDE
     )
@@ -311,11 +339,31 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
     PATTERN "*.git*" EXCLUDE
     )
 
-# install required dependencies from external projects
-install(DIRECTORY ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}/
-    DESTINATION ${CMAKE_INSTALL_PREFIX}
-    COMPONENT Runtime
-    )
+if (WITH_ARKOSG)
+    install(DIRECTORY "${ARKOSG_DATA_DIR}/arkosg"
+        DESTINATION share/arkscicos
+        COMPONENT Runtime
+        PATTERN "*.git*" EXCLUDE
+        )
+endif()
+
+install(DIRECTORY "${ARKMATH_DATA_DIR}/arkmath"
+        DESTINATION share/arkscicos
+        COMPONENT Runtime
+        PATTERN "*.git*" EXCLUDE
+        )
+
+install(DIRECTORY "${ARKHANGAR_DATA_DIR}/arkhangar"
+        DESTINATION share/arkscicos
+        COMPONENT Runtime
+        PATTERN "*.git*" EXCLUDE
+        )
+
+install(DIRECTORY "${JSBSIM_DATA_DIR}/jsbsim"
+        DESTINATION share/arkscicos
+        COMPONENT Runtime
+        PATTERN "*.git*" EXCLUDE
+        )
 
 # install
 install(TARGETS  ${INSTALLED_TARGETS}
@@ -330,16 +378,15 @@ install(TARGETS  ${INSTALLED_TARGETS}
     RESOURCE DESTINATION "share/jsbsim" COMPONENT Runtime
     )
 
-# install external projects, if built
-if (EXISTS ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}/)
-    install(DIRECTORY ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}/ DESTINATION ${CMAKE_INSTALL_PREFIX} COMPONENT Runtime)
-endif()
-
 # packaging
 set(CPACK_PACKAGE_CONTACT "james.goppert@gmail.com")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_SET_DESTDIR TRUE)
 set(CPACK_COMPONENTS_GROUPING "ALL_COMPONENTS_IN_ONE")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6, libgcc1, libc6")
+if (WITH_ARKOSG)
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libgl1-mesa-glx")
+endif()
 include(CPack)
 
 # pkgconfig

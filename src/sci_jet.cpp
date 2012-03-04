@@ -31,7 +31,7 @@ class VisJet : public Viewer
 public:
 
     Jet * jet;
-    VisJet() : jet(new Jet(std::string(ARKOSG_DATA_DIR)+"/models/jet.ac"))
+    VisJet() : jet(new Jet(std::string(INSTALL_DATA_DIR)+"/arkosg/models/jet.ac"))
     {
         osg::Group * root = new Frame(15,"N","E","D");
         root->addChild(jet);

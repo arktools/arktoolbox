@@ -1,20 +1,10 @@
 /* Name of package */
-#cmakedefine PACKAGE "${APPLICATION_NAME}"
+#cmakedefine PACKAGE "${PROJECT_NAME}"
 
 /* Version number of package */
-#cmakedefine VERSION "${APPLICATION_VERSION}"
+#cmakedefine VERSION "${PROJECT_VERSION}"
 
-#cmakedefine LOCALEDIR "${LOCALE_INSTALL_DIR}"
-#cmakedefine DATADIR "${DATADIR}"
-#cmakedefine LIBDIR "${LIBDIR}"
-#cmakedefine PLUGINDIR "${PLUGINDIR}"
-#cmakedefine SYSCONFDIR "${SYSCONFDIR}"
-#cmakedefine BINARYDIR "${BINARYDIR}"
-#cmakedefine SOURCEDIR "${SOURCEDIR}"
-#cmakedefine JSBSIM_DATA_DIR "${JSBSIM_DATA_DIR}"
-#cmakedefine ARKMATH_DATA_DIR "${ARKMATH_DATA_DIR}"
-#cmakedefine ARKOSG_DATA_DIR "${ARKOSG_DATA_DIR}"
-#cmakedefine ARKHANGAR_DATA_DIR "${ARKHANGAR_DATA_DIR}"
+#cmakedefine INSTALL_DATA_DIR "${INSTALL_DATA_DIR}"
 
 /************************** HEADER FILES *************************/
 

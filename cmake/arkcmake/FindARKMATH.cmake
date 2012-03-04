@@ -17,11 +17,10 @@ find_path(ARKMATH_INCLUDE_DIR
 )
 
 # data dir
-find_path(ARKMATH_DATA_DIR_SEARCH
+find_path(ARKMATH_DATA_DIR
     NAMES arkmath/data/WMM.COF
     PATHS ${COMMON_DATA_PATHS_ARKMATH}
 )
-set(ARKMATH_DATA_DIR ${ARKMATH_DATA_DIR_SEARCH}/arkmath/data)
 
 # the library itself
 find_library(ARKMATH_LIBRARY
@@ -41,15 +40,3 @@ set(ARKMATH_LIB_IMPORT ${ARKMATH_LIBRARY_DIR}/arkmath/arkmath-targets.cmake)
 set(ARKMATH_PROCESS_INCLUDES ARKMATH_INCLUDE_DIR)
 set(ARKMATH_PROCESS_LIBS ARKMATH_LIBRARY ARKMATH_LIBRARIES)
 libfind_process(ARKMATH)
-
-macro(build_arkmath TAG EP_BASE_DIR CMAKE_ARGS)
-    list(APPEND CMAKE_ARGS "-DEP_BASE_DIR=${EP_BASE_DIR}")
-    ExternalProject_Add(arkmath
-        GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
-        GIT_TAG ${TAG}
-        UPDATE_COMMAND ""
-        INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
-        CMAKE_ARGS ${CMAKE_ARGS}
-        INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
-       )
-endmacro()

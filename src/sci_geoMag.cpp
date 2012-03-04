@@ -76,7 +76,7 @@ extern "C"
             {
                 try
                 {
-                    geoMag = new arkmath::GeoMag(std::string(ARKMATH_DATA_DIR)+"/WMM.COF",nTerms);
+                    geoMag = new arkmath::GeoMag(std::string(INSTALL_DATA_DIR)+"/arkmath/data/WMM.COF",nTerms);
                 }
                 catch (const std::runtime_error & e)
                 {

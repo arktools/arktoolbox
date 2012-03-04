@@ -47,10 +47,10 @@ class VisQuad : public Viewer
 public:
 
     Quad * quad;
-    VisQuad() : quad(new Quad(std::string(ARKOSG_DATA_DIR)+"/models/arducopter.ac"))
+    VisQuad() : quad(new Quad(std::string(INSTALL_DATA_DIR)+"/arkosg/models/arducopter.ac"))
     {
         osg::Group * root = new Frame(1,"N","E","D");
-        root->addChild(new Terrain(std::string(ARKOSG_DATA_DIR)+"/images/lz.rgb",osg::Vec3(10,10,0)));
+        root->addChild(new Terrain(std::string(INSTALL_DATA_DIR)+"/arkosg/images/lz.rgb",osg::Vec3(10,10,0)));
         if (quad) root->addChild(quad);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));

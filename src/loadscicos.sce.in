@@ -1,9 +1,9 @@
 mode(-1);
 lines(0);
 
-arkscicosDataPath='@DATADIR@'
-jsbsimDataPath='@JSBSIM_DATA_DIR@'
-arkhangarDataPath='@ARKHANGAR_DATA_DIR@'
+arkscicosDataPath='@INSTALL_DATA_DIR@'
+jsbsimDataPath='@INSTALL_DATA_DIR@/jsbsim'
+arkhangarDataPath='@INSTALL_DATA_DIR@/arkhangar'
 
 // whether or not to configure for final installation
 scicoslabInstallSettings = @SCICOSLAB_INSTALL_SETTINGS@;
@@ -31,7 +31,7 @@ mavlinkBlocks=['sci_mavlinkHilSensor';'sci_mavlinkHilState';'sci_mavlinkHilTrack
 blocks=[@SCICOSLAB_BLOCKS@]';
 
 if (scicoslabInstallSettings) then
-	link(['@LIBDIR@/libarkscicos.so'],blocks,'c');
+	link(['@CMAKE_INSTALL_PREFIX@/lib/libarkscicos@CMAKE_SHARED_LIBRARY_SUFFIX@'],blocks,'c');
 else
 	link(['@ARKSCICOS_SCICOS_LOCATION@'],blocks,'c');
 end

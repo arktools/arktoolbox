@@ -45,10 +45,10 @@ class VisSailboat : public Viewer
 public:
 
     Sailboat * sailboat;
-    VisSailboat() : sailboat(new Sailboat(std::string(ARKOSG_DATA_DIR)+"/models/sailboat.ac"))
+    VisSailboat() : sailboat(new Sailboat(std::string(INSTALL_DATA_DIR)+"/arkosg/models/sailboat.ac"))
     {
         osg::Group * root = new Frame(1,"N","E","D");
-        root->addChild(new Terrain(std::string(ARKOSG_DATA_DIR)+"/images/ocean.rgb",osg::Vec3(10,10,0)));
+        root->addChild(new Terrain(std::string(INSTALL_DATA_DIR)+"/arkosg/images/ocean.rgb",osg::Vec3(10,10,0)));
         if (sailboat) root->addChild(sailboat);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));

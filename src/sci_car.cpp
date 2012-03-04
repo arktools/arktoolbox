@@ -31,7 +31,7 @@ class VisCar : public Viewer
 public:
 
     Car * car;
-    VisCar() : car(new Car(std::string(ARKOSG_DATA_DIR)+"/models/rcTruck.ac"))
+    VisCar() : car(new Car(std::string(INSTALL_DATA_DIR)+"/arkosg/models/rcTruck.ac"))
     {
         osg::Group * root = new Frame(1,"N","E","D");
         if (car) root->addChild(car);

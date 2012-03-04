@@ -31,7 +31,7 @@ class VisPlane : public Viewer
 public:
 
     Plane * plane;
-    VisPlane() : plane(new Plane(std::string(ARKOSG_DATA_DIR)+"/models/plane.ac"))
+    VisPlane() : plane(new Plane(std::string(INSTALL_DATA_DIR)+"/arkosg/models/plane.ac"))
     {
         osg::Group * root = new Frame(15,"N","E","D");
         root->addChild(plane);
