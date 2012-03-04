@@ -12,14 +12,14 @@ set(LIBRARY_VERSION ${PROJECT_VERSION})
 set(LIBRARY_SOVERSION "0.0.0")
 
 # third party
-set(ARKMATH_VERSION "508d2cf1cbcd378c439bec1dd4f6699fb820fa1b")
-set(JSBSIM_VERSION "2d20e80cfea5e6f8ac7a8d544a7cbe7a9e6af15e")
-set(ARKHANGAR_VERSION "5b26b872ea4e2667ee82acfe7beb43bf50c95357")
-set(ARKOSG_VERSION "4965a3bd28373162a9922b2d1de34e5c0ecd4cd5")
-set(ARKCOMM_VERSION "0fd65130d19ad4296788e2e59acbb10ee572960c")
+set(ARKMATH_VERSION "3035f67907946ca2b6ecb75eff6d550c8dbd55d7")
+set(JSBSIM_VERSION "3f2acf03ccda7e6c4dbfeaa0ff94661e639361de")
+set(ARKHANGAR_VERSION "909b552cfec0f99d67fcaee3afd9cd5e4a677523")
+set(ARKOSG_VERSION "3118cc88ea63524f5ba75466abc7af601ce422ec")
+set(ARKCOMM_VERSION "0c224b528ede947d410d9a56e2b7a47d6ae86048")
 
 # options
-option(WITH_BUILD_DEPS "Build dependencies." ON)
+option(WITH_BUILD_DEPS "Build dependencies." OFF)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." OFF)
 option(WITH_LAPACK "Use lapack libraries." OFF)
@@ -64,6 +64,7 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         "-DWITH_PREFER_STATIC=${WITH_PREFER_STATIC}"
         "-DWITH_ARKOSG=${WITH_ARKOSG}"
         "-DWITH_LAPACK=${WITH_LAPACK}"
+        "-DWITH_SCICOS_VERIFY=${WITH_SCICOS_VERIFY}"
         "-DROOT_THREAD=FALSE"
         RESULT_VARIABLE ERROR)
     if (ERROR)
@@ -104,11 +105,22 @@ if (WITH_LAPACK)
 endif()
 if (WITH_ARKOSG)
     find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
+
+    # find osg ac plugin
+    get_filename_component(OSG_LIBRARY_ROOT "${OSG_LIBRARY}" PATH)
+    find_library(OSG_AC
+        NAMES osgdb_ac
+        PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
+        )
+    set(OSG_PLUGINS_PROCESS_LIBS OSG_AC)
+    set(OSG_PLUGINS_PROCESS_INCLUDES)
+    libfind_process(OSG_PLUGINS)
+
     find_package(OpenGL REQUIRED)
     find_package(ARKOSG ${REQUIRED_IF_ROOT_THREAD})
 endif()
 find_package(ARKCOMM ${REQUIRED_IF_ROOT_THREAD})
-find_package(ARKMATH ${REQUIRED_IF-ROOT_THREAD})
+find_package(ARKMATH ${REQUIRED_IF_ROOT_THREAD})
 find_package(ARKHANGAR ${REQUIRED_IF_ROOT_THREAD})
 find_package(JSBSIM ${REQUIRED_IF_ROOT_THREAD})
 
@@ -193,13 +205,13 @@ set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/arkscicos")
 configure_file(src/config.h.in src/config.h)
 
 # build settings
+set(ARKSCICOS_LIBRARIES)
 if (WITH_PREFER_STATIC OR MINGW)
     add_definitions(-DOSG_LIBRARY_STATIC)
 endif()
-
-set(ARKSCICOS_LIBRARIES
-    "/usr/lib/osgPlugins-2.8.3/libosgdb_bmp.a"
-    )
+if (WITH_ARKOSG)
+    list(APPEND ARKSCICOS_LIBRARIES ${OSG_PLUGINS_LIBRARIES})
+endif()
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/src 
@@ -207,7 +219,6 @@ include_directories(
 	${SCICOSLAB_INCLUDE_DIRS}
 	${JSBSIM_INCLUDE_DIRS} 
 	${Boost_INCLUDE_DIRS}
-	${MAVLINK_INCLUDE_DIRS}
 	${ARKCOMM_INCLUDE_DIRS}
 	${ARKMATH_INCLUDE_DIRS}
 	${ARKOSG_INCLUDE_DIRS}
@@ -273,7 +284,7 @@ list(APPEND ARKSCICOS_SRCS
 
 list(APPEND SCICOSLAB_BLOCKS "osgBlocks")
 list(APPEND ARKSCICOS_SRCS
-    #src/osgPlugins.cpp
+    src/osgPlugins.cpp
     src/sci_jet.cpp
     src/sci_plane.cpp
     src/sci_car.cpp
