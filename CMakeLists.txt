@@ -3,7 +3,7 @@ project (arkscicos C CXX)
 # Requried cmake version
 cmake_minimum_required (VERSION 2.8)
 set(PROJECT_VERSION_MAJOR "0")
-set(PROJECT_VERSION_MINOR "5")
+set(PROJECT_VERSION_MINOR "6")
 set(PROJECT_VERSION_PATCH "0")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(PROJECT_CONTACT_EMAIL james.goppert@gmail.com)
@@ -112,7 +112,11 @@ if (WITH_ARKOSG)
         NAMES osgdb_ac
         PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
         )
-    set(OSG_PLUGINS_PROCESS_LIBS OSG_AC)
+    find_library(OSG_RGB
+        NAMES osgdb_rgb
+        PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
+        )
+    set(OSG_PLUGINS_PROCESS_LIBS OSG_AC OSG_RGB)
     set(OSG_PLUGINS_PROCESS_INCLUDES)
     libfind_process(OSG_PLUGINS)
 

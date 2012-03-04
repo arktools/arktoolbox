@@ -19,8 +19,11 @@
 // Static linking of OSG needs special macros
 #ifdef OSG_LIBRARY_STATIC
 #include <osgDB/Registry>
-// Image formats
+#include <osgViewer/Viewer>
+
 USE_OSGPLUGIN(ac);
+USE_OSGPLUGIN(rgb);
+USE_GRAPHICSWINDOW();
 #endif
 
 // vim:ts=4:sw=4
