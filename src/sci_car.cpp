@@ -23,6 +23,8 @@
 #include <iostream>
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
+#include "definitions.hpp"
+#include "utilities.hpp"
 
 using namespace arkosg;
 
@@ -31,7 +33,7 @@ class VisCar : public Viewer
 public:
 
     Car * car;
-    VisCar() : car(new Car(std::string(INSTALL_DATA_DIR)+"/arkosg/models/rcTruck.ac"))
+    VisCar(char* model) : car(new Car(std::string(model)))
     {
         osg::Group * root = new Frame(1,"N","E","D");
         if (car) root->addChild(car);
@@ -60,14 +62,18 @@ extern "C"
         double *u=(double*)GetInPortPtrs(block,1);
         void ** work =  GetPtrWorkPtrs(block);
         VisCar * vis = NULL;
-
+        int * ipar=block->ipar;
+        char ** stringArray;
+        int * intArray;
+        getIpars(1,0,ipar,&stringArray,&intArray);
+        char * model = stringArray[0];
 
         // handle flags
         if (flag==scicos::initialize)
         {
             try
             {
-                vis = new VisCar;
+                vis = new VisCar(model);
             }
             catch (const std::runtime_error & e)
             {

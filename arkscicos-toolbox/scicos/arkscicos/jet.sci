@@ -41,19 +41,55 @@ select job
 	case 'getorigin' then
 	 	[x,y]=standard_origin(arg1)
 	case 'set' then
-	 	x=arg1;
+		x=arg1;
+		graphics=arg1.graphics;exprs=graphics.exprs
+		model=arg1.model;
+        while %t do
+            labels=[..
+                'jet model'];
+            [ok,ModelPath,exprs]=..
+                getvalue('Set Jet Parameters',labels,..
+                list('str',-1),exprs);
+            if ~ok then break,end
+            n=size(x0,1)
+            model.out=[n;14];
+            [model,graphics,ok]=check_io(model,graphics,[4],model.out,[],[])
+            if ok then
+                model.ipar=[..
+                    length(evstr(ModelPath)),ascii(evstr(ModelPath)),0];
+                graphics.exprs=exprs;
+                x.graphics=graphics;
+                x.model=model;
+                break
+            end
+        end
 	case 'define' then
+
+		// set model properties
 	  	model=scicos_model()
 	  	model.sim=list('sci_jet',4)
 		model.in=7
 		model.evtin=1
-		  //model.out=1
 	  	model.blocktype='c'
 	  	model.dep_ut=[%t %f]
-	  	exprs='sci_jet'
-	  	gr_i=['xstringb(orig(1),orig(2),..
-			[''Jet''],sz(1),sz(2),''fill'');']
-	  	x=standard_define([5 2],model,exprs,gr_i)
+
+		// jsbsim parameters
+        ModelPath="arkscicosPath+""/data/arkosg/models/jet.ac""";
+        model.ipar=[..
+                    length(evstr(ModelPath)),ascii(evstr(ModelPath)),0];
+		
+		// intial state
+
+		// save state
+
+		// initialize strings for gui
+        exprs=[
+            strcat(ModelPath)];
+
+        //setup icon
+        gr_i=['xstringb(orig(1),orig(2),..
+            [''Jet''],sz(1),sz(2),''fill'');']
+        x=standard_define([5 2],model,exprs,gr_i)
 	end
 endfunction
 

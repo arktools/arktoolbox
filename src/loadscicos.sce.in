@@ -1,9 +1,9 @@
 mode(-1);
 lines(0);
 
-arkscicosDataPath='@INSTALL_DATA_DIR@'
-jsbsimDataPath='@INSTALL_DATA_DIR@/jsbsim'
-arkhangarDataPath='@INSTALL_DATA_DIR@/arkhangar'
+arkscicosDataPath=arkscicosPath+"data/"
+jsbsimDataPath=arkscicosDataPath+"jsbsim/"
+arkhangarDataPath=arkscicosDataPath+"arkhangar/"
 
 mathBlocks=[
 'sci_euler2Dcm';..
@@ -26,7 +26,7 @@ jsbsimBlocks=['sci_jsbsimTrim';'sci_jsbsimComm'];
 lapackBlocks=['sci_gpsIns'];
 mavlinkBlocks=['sci_mavlinkHilSensor';'sci_mavlinkHilState';'sci_mavlinkHilTracker'];
 blocks=[@SCICOSLAB_BLOCKS@]';
-link(['@CMAKE_INSTALL_PREFIX@/lib/libarkscicos@CMAKE_SHARED_LIBRARY_SUFFIX@'],blocks,'c');
+link([pwd()+'/libarkscicos@CMAKE_SHARED_LIBRARY_SUFFIX@'],blocks,'c');
 
 genlib('lib_arkscicos',pwd()+'/arkscicos');
 create_palette('arkscicos');

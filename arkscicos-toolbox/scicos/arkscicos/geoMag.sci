@@ -50,15 +50,19 @@ select job
 		while %t do
 			labels=[..
 				'Decimal Year';..
-				'Number of Terms'];
-			[ok,decYear,nTerms]=..
+				'Number of Terms'..
+                'WMM Data Path'];
+			[ok,decYear,nTerms,wmmDataPath]=..
 				getvalue('Set WMM Parameters',labels,..
-				list('vec',1,'vec',1),exprs);
+				list('vec',1,'vec',1,'str',-1),exprs);
 			if ~ok then break,end
 				graphics.exprs=exprs;
 			[model,graphics,ok]=check_io(model,graphics,[3],[3],[],[])
 			if ok then
 				model.rpar=decYear;
+	            model.ipar=[..
+                    length(evstr(wmmDataPath)),ascii(evstr(wmmDataPath)),0,..
+                    nTerms];
 				model.ipar=nTerms;
 				graphics.exprs=exprs;
 				x.graphics=graphics;
@@ -72,21 +76,28 @@ select job
 		model.sim=list('sci_geoMag',4)
 		model.in=[3];
 		model.out=[3];
+        model.rpar
 		model.blocktype='c';
 		model.dep_ut=[%t %f];
 
 		// geoMag parameters
 		decYear = 2011.1;
 		nTerms = 12;
+
+        // strings
+        wmmDataPath="arkscicosPath+""/data/arkmath/data/WMM.COF""";
 		
 		model.rpar=decYear;
-		model.ipar=nTerms;
-		
+
+	    model.ipar=[..
+                length(evstr(wmmDataPath)),ascii(evstr(wmmDataPath)),0,..
+                nTerms];
+
 		// initialize strings for gui
 		exprs=[
 			strcat(sci2exp(decYear)),..
-			strcat(sci2exp(nTerms))];
-;
+            strcat(sci2exp(nTerms)),..
+			strcat(wmmDataPath)];
 
 		// setup icon
 	  	gr_i=['xstringb(orig(1),orig(2),''geoMag'',sz(1),sz(2),''fill'');']

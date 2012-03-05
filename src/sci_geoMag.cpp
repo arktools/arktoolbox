@@ -48,6 +48,11 @@ extern "C"
         double * y1=(double*)GetOutPortPtrs(block,1);
         double * rpar=block->rpar;
         int * ipar=block->ipar;
+        char ** stringArray;
+        int * intArray;
+        getIpars(6,3,ipar,&stringArray,&intArray);
+        char * wmmDataPath = stringArray[0];
+
 
         // aliases
         //
@@ -60,7 +65,7 @@ extern "C"
         double & H0  = y1[2];
 
         double & decYear = rpar[0];
-        int & nTerms = ipar[0];
+        int & nTerms = intArray[0];
 
         //make sure you have initialized the block
         if(!geoMag && flag!=scicos::initialize)
@@ -76,7 +81,7 @@ extern "C"
             {
                 try
                 {
-                    geoMag = new arkmath::GeoMag(std::string(INSTALL_DATA_DIR)+"/arkmath/data/WMM.COF",nTerms);
+                    geoMag = new arkmath::GeoMag(wmmDataPath,nTerms);
                 }
                 catch (const std::runtime_error & e)
                 {

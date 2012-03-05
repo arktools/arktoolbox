@@ -21,6 +21,8 @@
 #ifdef WITH_ARKOSG
 
 #include <iostream>
+#include "definitions.hpp"
+#include "utilities.hpp"
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
 
@@ -31,7 +33,7 @@ class VisJet : public Viewer
 public:
 
     Jet * jet;
-    VisJet() : jet(new Jet(std::string(INSTALL_DATA_DIR)+"/arkosg/models/jet.ac"))
+    VisJet(char * modelPath) : jet(new Jet(std::string(modelPath)))
     {
         osg::Group * root = new Frame(15,"N","E","D");
         root->addChild(jet);
@@ -50,7 +52,6 @@ public:
 extern "C"
 {
 
-#include "definitions.hpp"
 #include <scicos/scicos_block4.h>
 #include <math.h>
 
@@ -60,13 +61,18 @@ extern "C"
         double *u=(double*)GetInPortPtrs(block,1);
         void ** work =  GetPtrWorkPtrs(block);
         VisJet * vis = NULL;
+        int * ipar=block->ipar;
+        char ** stringArray;
+        int * intArray;
+        getIpars(1,0,ipar,&stringArray,&intArray);
+        char * model = stringArray[0];
 
         // handle flags
         if (flag==scicos::initialize)
         {
             try
             {
-                vis = new VisJet;
+                vis = new VisJet(model);
             }
             catch (const std::runtime_error & e)
             {

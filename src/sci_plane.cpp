@@ -23,6 +23,8 @@
 #include <iostream>
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
+#include "definitions.hpp"
+#include "utilities.hpp"
 
 using namespace arkosg;
 
@@ -31,7 +33,7 @@ class VisPlane : public Viewer
 public:
 
     Plane * plane;
-    VisPlane() : plane(new Plane(std::string(INSTALL_DATA_DIR)+"/arkosg/models/plane.ac"))
+    VisPlane(char * model) : plane(new Plane(model))
     {
         osg::Group * root = new Frame(15,"N","E","D");
         root->addChild(plane);
@@ -50,7 +52,6 @@ public:
 extern "C"
 {
 
-#include "definitions.hpp"
 #include <scicos/scicos_block4.h>
 #include <math.h>
 
@@ -60,13 +61,18 @@ extern "C"
         double *u=(double*)GetInPortPtrs(block,1);
         void ** work =  GetPtrWorkPtrs(block);
         VisPlane * vis = NULL;
+        int * ipar=block->ipar;
+        char ** stringArray;
+        int * intArray;
+        getIpars(1,0,ipar,&stringArray,&intArray);
+        char * model = stringArray[0];
 
         // handle flags
         if (flag==scicos::initialize)
         {
             try
             {
-                vis = new VisPlane;
+                vis = new VisPlane(model);
             }
             catch (const std::runtime_error & e)
             {

@@ -4,8 +4,6 @@
 /* Version number of package */
 #cmakedefine VERSION "${PROJECT_VERSION}"
 
-#cmakedefine INSTALL_DATA_DIR "${INSTALL_DATA_DIR}"
-
 /************************** HEADER FILES *************************/
 
 

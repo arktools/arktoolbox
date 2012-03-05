@@ -26,7 +26,6 @@ option(WITH_LAPACK "Use lapack libraries." OFF)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
-set(INSTALLED_TARGETS "")
 
 # modules
 list(APPEND CMAKE_MODULE_PATH
@@ -219,9 +218,34 @@ endif()
 #check_library_exists(arkosg  attachNode "" HAVE_ARKOSG)
 
 # config files
-set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/arkscicos")
 configure_file(src/config.h.in src/config.h)
+
+# copy components of toolbox
+file(GLOB_RECURSE TOOLBOX_SRCS PATTERN "arkscicos-toolbox/*")
+
+#add_custom_target(toolboxSource ALL 
+    #"${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/arkscicos-toolbox" "${CMAKE_BINARY_DIR}"
+    ##SOURCES ${TOOLBOX_SRCS}
+    #)
+
 file(COPY arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
+if (WITH_ARKOSG)
+    file(COPY "${ARKOSG_DATA_DIR}/arkosg"
+        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
+        PATTERN "*.git*" EXCLUDE)
+endif()
+file(COPY "${ARKMATH_DATA_DIR}/arkmath"
+        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
+        PATTERN "*.git*" EXCLUDE
+        )
+file(COPY "${ARKHANGAR_DATA_DIR}/arkhangar"
+        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
+        PATTERN "*.git*" EXCLUDE
+        )
+file(COPY "${JSBSIM_DATA_DIR}/jsbsim"
+        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
+        PATTERN "*.git*" EXCLUDE
+        )
 
 # build settings
 set(ARKSCICOS_LIBRARIES)
@@ -232,8 +256,7 @@ if (WITH_ARKOSG)
     list(APPEND ARKSCICOS_LIBRARIES ${OSG_PLUGINS_LIBRARIES})
 endif()
 
-include_directories(
-    ${CMAKE_SOURCE_DIR}/src 
+include_directories( ${CMAKE_SOURCE_DIR}/src 
     ${CMAKE_BINARY_DIR}/src
 	${SCICOSLAB_INCLUDE_DIRS}
 	${JSBSIM_INCLUDE_DIRS} 
@@ -266,7 +289,10 @@ if (Boost_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${Boost_LIBRARIES})
 endif()
 
-set(ARKSCICOS_SRCS "")
+set(ARKSCICOS_SRCS
+    src/definitions.hpp
+    src/utilities.hpp
+    )
 set(SCICOSLAB_BLOCKS "")
 
 list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
@@ -329,74 +355,43 @@ set_target_properties(arkscicos PROPERTIES
     SOVERSION ${LIBRARY_SOVERSION}
     VERSION ${LIBRARY_VERSION}
     )
+set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
 
-install(CODE "
-    MESSAGE(STATUS \"install code called\")
-    execute_process(COMMAND \"${CMAKE_COMMAND}\" -E chdir \"${CMAKE_BINARY_DIR}/arkscicos-toolbox\" ./build.sh)
-    ")
+add_custom_target(toolbox ALL
+    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" ./build.sh
+    DEPENDS arkscicos
+    )
 
 get_target_property(ARKSCICOS_SCICOS_LOCATION arkscicos LOCATION)
 
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
 configure_file(src/VERSION.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/VERSION)
 
-install(TARGETS arkscicos DESTINATION lib COMPONENT Runtime)
-
-install(FILES
-    src/definitions.hpp
-    src/utilities.hpp
-	DESTINATION include/arkscicos
-    COMPONENT Runtime
-    )
-
 # install data files
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/projects" DESTINATION share/arkscicos
-    COMPONENT Runtime 
-    PATTERN "*.git*" EXCLUDE
-    )
-install(DIRECTORY "${PROJECT_BINARY_DIR}/arkscicos-toolbox"
-    DESTINATION ${SCICOSLAB_CONTRIB_DIR}
-    COMPONENT Runtime
-    PATTERN "*.git*" EXCLUDE
-    )
-
 if (WITH_ARKOSG)
-    install(DIRECTORY "${ARKOSG_DATA_DIR}/arkosg"
+    file(COPY "${ARKOSG_DATA_DIR}/arkosg"
         DESTINATION share/arkscicos
-        COMPONENT Runtime
         PATTERN "*.git*" EXCLUDE
         )
 endif()
-
-install(DIRECTORY "${ARKMATH_DATA_DIR}/arkmath"
+file(COPY "${ARKMATH_DATA_DIR}/arkmath"
         DESTINATION share/arkscicos
-        COMPONENT Runtime
         PATTERN "*.git*" EXCLUDE
         )
-
-install(DIRECTORY "${ARKHANGAR_DATA_DIR}/arkhangar"
+file(COPY "${ARKHANGAR_DATA_DIR}/arkhangar"
         DESTINATION share/arkscicos
-        COMPONENT Runtime
         PATTERN "*.git*" EXCLUDE
         )
-
-install(DIRECTORY "${JSBSIM_DATA_DIR}/jsbsim"
+file(COPY "${JSBSIM_DATA_DIR}/jsbsim"
         DESTINATION share/arkscicos
-        COMPONENT Runtime
         PATTERN "*.git*" EXCLUDE
         )
 
 # install
-install(TARGETS  ${INSTALLED_TARGETS}
-    RUNTIME DESTINATION "bin" COMPONENT Runtime
-    LIBRARY DESTINATION "lib" COMPONENT Runtime
-    ARCHIVE DESTINATION "lib" COMPONENT Dev
-    BUNDLE DESTINATION "/Applications" COMPONENT Runtime
-    FRAMEWORK DESTINATION "/Library/Frameworks" COMPONENT Runtime
-    # where to put files on non-mac computers, mac override and uses default
-    PRIVATE_HEADER DESTINATION "include/jsbsim" COMPONENT Runtime
-    PUBLIC_HEADER DESTINATION "include/jsbsim" COMPONENT Runtime
-    RESOURCE DESTINATION "share/jsbsim" COMPONENT Runtime
+install(DIRECTORY "${PROJECT_BINARY_DIR}/arkscicos-toolbox"
+    DESTINATION ${SCICOSLAB_CONTRIB_DIR}
+    COMPONENT Runtime
+    PATTERN "*.git*" EXCLUDE
     )
 
 # packaging

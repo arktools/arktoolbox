@@ -40,7 +40,7 @@ void prompt(const std::string & str, varType & var)
     else std::cin.get();
 }
 
-void trimFunction ()
+void trimFunction (char * rootPath)
 {
     using namespace JSBSim;
 
@@ -59,7 +59,7 @@ void trimFunction ()
     std::string aircraftPath="aircraft/easystar";
     std::string enginePath="aircraft/easystar/Engines";
     std::string systemsPath="systems";
-    std::string root=std::string(INSTALL_DATA_DIR)+"/arkhangar";
+    std::string root=std::string(rootPath);
     double rtol = 10*std::numeric_limits<float>::epsilon();
     double abstol = 10*std::numeric_limits<double>::epsilon();
     double random = 0;
@@ -294,9 +294,9 @@ void trimFunction ()
 
 extern "C"
 {
-    void sci_jsbsimTrim()
+    void sci_jsbsimTrim(char * root)
     {
-        trimFunction();
+        trimFunction(root);
     }
 
 }

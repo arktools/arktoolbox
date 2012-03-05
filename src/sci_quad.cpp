@@ -39,6 +39,8 @@
 #include <iostream>
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
+#include "definitions.hpp"
+#include "utilities.hpp"
 
 using namespace arkosg;
 
@@ -47,10 +49,10 @@ class VisQuad : public Viewer
 public:
 
     Quad * quad;
-    VisQuad() : quad(new Quad(std::string(INSTALL_DATA_DIR)+"/arkosg/models/arducopter.ac"))
+    VisQuad(char * model, char * texture) : quad(new Quad(std::string(model)))
     {
         osg::Group * root = new Frame(1,"N","E","D");
-        root->addChild(new Terrain(std::string(INSTALL_DATA_DIR)+"/arkosg/images/lz.rgb",osg::Vec3(10,10,0)));
+        root->addChild(new Terrain(std::string(texture),osg::Vec3(10,10,0)));
         if (quad) root->addChild(quad);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));
@@ -79,13 +81,19 @@ extern "C"
         double *u3=(double*)GetInPortPtrs(block,3);
         void ** work =  GetPtrWorkPtrs(block);
         VisQuad * vis = NULL;
+        int * ipar=block->ipar;
+        char ** stringArray;
+        int * intArray;
+        getIpars(2,0,ipar,&stringArray,&intArray);
+        char * model = stringArray[0];
+        char * texture = stringArray[0];
 
         // handle flags
         if (flag==scicos::initialize)
         {
             try
             {
-                vis = new VisQuad;
+                vis = new VisQuad(model,texture);
             }
             catch (const std::runtime_error & e)
             {

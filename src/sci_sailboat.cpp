@@ -37,6 +37,8 @@
 #include <iostream>
 #include "arkosg/Viewer.hpp"
 #include "arkosg/osgUtils.hpp"
+#include "definitions.hpp"
+#include "utilities.hpp"
 
 using namespace arkosg;
 
@@ -45,10 +47,10 @@ class VisSailboat : public Viewer
 public:
 
     Sailboat * sailboat;
-    VisSailboat() : sailboat(new Sailboat(std::string(INSTALL_DATA_DIR)+"/arkosg/models/sailboat.ac"))
+    VisSailboat(char * model, char * texture) : sailboat(new Sailboat(std::string(model)))
     {
         osg::Group * root = new Frame(1,"N","E","D");
-        root->addChild(new Terrain(std::string(INSTALL_DATA_DIR)+"/arkosg/images/ocean.rgb",osg::Vec3(10,10,0)));
+        root->addChild(new Terrain(std::string(texture),osg::Vec3(10,10,0)));
         if (sailboat) root->addChild(sailboat);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));
@@ -65,7 +67,6 @@ public:
 extern "C"
 {
 
-#include "definitions.hpp"
 #include <scicos/scicos_block4.h>
 #include <math.h>
 
@@ -77,13 +78,19 @@ extern "C"
         double *u3=(double*)GetInPortPtrs(block,3);
         void ** work =  GetPtrWorkPtrs(block);
         VisSailboat * vis = NULL;
+        int * ipar=block->ipar;
+        char ** stringArray;
+        int * intArray;
+        getIpars(2,0,ipar,&stringArray,&intArray);
+        char * model = stringArray[0];
+        char * texture = stringArray[1];
 
         // handle flags
         if (flag==scicos::initialize)
         {
             try
             {
-                vis = new VisSailboat;
+                vis = new VisSailboat(model,texture);
             }
             catch (const std::runtime_error & e)
             {
