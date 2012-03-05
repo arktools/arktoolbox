@@ -404,11 +404,4 @@ if (WITH_ARKOSG)
     set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libgl1-mesa-glx")
 endif()
 include(CPack)
-
-# pkgconfig
-configure_file(pc.in ${PROJECT_NAME}.pc)
-install(FILES
-    ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.pc
-    DESTINATION "lib/pkgconfig" COMPONENT Runtime
-    )
 # vim:sw=4:ts=4:expandtab
