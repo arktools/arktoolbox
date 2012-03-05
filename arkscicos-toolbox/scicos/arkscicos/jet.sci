@@ -51,9 +51,7 @@ select job
                 getvalue('Set Jet Parameters',labels,..
                 list('str',-1),exprs);
             if ~ok then break,end
-            n=size(x0,1)
-            model.out=[n;14];
-            [model,graphics,ok]=check_io(model,graphics,[4],model.out,[],[])
+            [model,graphics,ok]=check_io(model,graphics,7,[],1,[])
             if ok then
                 model.ipar=[..
                     length(evstr(ModelPath)),ascii(evstr(ModelPath)),0];

@@ -51,7 +51,6 @@ select job
                 getvalue('Set Plane Parameters',labels,..
                 list('str',-1),exprs);
             if ~ok then break,end
-            n=size(x0,1)
             [model,graphics,ok]=check_io(model,graphics,7,[],1,[])
             if ok then
                 model.ipar=[..
