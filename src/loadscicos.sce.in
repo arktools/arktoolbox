@@ -5,9 +5,6 @@ arkscicosDataPath='@INSTALL_DATA_DIR@'
 jsbsimDataPath='@INSTALL_DATA_DIR@/jsbsim'
 arkhangarDataPath='@INSTALL_DATA_DIR@/arkhangar'
 
-// whether or not to configure for final installation
-scicoslabInstallSettings = @SCICOSLAB_INSTALL_SETTINGS@;
-
 mathBlocks=[
 'sci_euler2Dcm';..
 'sci_waypointGuidance';..
@@ -29,12 +26,7 @@ jsbsimBlocks=['sci_jsbsimTrim';'sci_jsbsimComm'];
 lapackBlocks=['sci_gpsIns'];
 mavlinkBlocks=['sci_mavlinkHilSensor';'sci_mavlinkHilState';'sci_mavlinkHilTracker'];
 blocks=[@SCICOSLAB_BLOCKS@]';
-
-if (scicoslabInstallSettings) then
-	link(['@CMAKE_INSTALL_PREFIX@/lib/libarkscicos@CMAKE_SHARED_LIBRARY_SUFFIX@'],blocks,'c');
-else
-	link(['@ARKSCICOS_SCICOS_LOCATION@'],blocks,'c');
-end
+link(['@CMAKE_INSTALL_PREFIX@/lib/libarkscicos@CMAKE_SHARED_LIBRARY_SUFFIX@'],blocks,'c');
 
 genlib('lib_arkscicos',pwd()+'/arkscicos');
 create_palette('arkscicos');
