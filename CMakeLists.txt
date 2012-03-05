@@ -23,7 +23,6 @@ option(WITH_BUILD_DEPS "Build dependencies." OFF)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." OFF)
 option(WITH_LAPACK "Use lapack libraries." OFF)
-option(WITH_SCICOS_VERIFY "Verify scicos library loads correctly." OFF)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
@@ -64,7 +63,6 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         "-DWITH_PREFER_STATIC=${WITH_PREFER_STATIC}"
         "-DWITH_ARKOSG=${WITH_ARKOSG}"
         "-DWITH_LAPACK=${WITH_LAPACK}"
-        "-DWITH_SCICOS_VERIFY=${WITH_SCICOS_VERIFY}"
         "-DROOT_THREAD=FALSE"
         RESULT_VARIABLE ERROR)
     if (ERROR)
@@ -223,6 +221,7 @@ endif()
 # config files
 set(INSTALL_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/arkscicos")
 configure_file(src/config.h.in src/config.h)
+file(COPY arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
 
 # build settings
 set(ARKSCICOS_LIBRARIES)
@@ -331,20 +330,15 @@ set_target_properties(arkscicos PROPERTIES
     VERSION ${LIBRARY_VERSION}
     )
 
-if (UNIX AND WITH_SCICOS_VERIFY)
-	# if using unix add script to see if scicoslab toolbox builds correctly
-	add_custom_target(toolbox ALL
-		DEPENDS arkscicos
-		COMMAND cd ${PROJECT_SOURCE_DIR}/arkscicos-toolbox && ./build.sh)
-endif()
+install(CODE "
+    MESSAGE(STATUS \"install code called\")
+    execute_process(COMMAND \"${CMAKE_COMMAND}\" -E chdir \"${CMAKE_BINARY_DIR}/arkscicos-toolbox\" ./build.sh)
+    ")
 
 get_target_property(ARKSCICOS_SCICOS_LOCATION arkscicos LOCATION)
 
-configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/src/loadscicos.sce)
+configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
 configure_file(src/VERSION.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/VERSION)
-
-install(FILES ${CMAKE_BINARY_DIR}/src/loadscicos.sce DESTINATION
-	${SCICOSLAB_CONTRIB_DIR}/arkscicos-toolbox/scicos COMPONENT Runtime)
 
 install(TARGETS arkscicos DESTINATION lib COMPONENT Runtime)
 
@@ -360,7 +354,7 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/projects" DESTINATION share/arkscicos
     COMPONENT Runtime 
     PATTERN "*.git*" EXCLUDE
     )
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/arkscicos-toolbox"
+install(DIRECTORY "${PROJECT_BINARY_DIR}/arkscicos-toolbox"
     DESTINATION ${SCICOSLAB_CONTRIB_DIR}
     COMPONENT Runtime
     PATTERN "*.git*" EXCLUDE
