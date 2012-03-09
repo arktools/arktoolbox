@@ -86,7 +86,7 @@ extern "C"
         int * intArray;
         getIpars(2,0,ipar,&stringArray,&intArray);
         char * model = stringArray[0];
-        char * texture = stringArray[0];
+        char * texture = stringArray[1];
 
         // handle flags
         if (flag==scicos::initialize)

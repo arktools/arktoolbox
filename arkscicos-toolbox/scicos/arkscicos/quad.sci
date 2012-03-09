@@ -52,7 +52,7 @@ select job
 		model=arg1.model;
         while %t do
             labels=[..
-                'quad model'];
+                'quad model';'ground texture'];
             [ok,ModelPath,TexturePath,exprs]=..
                 getvalue('Set Quad Parameters',labels,..
                 list('str',-1,'str',-1),exprs);

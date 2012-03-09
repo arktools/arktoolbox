@@ -50,7 +50,7 @@ extern "C"
         int * ipar=block->ipar;
         char ** stringArray;
         int * intArray;
-        getIpars(6,3,ipar,&stringArray,&intArray);
+        getIpars(1,1,ipar,&stringArray,&intArray);
         char * wmmDataPath = stringArray[0];
 
 

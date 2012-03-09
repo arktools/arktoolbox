@@ -3,8 +3,8 @@ project (arkscicos C CXX)
 # Requried cmake version
 cmake_minimum_required (VERSION 2.8)
 set(PROJECT_VERSION_MAJOR "0")
-set(PROJECT_VERSION_MINOR "6")
-set(PROJECT_VERSION_PATCH "1")
+set(PROJECT_VERSION_MINOR "7")
+set(PROJECT_VERSION_PATCH "0")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(PROJECT_CONTACT_EMAIL james.goppert@gmail.com)
 set(PROJECT_CONTACT_VENDOR arktools)
@@ -119,7 +119,7 @@ endif()
 if (WITH_ARKOSG)
     find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
 
-    # find osg ac plugin
+    # find osg plugins
     get_filename_component(OSG_LIBRARY_ROOT "${OSG_LIBRARY}" PATH)
     find_library(OSG_AC
         NAMES osgdb_ac
@@ -365,25 +365,26 @@ add_custom_target(toolbox ALL
 get_target_property(ARKSCICOS_SCICOS_LOCATION arkscicos LOCATION)
 
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
-configure_file(src/VERSION.in ${CMAKE_SOURCE_DIR}/arkscicos-toolbox/VERSION)
+configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
 
-# install data files
+# construct toolbox
+file(COPY ${CMAKE_SOURCE_DIR}/arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
 if (WITH_ARKOSG)
     file(COPY "${ARKOSG_DATA_DIR}/arkosg"
-        DESTINATION share/arkscicos
+        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
 endif()
 file(COPY "${ARKMATH_DATA_DIR}/arkmath"
-        DESTINATION share/arkscicos
+        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
 file(COPY "${ARKHANGAR_DATA_DIR}/arkhangar"
-        DESTINATION share/arkscicos
+        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
 file(COPY "${JSBSIM_DATA_DIR}/jsbsim"
-        DESTINATION share/arkscicos
+        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
 

@@ -50,7 +50,7 @@ select job
 		while %t do
 			labels=[..
 				'Decimal Year';..
-				'Number of Terms'..
+				'Number of Terms';..
                 'WMM Data Path'];
 			[ok,decYear,nTerms,wmmDataPath]=..
 				getvalue('Set WMM Parameters',labels,..
@@ -63,7 +63,6 @@ select job
 	            model.ipar=[..
                     length(evstr(wmmDataPath)),ascii(evstr(wmmDataPath)),0,..
                     nTerms];
-				model.ipar=nTerms;
 				graphics.exprs=exprs;
 				x.graphics=graphics;
 				x.model=model;

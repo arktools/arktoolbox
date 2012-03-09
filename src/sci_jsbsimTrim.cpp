@@ -40,7 +40,7 @@ void prompt(const std::string & str, varType & var)
     else std::cin.get();
 }
 
-void trimFunction (char * rootPath)
+int trimFunction (char * rootPath)
 {
     using namespace JSBSim;
 
@@ -54,16 +54,16 @@ void trimFunction (char * rootPath)
     std::cout << "==============================================\n" << std::endl;
 
     // defaults
-    constraints.velocity = 45;
-    std::string aircraft="easystar-datcom";
-    std::string aircraftPath="aircraft/easystar";
-    std::string enginePath="aircraft/easystar/Engines";
+    constraints.velocity = 500;
+    std::string aircraft="f16";
+    std::string aircraftPath="aircraft/f16";
+    std::string enginePath="engine";
     std::string systemsPath="systems";
     std::string root=std::string(rootPath);
-    double rtol = 10*std::numeric_limits<float>::epsilon();
-    double abstol = 10*std::numeric_limits<double>::epsilon();
+    double rtol = 1e-4;
+    double abstol = 1e-4;
     double random = 0;
-    double speed = 1.8;
+    double speed = 2;
     int iterMax = 2000;
     bool showConvergeStatus = false;
     bool pause = false;
@@ -166,24 +166,24 @@ void trimFunction (char * rootPath)
 
     lowerBound[0] = 0; //throttle
     lowerBound[1] = -1; // elevator
-    lowerBound[2] = -20*M_PI/180; // alpha
+    lowerBound[2] = 0*M_PI/180; // alpha
     lowerBound[3] = -1; // aileron
     lowerBound[4] = -1; // rudder
-    lowerBound[5] = -20*M_PI/180; // beta
+    lowerBound[5] = -5*M_PI/180; // beta
 
     upperBound[0] = 1; //throttle
     upperBound[1] = 1; // elevator
     upperBound[2] = 20*M_PI/180; // alpha
     upperBound[3] = 1; // aileron
     upperBound[4] = 1; // rudder
-    upperBound[5] = 20*M_PI/180; // beta
+    upperBound[5] = 5*M_PI/180; // beta
 
-    initialStepSize[0] = 0.2; //throttle
-    initialStepSize[1] = 0.1; // elevator
-    initialStepSize[2] = 0.1; // alpha
-    initialStepSize[3] = 0.1; // aileron
-    initialStepSize[4] = 0.1; // rudder
-    initialStepSize[5] = 0.1; // beta
+    initialStepSize[0] = 0.05; //throttle
+    initialStepSize[1] = 0.05; // elevator
+    initialStepSize[2] = 0.05; // alpha
+    initialStepSize[3] = 0.05; // aileron
+    initialStepSize[4] = 0.05; // rudder
+    initialStepSize[5] = 0.05; // beta
 
     initialGuess[0] = 0.5; // throttle
     initialGuess[1] = 0; // elevator
@@ -286,17 +286,18 @@ void trimFunction (char * rootPath)
                 << std::setw(width) << D << ");\n"
                 << "tfm = ss2tf(sys);\n"
                 << std::endl;
+        return 0;
     } catch(std::exception & e) {
         std::cout << e.what() << std::endl;
-        return;
+        return 1;
     }
 }
 
 extern "C"
 {
-    void sci_jsbsimTrim(char * root)
+    void sci_jsbsimTrim(int status, char * root)
     {
-        trimFunction(root);
+        status=trimFunction(root);
     }
 
 }

@@ -50,9 +50,9 @@ select job
 		model=arg1.model;
         while %t do
             labels=[..
-                'quad model'];
+                'sailboat model';'ocean texture'];
             [ok,ModelPath,TexturePath,exprs]=..
-                getvalue('Set Quad Parameters',labels,..
+                getvalue('Set Sailboat Parameters',labels,..
                 list('str',-1,'str',-1),exprs);
             if ~ok then break,end
             [model,graphics,ok]=check_io(model,graphics,[3;3;2],[],1,[])
