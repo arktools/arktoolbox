@@ -36,9 +36,9 @@ find_path(JSBSIM_DATADIR
 
 # read the version
 if (EXISTS ${_JSBSIM_INCLUDE_DIR}/jsbsim/config.h)
-    file(READ ${_JSBSIM_INCLUDE_DIR}/jsbsim/config.h JSBSIM_CONFIG_FILE)
-    string(REGEX MATCH "#define JSBSIM_VERSION[ ]+\"([0-9]\\.[0-9]\\.[0-9])\""
-        JSBSIM_VERSION_MATCH ${JSBSIM_CONFIG_FILE})
+    file(READ ${_JSBSIM_INCLUDE_DIR}/jsbsim/config.h _JSBSIM_CONFIG_FILE)
+    string(REGEX MATCH "#define JSBSIM_VERSION[ ]+\"(([0-9]+\\.)+[0-9]+)\""
+        JSBSIM_VERSION_MATCH ${_JSBSIM_CONFIG_FILE})
     set(JSBSIM_VERSION ${CMAKE_MATCH_1})
 endif()
 

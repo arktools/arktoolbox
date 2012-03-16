@@ -68,7 +68,7 @@ find_path(SCICOSLAB_CONTRIB_DIR
 # read the version
 if (EXISTS ${_SCICOSLAB_ROOT}/config/configuration)
     file(READ ${_SCICOSLAB_ROOT}/config/configuration _SCICOSLAB_CONFIG_FILE)
-    string(REGEX MATCH "PACKAGE_VERSION[ \t]+\\:([0-9]\\.[0-9]\\.[0-9])"
+    string(REGEX MATCH "PACKAGE_VERSION[ \t]+\\:(([0-9]+\\.)+[0-9]+)"
         _SCICOSLAB_VERSION_MATCH ${_SCICOSLAB_CONFIG_FILE})
     set(SCICOSLAB_VERSION ${CMAKE_MATCH_1})
 endif()

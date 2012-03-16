@@ -18,18 +18,20 @@ set(_ARKCOMM_EXTRA_SEARCH_PATHS
 find_path(_ARKCOMM_INCLUDE_DIR
 	NAMES arkcomm/AsyncSerial.hpp
     PATHS ${_ARKCOMM_EXTRA_SEARCH_PATHS}
+    PATH_SUFFIXES include
     )
 
 # find the library
 find_library(_ARKCOMM_LIBRARY
 	NAMES arkcomm
     PATHS ${_ARKCOMM_EXTRA_SEARCH_PATHS}
+    PATH_SUFFIXES lib
     )
 
 # read the version
 if (EXISTS ${_ARKCOMM_INCLUDE_DIR}/arkcomm/config.h)
     file(READ ${_ARKCOMM_INCLUDE_DIR}/arkcomm/config.h ARKCOMM_CONFIG_FILE)
-    string(REGEX MATCH "#define ARKCOMM_VERSION[ ]+\"([0-9]\\.[0-9]\\.[0-9])\""
+    string(REGEX MATCH "#define ARKCOMM_VERSION[ ]+\"(([0-9]+\\.)+[0-9]+)\""
         ARKCOMM_VERSION_MATCH ${ARKCOMM_CONFIG_FILE})
     set(ARKCOMM_VERSION ${CMAKE_MATCH_1})
 endif()
