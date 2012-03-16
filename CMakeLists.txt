@@ -178,8 +178,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
     if (NOT JSBSIM_FOUND)
         ExternalProjectWithFilename_Add(jsbsim
             URL https://github.com/jgoppert/jsbsim/tarball/1.0.0.109
-            URL_MD5 256489437e1769e3b23a25385e9b861e
-            FILENAME jgoppert-jsbsim-1.0.0.109-0-gb354d2a.tar.gz
+            URL_MD5 ae91e615d8182ac2570af2b1ab0d3e21 
+            FILENAME jgoppert-jsbsim-1.0.0.109-0-g2f19552.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_BUILD_DEPS=y"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
