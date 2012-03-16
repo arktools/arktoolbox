@@ -107,18 +107,18 @@ if (WITH_LAPACK)
     find_package(LAPACK REQUIRED)
 endif()
 if (WITH_ARKOSG)
-    find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
+    find_package(OpenSceneGraph 2.8.3 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
 
     # find osg plugins
-    find_package(OsgPlugin REQUIRED COMPONENTS ac rgb)
+    find_package(OsgPlugin 2.8.3 REQUIRED COMPONENTS ac rgb)
 
     find_package(OpenGL REQUIRED)
-    find_package(ArkOsg ${REQUIRED_IF_ROOT_THREAD})
+    find_package(ArkOsg 0.2.3 ${REQUIRED_IF_ROOT_THREAD})
 endif()
-find_package(ArkComm ${REQUIRED_IF_ROOT_THREAD})
-find_package(ArkMath ${REQUIRED_IF_ROOT_THREAD})
-find_package(ArkHangar ${REQUIRED_IF_ROOT_THREAD})
-find_package(JSBSim ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkComm 0.1.6 ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkMath 0.2.7 ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkHangar 1.3.0 ${REQUIRED_IF_ROOT_THREAD})
+find_package(JSBSim 1.0.0.109 ${REQUIRED_IF_ROOT_THREAD})
 
 # build dependencies
 if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
@@ -133,9 +133,9 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
         ExternalProjectWithFilename_Add(arkosg
-            URL https://github.com/arktools/arkosg/tarball/0.2.2
-            URL_MD5 6d0e6633da2017fdda39eb62d30ef298
-            FILENAME arktools-arkosg-0.2.2-0-g398dfd0.tar.gz
+            URL https://github.com/arktools/arkosg/tarball/0.2.3
+            URL_MD5 316fed59d9fceba15b0cd8b229a45870
+            FILENAME arktools-arkosg-0.2.3-0-g18fec6b.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
