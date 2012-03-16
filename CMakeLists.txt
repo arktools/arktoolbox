@@ -11,17 +11,10 @@ set(PROJECT_CONTACT_VENDOR arktools)
 set(LIBRARY_VERSION ${PROJECT_VERSION})
 set(LIBRARY_SOVERSION "0.0.0")
 
-# third party
-set(ARKMATH_VERSION "3035f67907946ca2b6ecb75eff6d550c8dbd55d7")
-set(JSBSIM_VERSION "3f2acf03ccda7e6c4dbfeaa0ff94661e639361de")
-set(ARKHANGAR_VERSION "909b552cfec0f99d67fcaee3afd9cd5e4a677523")
-set(ARKOSG_VERSION "3118cc88ea63524f5ba75466abc7af601ce422ec")
-set(ARKCOMM_VERSION "10a6df67315ab459647c1b5430b6f930a0fcd78a")
-
 # options
-option(WITH_BUILD_DEPS "Build dependencies." OFF)
+option(WITH_BUILD_DEPS "Build dependencies." ON)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
-option(WITH_ARKOSG "Build arkosg graphics." OFF)
+option(WITH_ARKOSG "Build arkosg graphics." ON)
 option(WITH_LAPACK "Use lapack libraries." OFF)
 
 # variables
@@ -45,7 +38,7 @@ include(CheckLibraryExists)
 #include(CheckPrototypeExists)
 #include(CheckCXXSourceCompiles)
 #include(CheckCSourceCompiles)
-include(ExternalProject)
+include(ExternalProjectWithFilename)
 
 # spawn new cmake to build deps
 if (WITH_BUILD_DEPS AND ROOT_THREAD)
@@ -71,7 +64,9 @@ endif()
 if(NOT EP_BASE_DIR)
     set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
 endif()
-list(APPEND CMAKE_FIND_ROOT_PATH ${EP_BASE_DIR})
+set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
+set(EP_INSTALL_DIR "${EP_BASE_DIR}/Install")
+list(APPEND CMAKE_FIND_ROOT_PATH ${EP_INSTALL_DIR})
 
 # prefer static packages if building static library
 message("** Finding libraries")
@@ -115,18 +110,7 @@ if (WITH_ARKOSG)
     find_package(OpenSceneGraph 2.8.0 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
 
     # find osg plugins
-    get_filename_component(OSG_LIBRARY_ROOT "${OSG_LIBRARY}" PATH)
-    find_library(OSG_AC
-        NAMES osgdb_ac
-        PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
-        )
-    find_library(OSG_RGB
-        NAMES osgdb_rgb
-        PATHS ${OSG_LIBRARY_ROOT}/osgPlugins-${OPENSCENEGRAPH_VERSION}
-        )
-    set(OSG_PLUGINS_PROCESS_LIBS OSG_AC OSG_RGB)
-    set(OSG_PLUGINS_PROCESS_INCLUDES)
-    libfind_process(OSG_PLUGINS)
+    find_package(OsgPlugin REQUIRED COMPONENTS ac rgb)
 
     find_package(OpenGL REQUIRED)
     find_package(ArkOsg ${REQUIRED_IF_ROOT_THREAD})
@@ -148,57 +132,57 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
         )
 
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
-        ExternalProject_Add(arkosg
-            GIT_REPOSITORY "git://github.com/arktools/arkosg.git"
-            GIT_TAG ${TAG}
-            UPDATE_COMMAND ""
-            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+        ExternalProjectWithFilename_Add(arkosg
+            URL https://github.com/arktools/arkosg/tarball/0.2.2
+            URL_MD5 6d0e6633da2017fdda39eb62d30ef298
+            FILENAME arktools-arkosg-0.2.2-0-g398dfd0.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
-            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
+            INSTALL_DIR ${EP_INSTALL_DIR}
         )
     endif()
 
     if (NOT ARKHANGAR_FOUND)
-        ExternalProject_Add(arkhangar
-            GIT_REPOSITORY "git://github.com/arktools/arkhangar.git"
-            GIT_TAG ${TAG}
-            UPDATE_COMMAND ""
-            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+        ExternalProjectWithFilename_Add(arkhangar
+            URL https://github.com/arktools/arkhangar/tarball/1.3.0
+            URL_MD5 b937600f70df7129e8fb62efdea7faf3 
+            FILENAME arktools-arkhangar-1.3.0-0-ga32d23d.tar.gz 
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
-            INSTALL_COMMAND make DESTDIR=${EP_BASE_DIR} install
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
+            INSTALL_DIR ${EP_INSTALL_DIR}
         )
     endif()
 
     if (NOT ARKMATH_FOUND)
-        ExternalProject_Add(arkmath
-            GIT_REPOSITORY "git://github.com/arktools/arkmath.git"
-            GIT_TAG ${TAG}
-            UPDATE_COMMAND ""
-            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
-            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
-            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+        ExternalProjectWithFilename_Add(arkmath
+            URL https://github.com/arktools/arkmath/tarball/0.2.7
+            URL_MD5 074718084d7627006e597a02a3e9404a
+            FILENAME arktools-arkmath-0.2.7-0-gfca9d81.tar.gz
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_LAPACK=${WITH_LAPACK}"
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
+            INSTALL_DIR ${EP_INSTALL_DIR}
            )
     endif()
 
     if (NOT ARKCOMM_FOUND)
-        ExternalProject_Add(arkcomm
-            GIT_REPOSITORY "git://github.com/arktools/arkcomm.git"
-            GIT_TAG ${TAG}
-            UPDATE_COMMAND ""
-            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
+        ExternalProjectWithFilename_Add(arkcomm
+            URL https://github.com/arktools/arkcomm/tarball/0.1.6
+            URL_MD5 814a092d04bb47c16737f94c09c7fe9f
+            FILENAME arktools-arkcomm-0.1.6-0-g3a14a99.tar.gz 
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
-            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
+            INSTALL_DIR ${EP_INSTALL_DIR}
            )
     endif()
 
     if (NOT JSBSIM_FOUND)
-        ExternalProject_Add(jsbsim
-            GIT_REPOSITORY "git://github.com/jgoppert/jsbsim.git"
-            GIT_TAG ${TAG}
-            UPDATE_COMMAND ""
-            INSTALL_DIR ${EP_BASE_DIR}/${CMAKE_INSTALL_PREFIX}
-            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
-            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_BASE_DIR} install
+        ExternalProjectWithFilename_Add(jsbsim
+            URL https://github.com/jgoppert/jsbsim/tarball/1.0.0.109
+            URL_MD5 256489437e1769e3b23a25385e9b861e
+            FILENAME jgoppert-jsbsim-1.0.0.109-0-gb354d2a.tar.gz
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_BUILD_DEPS=y"
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
+            INSTALL_DIR ${EP_INSTALL_DIR}
             )
     endif()
 
@@ -216,28 +200,21 @@ endif()
 configure_file(src/config.h.in src/config.h)
 
 # copy components of toolbox
-file(GLOB_RECURSE TOOLBOX_SRCS PATTERN "arkscicos-toolbox/*")
-
-#add_custom_target(toolboxSource ALL 
-    #"${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/arkscicos-toolbox" "${CMAKE_BINARY_DIR}"
-    ##SOURCES ${TOOLBOX_SRCS}
-    #)
-
 file(COPY arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
 if (WITH_ARKOSG)
-    file(COPY "${ARKOSG_DATA_DIR}/arkosg"
+    file(COPY "${ARKOSG_DATADIR}/arkosg"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE)
 endif()
-file(COPY "${ARKMATH_DATA_DIR}/arkmath"
+file(COPY "${ARKMATH_DATADIR}/arkmath"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
-file(COPY "${ARKHANGAR_DATA_DIR}/arkhangar"
+file(COPY "${ARKHANGAR_DATADIR}/arkhangar"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
-file(COPY "${JSBSIM_DATA_DIR}/jsbsim"
+file(COPY "${JSBSIM_DATADIR}/jsbsim"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
@@ -248,7 +225,7 @@ if (WITH_PREFER_STATIC OR MINGW)
     add_definitions(-DOSG_LIBRARY_STATIC)
 endif()
 if (WITH_ARKOSG)
-    list(APPEND ARKSCICOS_LIBRARIES ${OSG_PLUGINS_LIBRARIES})
+    list(APPEND ARKSCICOS_LIBRARIES ${OSGPLUGIN_LIBRARIES})
 endif()
 
 include_directories( ${CMAKE_SOURCE_DIR}/src 
@@ -365,20 +342,20 @@ configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
 # construct toolbox
 file(COPY ${CMAKE_SOURCE_DIR}/arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
 if (WITH_ARKOSG)
-    file(COPY "${ARKOSG_DATA_DIR}/arkosg"
+    file(COPY "${ARKOSG_DATADIR}/arkosg"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
 endif()
-file(COPY "${ARKMATH_DATA_DIR}/arkmath"
+file(COPY "${ARKMATH_DATADIR}/arkmath"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
-file(COPY "${ARKHANGAR_DATA_DIR}/arkhangar"
+file(COPY "${ARKHANGAR_DATADIR}/arkhangar"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
-file(COPY "${JSBSIM_DATA_DIR}/jsbsim"
+file(COPY "${JSBSIM_DATADIR}/jsbsim"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )

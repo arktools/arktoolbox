@@ -5,8 +5,8 @@
 #  SCICOSLAB_INCLUDE_DIRS - the scicoslab include directories
 #  SCICOSLAB_CONTRIB_DIR - the scicoslab contrib directory
 
-include(LibFindMacros)
-include(MacroCommonPaths SCICOSLAB)
+# macros
+include(FindPackageHandleStandardArgs)
 
 # find scicos
 if (APPLE)
