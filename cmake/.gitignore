@@ -7,3 +7,4 @@ arkcmake/*
 !arkcmake/FindArkHangar.cmake
 !arkcmake/FindScicosLab.cmake
 !arkcmake/FindOsgPlugin.cmake
+!arkcmake/ExternalProjectWithFilename.cmake
