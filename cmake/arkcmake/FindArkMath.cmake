@@ -10,20 +10,28 @@
 # macros
 include(FindPackageHandleStandardArgs)
 
+set(_ARKMATH_EXTRA_SEARCH_PATHS
+    /usr/local
+    /opt/local
+    )
+
 # find the include directory
 find_path(_ARKMATH_INCLUDE_DIR
 	NAMES arkmath/storage_adaptors.hpp
+    PATHS ${_ARKMATH_EXTRA_SEARCH_PATHS}
     )
 
 # find the library
 find_library(_ARKMATH_LIBRARY
 	NAMES arkmath
+    PATHS ${_ARKMATH_EXTRA_SEARCH_PATHS}
     )
 
 # find the data directory
 find_path(ARKMATH_DATADIR
 	NAMES arkmath/data/WMM.COF
     PATH_SUFFIXES share
+    PATHS ${_ARKMATH_EXTRA_SEARCH_PATHS}
     )
 
 # read the version

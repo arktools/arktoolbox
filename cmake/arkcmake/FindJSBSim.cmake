@@ -10,20 +10,28 @@
 # macros
 include(FindPackageHandleStandardArgs)
 
+set(_JSBSIM_EXTRA_SEARCH_PATHS
+    /usr/local
+    /opt/local
+    )
+
 # find the include directory
 find_path(_JSBSIM_INCLUDE_DIR
 	NAMES jsbsim/initialization/FGTrimmer.h
+    PATHS ${_JSBSIM_EXTRA_SEARCH_PATHS}
     )
 
 # find the library
 find_library(_JSBSIM_LIBRARY
 	NAMES jsbsim
+    PATHS ${_JSBSIM_EXTRA_SEARCH_PATHS}
     )
 
 # find the data directory
 find_path(JSBSIM_DATADIR
 	NAMES jsbsim/aircraft/737/737.xml
     PATH_SUFFIXES share
+    PATHS ${_JSBSIM_EXTRA_SEARCH_PATHS}
     )
 
 # read the version

@@ -10,20 +10,28 @@
 # macros
 include(FindPackageHandleStandardArgs)
 
+set(_ARKOSG_EXTRA_SEARCH_PATHS
+    /usr/local
+    /opt/local
+    )
+
 # find the include directory
 find_path(_ARKOSG_INCLUDE_DIR
 	NAMES arkosg/osgUtils.hpp
+    PATHS ${_ARKOSG_EXTRA_SEARCH_PATHS}
     )
 
 # find the library
 find_library(_ARKOSG_LIBRARY
 	NAMES arkosg
+    PATHS ${_ARKOSG_EXTRA_SEARCH_PATHS}
     )
 
 # find the data directory
 find_path(ARKOSG_DATADIR
 	NAMES arkosg/images/ocean.rgb
     PATH_SUFFIXES share
+    PATHS ${_ARKOSG_EXTRA_SEARCH_PATHS}
     )
 
 # read the version

@@ -8,10 +8,16 @@
 # macros
 include(FindPackageHandleStandardArgs)
 
+set(_ARKHANGAR_EXTRA_SEARCH_PATHS
+    /usr/local
+    /opt/local
+    )
+
 # find the data directory
 find_path(ARKHANGAR_DATADIR
 	NAMES arkhangar/config.h
     PATH_SUFFIXES share
+    PATHS ${_ARKHANGAR_EXTRA_SEARCH_PATHS}
     )
 
 # read the version
