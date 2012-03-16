@@ -11,10 +11,10 @@ arkcmake/*
 !arkcmake/updateArkcmake.py
 !arkcmake/autobuild.py
 !arkcmake/get_build_path.py
-!arkcmake/FindARKOSG.cmake
-!arkcmake/FindARKMATH.cmake
-!arkcmake/FindARKCOMM.cmake
-!arkcmake/FindJSBSIM.cmake
-!arkcmake/FindARKHANGAR.cmake
-!arkcmake/FindSCICOSLAB.cmake
+!arkcmake/FindArkOsg.cmake
+!arkcmake/FindArkMath.cmake
+!arkcmake/FindArkComm.cmake
+!arkcmake/FindJSBSim.cmake
+!arkcmake/FindArkHangar.cmake
+!arkcmake/FindScicosLab.cmake
 !arkcmake/language_support_v2.cmake

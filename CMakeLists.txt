@@ -16,7 +16,7 @@ set(ARKMATH_VERSION "3035f67907946ca2b6ecb75eff6d550c8dbd55d7")
 set(JSBSIM_VERSION "3f2acf03ccda7e6c4dbfeaa0ff94661e639361de")
 set(ARKHANGAR_VERSION "909b552cfec0f99d67fcaee3afd9cd5e4a677523")
 set(ARKOSG_VERSION "3118cc88ea63524f5ba75466abc7af601ce422ec")
-set(ARKCOMM_VERSION "0c224b528ede947d410d9a56e2b7a47d6ae86048")
+set(ARKCOMM_VERSION "10a6df67315ab459647c1b5430b6f930a0fcd78a")
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
@@ -46,11 +46,6 @@ include(CheckLibraryExists)
 #include(CheckCXXSourceCompiles)
 #include(CheckCSourceCompiles)
 include(ExternalProject)
-include(FindARKOSG)
-include(FindARKMATH)
-include(FindARKCOMM)
-include(FindJSBSIM)
-include(FindARKHANGAR)
 
 # spawn new cmake to build deps
 if (WITH_BUILD_DEPS AND ROOT_THREAD)
@@ -134,12 +129,12 @@ if (WITH_ARKOSG)
     libfind_process(OSG_PLUGINS)
 
     find_package(OpenGL REQUIRED)
-    find_package(ARKOSG ${REQUIRED_IF_ROOT_THREAD})
+    find_package(ArkOsg ${REQUIRED_IF_ROOT_THREAD})
 endif()
-find_package(ARKCOMM ${REQUIRED_IF_ROOT_THREAD})
-find_package(ARKMATH ${REQUIRED_IF_ROOT_THREAD})
-find_package(ARKHANGAR ${REQUIRED_IF_ROOT_THREAD})
-find_package(JSBSIM ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkComm ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkMath ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkHangar ${REQUIRED_IF_ROOT_THREAD})
+find_package(JSBSim ${REQUIRED_IF_ROOT_THREAD})
 
 # build dependencies
 if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
