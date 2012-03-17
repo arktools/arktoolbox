@@ -11,6 +11,7 @@ include(FindPackageHandleStandardArgs)
 set(_SCICOSLAB_EXTRA_SEARCH_PATHS
     /usr/local
     /opt/local
+    $ENV{HOME}/.wine/drive_c/Program\ Files
     )
 
 set(_SCICOSLAB_VERSIONS
