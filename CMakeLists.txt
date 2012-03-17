@@ -230,7 +230,7 @@ endif()
 if(MINGW)
     add_definitions(-D_WIN32_WINNT=0x0501)
     list(APPEND ARKSCICOS_LIBRARIES 
-        ${CMAKE_SOURCE_DIR}/src/scicoslab/libscilab.dll.a)
+        ${CMAKE_SOURCE_DIR}/src/scicoslab/LibScilab.lib)
 endif()
 
 include_directories( ${CMAKE_SOURCE_DIR}/src 
