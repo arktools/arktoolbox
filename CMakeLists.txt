@@ -134,8 +134,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
         ExternalProjectWithFilename_Add(arkosg
             URL https://github.com/arktools/arkosg/tarball/0.2.3
-            URL_MD5 316fed59d9fceba15b0cd8b229a45870
-            FILENAME arktools-arkosg-0.2.3-0-g18fec6b.tar.gz
+            URL_MD5 0f074bb72d2ab61e7a710d177ad6feda
+            FILENAME arkosg.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -146,7 +146,7 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
         ExternalProjectWithFilename_Add(arkhangar
             URL https://github.com/arktools/arkhangar/tarball/1.3.0
             URL_MD5 b937600f70df7129e8fb62efdea7faf3 
-            FILENAME arktools-arkhangar-1.3.0-0-ga32d23d.tar.gz 
+            FILENAME arkhangar.tar.gz 
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -157,7 +157,7 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
         ExternalProjectWithFilename_Add(arkmath
             URL https://github.com/arktools/arkmath/tarball/0.2.7
             URL_MD5 074718084d7627006e597a02a3e9404a
-            FILENAME arktools-arkmath-0.2.7-0-gfca9d81.tar.gz
+            FILENAME arkmath.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_LAPACK=${WITH_LAPACK}"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -167,8 +167,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
     if (NOT ARKCOMM_FOUND)
         ExternalProjectWithFilename_Add(arkcomm
             URL https://github.com/arktools/arkcomm/tarball/0.1.6
-            URL_MD5 814a092d04bb47c16737f94c09c7fe9f
-            FILENAME arktools-arkcomm-0.1.6-0-g3a14a99.tar.gz 
+            URL_MD5 2f0bd4810366440e452e5e6872ece817
+            FILENAME arkcomm.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -178,8 +178,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
     if (NOT JSBSIM_FOUND)
         ExternalProjectWithFilename_Add(jsbsim
             URL https://github.com/jgoppert/jsbsim/tarball/1.0.0.109
-            URL_MD5 424a25b9f02a6d2874101f9f47109378 
-            FILENAME jgoppert-jsbsim-1.0.0.109-0-ga62cdb8.tar.gz
+            URL_MD5 6df871942815ac67e98074f68f72e9a2
+            FILENAME jsbsim.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_BUILD_DEPS=y"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
