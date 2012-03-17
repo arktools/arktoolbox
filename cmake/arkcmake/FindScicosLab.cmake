@@ -13,13 +13,18 @@ set(_SCICOSLAB_EXTRA_SEARCH_PATHS
     /opt/local
     )
 
-set(_SCICOSLAB_GUESS_SUFFIXES
-    scicoslab-gtk-4.4b7
-    scicoslab-gtk-4.4
-    scicoslab-gtk-4.4.1
+set(_SCICOSLAB_VERSIONS
+    4.4b7
+    4.4
+    4.4.1
     )
-foreach(_SCICOSLAB_GUESS_SUFFIX ${_SCICOSLAB_GUESS_SUFFIXES})
-    list(APPEND _SCICOSLAB_GUESS_SUFFIXES lib/${_SCICOSLAB_GUESS_SUFFIX})
+
+set(_SCICOSLAB_GUESS_SUFFIXES "")
+foreach(_SCICOSLAB_VERSION ${_SCICOSLAB_VERSIONS})
+    list(APPEND _SCICOSLAB_GUESS_SUFFIXES lib/scicoslab-gtk-${_SCICOSLAB_VERSION})
+    list(APPEND _SCICOSLAB_GUESS_SUFFIXES lib/scicoslab-${_SCICOSLAB_VERSION})
+    list(APPEND _SCICOSLAB_GUESS_SUFFIXES scicoslab-gtk-${_SCICOSLAB_VERSION})
+    list(APPEND _SCICOSLAB_GUESS_SUFFIXES scicoslab-${_SCICOSLAB_VERSION})
 endforeach()
 
 # find scicos
