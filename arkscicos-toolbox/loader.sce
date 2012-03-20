@@ -7,7 +7,7 @@ arkscicosPath=get_absolute_file_path('loader.sce');
 chdir(arkscicosPath);
 
 mprintf('arkscicos version %s\n', stripblanks(read("VERSION",1,1,'(a)')) );
-mprintf('Copyright (C) 2010 James Goppert\n\n' );
+mprintf('Copyright (C) 2012 James Goppert\n\n' );
 
 if isdir('sci_gateway') then
   chdir('sci_gateway');

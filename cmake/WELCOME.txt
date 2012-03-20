@@ -1,0 +1,4 @@
+Welcome to installation. This program will guide you through the installation of this software.
+
+When asked to select an install path, please select the path to your scicoslab installation's contrib directory.
+Typically found at C:\Program Files\scicoslab-VERSION\contrib

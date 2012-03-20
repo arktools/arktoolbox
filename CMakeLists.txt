@@ -68,6 +68,11 @@ set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
 set(EP_INSTALL_DIR "${EP_BASE_DIR}/Install")
 list(APPEND CMAKE_FIND_ROOT_PATH ${EP_INSTALL_DIR})
 
+# add wine to find path
+if (MINGW)
+    list(APPEND CMAKE_FIND_ROOT_PATH "$ENV{HOME}/.wine/drive_c")
+endif()
+
 # prefer static packages if building static library
 message("** Finding libraries")
 if (WITH_PREFER_STATIC)
@@ -85,16 +90,7 @@ set(REQUIRED_IF_ROOT_THREAD)
 if (ROOT_THREAD)
     set(REQUIRED_IF_ROOT_THREAD "REQUIRED")
 endif()
-find_package(ScicosLab 4.4.1)
-if (NOT SCICOSLAB_FOUND)
-    set(SCICOSLAB_FOUND TRUE)
-    set(SCICOSLAB_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/scicoslab)
-    if(UNIX)
-        set(SCICOSLAB_CONTRIB_DIR "/usr/lib/scicoslab-gtk-4.4.1/contrib")
-    elseif(WIN32)
-        set(SCICOSLAB_CONTRIB_DIR "C:/Program\ Files/scicoslab-4.4.1/contrib")
-    endif()
-endif()
+find_package(ScicosLab REQUIRED 4.4.1)
 if (MSVC)
     set(Boost_USE_MULITHREADED ON)
     find_package(Boost 1.42 COMPONENTS thread system REQUIRED)
@@ -230,7 +226,7 @@ endif()
 if(MINGW)
     add_definitions(-D_WIN32_WINNT=0x0501)
     list(APPEND ARKSCICOS_LIBRARIES 
-        ${CMAKE_SOURCE_DIR}/src/scicoslab/LibScilab.lib)
+        ${SCICOSLAB_LIBRARIES})
 endif()
 
 include_directories( ${CMAKE_SOURCE_DIR}/src 
@@ -336,9 +332,9 @@ set_target_properties(arkscicos PROPERTIES
     VERSION ${LIBRARY_VERSION}
     )
 set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
-
 add_custom_target(toolbox ALL
-    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" ./build.sh
+    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
+        ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exit\""
     DEPENDS arkscicos
     )
 
@@ -369,14 +365,35 @@ file(COPY "${JSBSIM_DATADIR}/jsbsim"
         )
 
 # install
+set(ARKSCICOS_CONTRIB_DIR ${SCICOSLAB_CONTRIB_DIR})
+if (WIN32)
+    set(ARKSCICOS_CONTRIB_DIR "contrib")
+endif()
 install(DIRECTORY "${PROJECT_BINARY_DIR}/arkscicos-toolbox"
-    DESTINATION ${SCICOSLAB_CONTRIB_DIR}
+    DESTINATION ${ARKSCICOS_CONTRIB_DIR}
     COMPONENT Runtime
     PATTERN "*.git*" EXCLUDE
     )
 
 # packaging
-set(CPACK_PACKAGE_CONTACT "james.goppert@gmail.com")
+if (WIN32)
+    # set NSIS image, nsis bug requuires atleast one file with 4 slashes to install correctly
+    #set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\\\/cmake/arkscicos-nsis.bmp")
+    #set(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/cmake/arkscicos.ico")
+    #set(CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}/cmake/arkscicos.ico")
+    set(CPACK_NSIS_INSTALL_ROOT "C:\\\\Program Files\\\\scicoslab-4.4.1")
+    set(CPACK_NSIS_PACKAGE_NAME "${PROJECT_NAME} ${PROJECT_VERSION}")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "")
+endif()
+configure_file("COPYING" "COPYING.txt" COPYONLY) # adding file extensions
+configure_file("README" "README.txt" COPYONLY)
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/COPYING.txt")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_BINARY_DIR}/README.txt")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CPACK_RESOURCE_FILE_README}")
+set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/cmake/WELCOME.txt")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "autonomous robotics kit scicoslab toolbox")
+set(CPACK_PACKAGE_VENDOR ${PROJECT_CONTACT_VENDOR})
+set(CPACK_PACKAGE_CONTACT "${PROJECT_CONTACT_EMAIL}")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_SET_DESTDIR TRUE)
 set(CPACK_COMPONENTS_GROUPING "ALL_COMPONENTS_IN_ONE")
@@ -384,5 +401,8 @@ set(CPACK_DEBIAN_PACKAGE_DEPENDS "libstdc++6, libgcc1, libc6")
 if (WITH_ARKOSG)
     set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libgl1-mesa-glx")
 endif()
+set(CPACK_PACKAGE_EXECUTABLES
+    #"command" "Description"
+    )
 include(CPack)
 # vim:sw=4:ts=4:expandtab
