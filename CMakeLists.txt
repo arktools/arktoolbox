@@ -11,6 +11,23 @@ set(PROJECT_CONTACT_VENDOR arktools)
 set(LIBRARY_VERSION ${PROJECT_VERSION})
 set(LIBRARY_SOVERSION "0.0.0")
 
+# third party library version
+set(ARKOSG_REQUIRED_VERSION             0.2.3)
+set(ARKCOMM_REQUIRED_VERSION            0.1.6)
+set(ARKMATH_REQUIRED_VERSION            0.2.7)
+set(ARKHANGAR_REQUIRED_VERSION          1.3.0)
+set(JSBSIM_REQUIRED_VERSION             1.0.0.110) 
+set(SCICOSLAB_REQUIRED_VERSION          4.4.1) 
+set(OPENSCENEGRAPH_REQUIRED_VERSION     2.8.3) 
+set(BOOST_REQUIRED_VERSION              1.4.2) 
+
+# md5 check sums
+set(ARKOSG_MD5      0f074bb72d2ab61e7a710d177ad6feda)
+set(ARKCOMM_MD5     2f0bd4810366440e452e5e6872ece817)
+set(ARKMATH_MD5     074718084d7627006e597a02a3e9404a)
+set(ARKHANGAR_MD5   b937600f70df7129e8fb62efdea7faf3)
+set(JSBSIM_MD5      01261f8e62c5f9457530c4204b557b18)
+
 # options
 option(WITH_BUILD_DEPS "Build dependencies." ON)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
@@ -90,31 +107,31 @@ set(REQUIRED_IF_ROOT_THREAD)
 if (ROOT_THREAD)
     set(REQUIRED_IF_ROOT_THREAD "REQUIRED")
 endif()
-find_package(ScicosLab REQUIRED 4.4.1)
+find_package(ScicosLab REQUIRED ${SCICOSLAB_REQUIRED_VERSION})
 if (MSVC)
     set(Boost_USE_MULITHREADED ON)
-    find_package(Boost 1.42 COMPONENTS thread system REQUIRED)
+    find_package(Boost ${BOOST_REQUIRED_VERSION} COMPONENTS thread system REQUIRED)
 elseif(MINGW)
-    find_package(Boost 1.42 COMPONENTS thread_win32-mt system-mt REQUIRED)
+    find_package(Boost ${BOOST_REQUIRED_VERSION} COMPONENTS thread_win32-mt system-mt REQUIRED)
 else()
-    find_package(Boost 1.42 COMPONENTS thread-mt system-mt REQUIRED)
+    find_package(Boost ${BOOST_REQUIRED_VERSION} COMPONENTS thread-mt system-mt REQUIRED)
 endif()
 if (WITH_LAPACK)
     find_package(LAPACK REQUIRED)
 endif()
 if (WITH_ARKOSG)
-    find_package(OpenSceneGraph 2.8.3 REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
+    find_package(OpenSceneGraph ${OPENSCENEGRAPH_REQUIRED_VERSION} REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
 
     # find osg plugins
-    find_package(OsgPlugin 2.8.3 REQUIRED COMPONENTS ac rgb)
+    find_package(OsgPlugin ${OPENSCENEGRAPH_REQUIRED_VERSION} REQUIRED COMPONENTS ac rgb)
 
     find_package(OpenGL REQUIRED)
-    find_package(ArkOsg 0.2.3 ${REQUIRED_IF_ROOT_THREAD})
+    find_package(ArkOsg ${ARKOSG_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD})
 endif()
-find_package(ArkComm 0.1.6 ${REQUIRED_IF_ROOT_THREAD})
-find_package(ArkMath 0.2.7 ${REQUIRED_IF_ROOT_THREAD})
-find_package(ArkHangar 1.3.0 ${REQUIRED_IF_ROOT_THREAD})
-find_package(JSBSim 1.0.0.109 ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkComm ${ARKCOMM_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkMath ${ARKMATH_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD})
+find_package(ArkHangar ${ARKHANGAR_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD})
+find_package(JSBSim ${JSBSIM_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD})
 
 # build dependencies
 if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
@@ -129,9 +146,9 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
         ExternalProjectWithFilename_Add(arkosg
-            URL https://github.com/arktools/arkosg/tarball/0.2.3
-            URL_MD5 0f074bb72d2ab61e7a710d177ad6feda
-            FILENAME arkosg.tar.gz
+            URL https://github.com/arktools/arkosg/tarball/${ARKOSG_REQUIRED_VERSION}
+            URL_MD5 ${ARKOSG_MD5}
+            FILENAME arkosg-${ARKOSG_MD5}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -140,9 +157,9 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKHANGAR_FOUND)
         ExternalProjectWithFilename_Add(arkhangar
-            URL https://github.com/arktools/arkhangar/tarball/1.3.0
-            URL_MD5 b937600f70df7129e8fb62efdea7faf3 
-            FILENAME arkhangar.tar.gz 
+            URL https://github.com/arktools/arkhangar/tarball/${ARKHANGAR_REQUIRED_VERSION}
+            URL_MD5 ${ARKHANGAR_MD5} 
+            FILENAME arkhangar-${ARKHANGAR_MD5}.tar.gz 
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -151,9 +168,9 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKMATH_FOUND)
         ExternalProjectWithFilename_Add(arkmath
-            URL https://github.com/arktools/arkmath/tarball/0.2.7
-            URL_MD5 074718084d7627006e597a02a3e9404a
-            FILENAME arkmath.tar.gz
+            URL https://github.com/arktools/arkmath/tarball/${ARKMATH_REQUIRED_VERSION}
+            URL_MD5 ${ARKMATH_MD5}
+            FILENAME arkmath-${ARKMATH_MD5}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_LAPACK=${WITH_LAPACK}"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -162,9 +179,9 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKCOMM_FOUND)
         ExternalProjectWithFilename_Add(arkcomm
-            URL https://github.com/arktools/arkcomm/tarball/0.1.6
-            URL_MD5 2f0bd4810366440e452e5e6872ece817
-            FILENAME arkcomm.tar.gz
+            URL https://github.com/arktools/arkcomm/tarball/${ARKCOMM_REQUIRED_VERSION}
+            URL_MD5 ${ARKCOMM_MD5}
+            FILENAME arkcomm-${ARKCOMM_MD5}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -173,10 +190,10 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT JSBSIM_FOUND)
         ExternalProjectWithFilename_Add(jsbsim
-            URL https://github.com/jgoppert/jsbsim/tarball/1.0.0.109
-            URL_MD5 6df871942815ac67e98074f68f72e9a2
-            FILENAME jsbsim.tar.gz
-            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_BUILD_DEPS=y"
+            URL https://github.com/jgoppert/jsbsim/tarball/${JSBSIM_REQUIRED_VERSION}
+            URL_MD5 ${JSBSIM_MD5}
+            FILENAME jsbsim-${JSBSIM_MD5}.tar.gz
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
             )
