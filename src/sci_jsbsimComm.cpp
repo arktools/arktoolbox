@@ -35,6 +35,7 @@
 #include "input_output/FGfdmSocket.h"
 #include "utilities.hpp"
 #include <boost/lexical_cast.hpp>
+#include <boost/filesystem.hpp>
 #include <stdexcept>
 
 namespace JSBSim
@@ -49,16 +50,22 @@ public:
                bool enableFlightGearComm, char * flightGearHost, int flightGearPort) :
         prop(), fdm(&prop), ss(&fdm), socket()
     {
-        //std::cout << "initializing JSBSim" << std::endl;
+        using namespace boost::filesystem;
+        std::string aircraftAbsPath = path(path(root)/path(aircraftPath)).native_directory_string();
+        std::string engineAbsPath = path(path(root)/path(enginePath)).native_directory_string();
+        std::string systemsAbsPath = path(path(root)/path(systemsPath)).native_directory_string();
+        std::string modelNameString = string(modelName);
+        
+        std::cout << "initializing JSBSim" << std::endl;
+        std::cout << "aircraft: " <<  aircraftAbsPath << std::endl;
+        std::cout << "engine: " << engineAbsPath << std::endl;
+        std::cout << "systems: " << systemsAbsPath << std::endl;
+        std::cout << "model: " << modelNameString << std::endl;
         fdm.SetDebugLevel(debugLevel);
 
-        if (!fdm.LoadModel(
-                    std::string(root)+std::string(aircraftPath),
-                    std::string(root)+std::string(enginePath),
-                    std::string(root)+std::string(systemsPath),
-                    std::string(modelName),false))
+        if (!fdm.LoadModel(aircraftAbsPath, engineAbsPath, systemsAbsPath, modelNameString, false))
         {
-            throw std::runtime_error("unable to load model: " + std::string(root)+std::string(aircraftPath));
+            throw std::runtime_error("unable to load model: " + aircraftAbsPath);
         }
 
         if (enableFlightGearComm)
@@ -197,10 +204,15 @@ extern "C"
                 comm = new JSBSim::JSBSimComm(root,aircraftPath,enginePath,systemsPath,modelName,x,u,debugLevel,
                                               enableFlightGearComm,flightGearHost,flightGearPort);
             }
-            catch (const std::runtime_error & e)
+            catch (const std::exception & e)
             {
                 std::cout << "exception: " << e.what() << std::endl;
                 Coserror((char *)e.what());
+                return;
+            }
+            catch (...)
+            {
+                Coserror("unknown error");
                 return;
             }
             *work = (void *)comm;
