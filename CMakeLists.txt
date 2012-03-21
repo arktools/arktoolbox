@@ -145,6 +145,17 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
         -DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}
         )
 
+    if (NOT JSBSIM_FOUND)
+        ExternalProjectWithFilename_Add(jsbsim
+            URL https://github.com/jgoppert/jsbsim/tarball/${JSBSIM_REQUIRED_VERSION}
+            URL_MD5 ${JSBSIM_MD5}
+            FILENAME jsbsim-${JSBSIM_MD5}.tar.gz
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
+            INSTALL_DIR ${EP_INSTALL_DIR}
+            )
+    endif()
+
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
         ExternalProjectWithFilename_Add(arkosg
             URL https://github.com/arktools/arkosg/tarball/${ARKOSG_REQUIRED_VERSION}
@@ -189,17 +200,6 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
            )
     endif()
 
-    if (NOT JSBSIM_FOUND)
-        ExternalProjectWithFilename_Add(jsbsim
-            URL https://github.com/jgoppert/jsbsim/tarball/${JSBSIM_REQUIRED_VERSION}
-            URL_MD5 ${JSBSIM_MD5}
-            FILENAME jsbsim-${JSBSIM_MD5}.tar.gz
-            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
-            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
-            INSTALL_DIR ${EP_INSTALL_DIR}
-            )
-    endif()
-
     # terminate non root cmake thread
     return()
 endif()
@@ -234,6 +234,7 @@ file(COPY "${JSBSIM_DATADIR}/jsbsim"
         )
 
 # build settings
+add_definitions(-DBOOST_FILESYSTEM_VERSION=2)
 set(ARKSCICOS_LIBRARIES)
 if(WITH_PREFER_STATIC OR MINGW)
     add_definitions(-DOSG_LIBRARY_STATIC)
@@ -263,9 +264,8 @@ endif()
 if(ARKOSG_FOUND)
 	list(APPEND ARKSCICOS_LIBRARIES ${ARKOSG_LIBRARIES})
 endif()
-if(OPENSCENEGRAPH_FOUND)
-    list(APPEND ARKSCICOS_LIBRARIES ${OPENSCENEGRAPH_LIBRARIES})
-    list(APPEND ARKSCICOS_LIBRARIES ${OPENGL_LIBRARIES})
+if(ARKCOMM_FOUND)
+	list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
 endif()
 if(ARKMATH_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
@@ -273,8 +273,9 @@ endif()
 if(LAPACK_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${LAPACK_LIBRARIES})
 endif()
-if(ARKCOMM_FOUND)
-	list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
+if(OPENSCENEGRAPH_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${OPENSCENEGRAPH_LIBRARIES})
+    list(APPEND ARKSCICOS_LIBRARIES ${OPENGL_LIBRARIES})
 endif()
 if(Boost_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${Boost_LIBRARIES})

@@ -212,7 +212,7 @@ extern "C"
             }
             catch (...)
             {
-                Coserror("unknown error");
+                Coserror((char *)"unknown error");
                 return;
             }
             *work = (void *)comm;
