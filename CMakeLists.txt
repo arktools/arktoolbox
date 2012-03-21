@@ -29,7 +29,7 @@ set(ARKHANGAR_MD5   b937600f70df7129e8fb62efdea7faf3)
 set(JSBSIM_MD5      496620abd29a857daeb04655549680b7)
 
 # options
-option(WITH_BUILD_DEPS "Build dependencies." ON)
+option(WITH_BUILD_DEPS "Build dependencies." OFF)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." ON)
 option(WITH_LAPACK "Use lapack libraries." OFF)
