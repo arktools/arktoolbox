@@ -23,10 +23,10 @@ set(BOOST_REQUIRED_VERSION              1.42.0)
 
 # md5 check sums
 set(ARKOSG_MD5      b264266c4f4867c0e85f3ec19748d914)
-set(ARKCOMM_MD5     ab74bb1b4df219c555c82a4efdcbd4c4)
+set(ARKCOMM_MD5     af4678f4794497f4d266e95ae8fc5e2f)
 set(ARKMATH_MD5     9ff5165826d6978277303821a151b4f3)
 set(ARKHANGAR_MD5   b937600f70df7129e8fb62efdea7faf3)
-set(JSBSIM_MD5      496620abd29a857daeb04655549680b7)
+set(JSBSIM_MD5      f8b3f23350283348a9985a7bb6284c7f)
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
