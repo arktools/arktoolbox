@@ -19,20 +19,21 @@ set(ARKHANGAR_REQUIRED_VERSION          1.3.0)
 set(JSBSIM_REQUIRED_VERSION             1.0.0.110) 
 set(SCICOSLAB_REQUIRED_VERSION          4.4.1) 
 set(OPENSCENEGRAPH_REQUIRED_VERSION     2.8.3) 
-set(BOOST_REQUIRED_VERSION              1.4.2) 
+set(BOOST_REQUIRED_VERSION              1.42.0) 
 
 # md5 check sums
-set(ARKOSG_MD5      0f074bb72d2ab61e7a710d177ad6feda)
-set(ARKCOMM_MD5     2f0bd4810366440e452e5e6872ece817)
-set(ARKMATH_MD5     074718084d7627006e597a02a3e9404a)
+set(ARKOSG_MD5      b264266c4f4867c0e85f3ec19748d914)
+set(ARKCOMM_MD5     ab74bb1b4df219c555c82a4efdcbd4c4)
+set(ARKMATH_MD5     9ff5165826d6978277303821a151b4f3)
 set(ARKHANGAR_MD5   b937600f70df7129e8fb62efdea7faf3)
-set(JSBSIM_MD5      82d7b79e0d33939e7bd38a59941670d1)
+set(JSBSIM_MD5      496620abd29a857daeb04655549680b7)
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." ON)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." ON)
 option(WITH_LAPACK "Use lapack libraries." OFF)
+option(WITH_WARNINGS "Enable warnings." OFF)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
@@ -250,6 +251,18 @@ if(MINGW)
         ${SCICOSLAB_LIBRARIES})
 endif()
 
+if (WITH_WARNINGS)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -pedantic")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wshadow -Wmissing-prototypes -Wdeclaration-after-statement")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wmissing-format-attribute")
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-format-attribute")
+endif()
+
 include_directories( ${CMAKE_SOURCE_DIR}/src 
     ${CMAKE_BINARY_DIR}/src
 	${SCICOSLAB_INCLUDE_DIRS}
@@ -260,6 +273,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/src
 	${ARKOSG_INCLUDE_DIRS}
 	)
 
+# scicoslab plugin
 if(JSBSIM_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${JSBSIM_LIBRARIES})
 endif()
@@ -341,9 +355,9 @@ list(APPEND ARKSCICOS_SRCS
     src/sci_jsbsimComm.cpp
 )
 
-set(CMAKE_C_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
-set(CMAKE_CXX_FLAGS "-Wl,-flat_namespace,-undefined,suppress")
-set(CMAKE_LD_FLAGS "-lpthread -Wl,-flat_namespace,-undefined,suppress")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
+set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -lpthread -Wl,-flat_namespace,-undefined,suppress")
 
 add_library(arkscicos MODULE ${ARKSCICOS_SRCS})
 add_dependencies(arkscicos arkcomm arkmath arkhangar arkosg jsbsim)
