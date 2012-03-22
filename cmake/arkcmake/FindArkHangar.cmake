@@ -26,10 +26,12 @@ if (EXISTS ${_ARKHANGAR_INCLUDE_DIR}/arkhangar/config.h)
     string(REGEX MATCH "#define ARKHANGAR_VERSION[ ]+\"(([0-9]+\\.)+[0-9]+)\""
         ARKHANGAR_VERSION_MATCH ${ARKHANGAR_VERSION_FILE})
     set(ARKHANGAR_VERSION ${CMAKE_MATCH_1})
+else()
+    set(ARKHANGAR_VERSION "")
 endif()
 
 # handle arguments
 find_package_handle_standard_args(ArkHangar
-    REQUIRED_VARS ARKHANGAR_DATADIR
+    REQUIRED_VARS ARKHANGAR_DATADIR ARKHANGAR_VERSION
     VERSION_VAR ARKHANGAR_VERSION
     )
