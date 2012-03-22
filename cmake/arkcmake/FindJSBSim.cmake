@@ -10,6 +10,8 @@
 # macros
 include(FindPackageHandleStandardArgs)
 
+find_package(SimGear QUIET COMPONENTS io props xml structure misc debug magvar)
+
 set(_JSBSIM_EXTRA_SEARCH_PATHS
     /usr/local
     /opt/local
@@ -46,7 +48,7 @@ endif()
 
 # handle arguments
 set(JSBSIM_INCLUDE_DIRS ${_JSBSIM_INCLUDE_DIR} ${_JSBSIM_INCLUDE_DIR}/jsbsim)
-set(JSBSIM_LIBRARIES ${_JSBSIM_LIBRARY})
+set(JSBSIM_LIBRARIES ${_JSBSIM_LIBRARY} ${SIMGEAR_LIBRARIES})
 find_package_handle_standard_args(JSBSim
     REQUIRED_VARS JSBSIM_LIBRARIES JSBSIM_INCLUDE_DIRS JSBSIM_DATADIR JSBSIM_VERSION
     VERSION_VAR JSBSIM_VERSION

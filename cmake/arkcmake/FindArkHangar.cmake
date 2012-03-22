@@ -21,8 +21,8 @@ find_path(ARKHANGAR_DATADIR
     )
 
 # read the version
-if (EXISTS ${_ARKHANGAR_INCLUDE_DIR}/arkhangar/config.h)
-    file(READ ${_ARKHANGAR_INCLUDE_DIR}/arkhangar/config.h ARKHANGAR_VERSION_FILE)
+if (EXISTS ${ARKHANGAR_DATADIR}/arkhangar/config.h)
+    file(READ ${ARKHANGAR_DATADIR}/arkhangar/config.h ARKHANGAR_VERSION_FILE)
     string(REGEX MATCH "#define ARKHANGAR_VERSION[ ]+\"(([0-9]+\\.)+[0-9]+)\""
         ARKHANGAR_VERSION_MATCH ${ARKHANGAR_VERSION_FILE})
     set(ARKHANGAR_VERSION ${CMAKE_MATCH_1})
