@@ -23,10 +23,10 @@ set(BOOST_REQUIRED_VERSION              1.42.0)
 
 # md5 check sums
 set(ARKOSG_MD5      33f3d9f09f14efe53e5d15a4919d4663)
-set(ARKCOMM_MD5     d4d1853c5433ff39b4ea2e0ef9824966)
+set(ARKCOMM_MD5     58c5624b76f283169bbdef87f5d463d6)
 set(ARKMATH_MD5     4f82a86f0f301406eb51c4e147f0117e)
 set(ARKHANGAR_MD5   149c59d1093864f644278379ad7e5bb9)
-set(JSBSIM_MD5      2f81a4afc9018759cf39560d88396f54)
+set(JSBSIM_MD5      c68e31520edff19c5d36ff15fce231ce)
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
@@ -34,6 +34,17 @@ option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." ON)
 option(WITH_LAPACK "Use lapack libraries." OFF)
 option(WITH_WARNINGS "Enable warnings." OFF)
+
+set(RECURSE_OPTIONS_LIST
+    WITH_BUILD_DEPS
+    WITH_PREFER_STATIC
+    WITH_ARKOSG
+    WITH_LAPACK
+    WITH_WARNINGS
+    CMAKE_TOOLCHAIN_FILE
+    CMAKE_INSTALL_PREFIX
+    EP_BASE_DIR
+)
 
 # variables
 set(ROOT_THREAD TRUE CACHE INTERNAL "Is this the top level of the recursion?")
@@ -60,17 +71,21 @@ include(CheckLibraryExists)
 #include(CheckCSourceCompiles)
 include(ExternalProjectWithFilename)
 
+# external projects find path
+if(NOT EP_BASE_DIR)
+    set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
+endif()
+set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
+set(EP_INSTALL_DIR "${EP_BASE_DIR}/Install")
+list(APPEND CMAKE_FIND_ROOT_PATH ${EP_INSTALL_DIR})
+
 # spawn new cmake to build deps
 if (WITH_BUILD_DEPS AND ROOT_THREAD)
-    execute_process(COMMAND ${CMAKE_COMMAND} "${CMAKE_SOURCE_DIR}"
-        "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
-        "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
-        "-DEP_BASE_DIR=${EP_BASE_DIR}"
-        "-DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}"
-        "-DWITH_PREFER_STATIC=${WITH_PREFER_STATIC}"
-        "-DWITH_ARKOSG=${WITH_ARKOSG}"
-        "-DWITH_LAPACK=${WITH_LAPACK}"
-        "-DROOT_THREAD=FALSE"
+    set(CMAKE_RECURSE_ARGS "-DROOT_THREAD=FALSE")
+    foreach(OPT ${RECURSE_OPTIONS_LIST})
+        list(APPEND CMAKE_RECURSE_ARGS "-D${OPT}=${${OPT}}")
+    endforeach()
+    execute_process(COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR} ${CMAKE_RECURSE_ARGS}
         RESULT_VARIABLE ERROR)
     if (ERROR)
         message(FATAL_ERROR "error, recursing loop returned error code: ${ERROR}")
@@ -79,14 +94,6 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
     execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} "-j4" "-f${CMAKE_BINARY_DIR}/Makefile")
     message("** Configuring ${PROJECT_NAME}")
 endif()
-
-# external projects find path
-if(NOT EP_BASE_DIR)
-    set(EP_BASE_DIR "${CMAKE_BINARY_DIR}/CMakeExternals")
-endif()
-set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
-set(EP_INSTALL_DIR "${EP_BASE_DIR}/Install")
-list(APPEND CMAKE_FIND_ROOT_PATH ${EP_INSTALL_DIR})
 
 # add wine to find path
 if (MINGW)
