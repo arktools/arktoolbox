@@ -6,6 +6,7 @@ arkcmake/*
 !arkcmake/FindJSBSim.cmake
 !arkcmake/FindArkHangar.cmake
 !arkcmake/FindScicosLab.cmake
+!arkcmake/FindSimGear.cmake
 !arkcmake/FindOsgPlugin.cmake
 !arkcmake/DefineCMakeDefaults.cmake
 !arkcmake/DefineCompilerFlags.cmake
