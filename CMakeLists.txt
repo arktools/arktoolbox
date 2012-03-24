@@ -330,57 +330,67 @@ endif()
 set(ARKSCICOS_SRCS
     src/definitions.hpp
     src/utilities.hpp
-    )
-set(SCICOSLAB_BLOCKS "")
-
-list(APPEND SCICOSLAB_BLOCKS "mavlinkBlocks")
-list(APPEND ARKSCICOS_SRCS
-    src/sci_mavlinkHilSensor.cpp
-    src/sci_mavlinkHilState.cpp
-    src/sci_mavlinkHilTracker.cpp
-)
-
-list(APPEND SCICOSLAB_BLOCKS "mathBlocks")
-list(APPEND ARKSCICOS_SRCS
-    src/sci_euler2Dcm.cpp
-    src/sci_waypointGuidance.cpp
-    src/sci_quat2EulerDcm.cpp
-    src/sci_insErrorDynamics.cpp
-    src/sci_insDynamics.cpp
-    src/sci_geoMag.cpp
-    src/sci_magMeasModel.cpp
-    src/sci_gpsMeasModel.cpp
-    src/sci_eom6Dof.cpp
-    src/sci_navigationEquations.cpp
-    src/definitions.cpp
-    src/sci_invPend.cpp
-    src/utilities.cpp
-    src/sci_zeroOrderHold.cpp
-    src/sci_randn.cpp
-    src/sci_quadForceMoments.cpp
-)
-
-list(APPEND SCICOSLAB_BLOCKS "lapackBlocks")
-list(APPEND ARKSCICOS_SRCS
-    src/sci_gpsIns.cpp
-)
-
-list(APPEND SCICOSLAB_BLOCKS "osgBlocks")
-list(APPEND ARKSCICOS_SRCS
     src/osgPlugins.cpp
-    src/sci_jet.cpp
-    src/sci_plane.cpp
-    src/sci_car.cpp
-    src/sci_quad.cpp
-    src/sci_sailboat.cpp
-    src/sci_vector.cpp
+    src/definitions.cpp
+    src/utilities.cpp
+    )
+
+    # mavlink blocks
+list(APPEND ARKSCICOS_BLOCKS
+    mavlinkHilSensor
+    mavlinkHilState
+    mavlinkHilTracker
+    )
+
+# general blocks
+list(APPEND_ARKSCICOS_BLOCKS
+    euler2dcm
+    waypointguidance
+    quat2eulerdcm
+    inserrordynamics
+    insdynamics
+    geomag
+    magmeasmodel
+    gpsmeasmodel
+    eom6dof
+    navigationequations
+    invpend
+    zeroorderhold
+    randn
+    quadforcemoments
+    piddlp
+    #piddfb
+    )
+
+# lapack blocks
+list(APPEND ARKSCICOS_BLOCKS
+    gpsIns
 )
 
-list(APPEND SCICOSLAB_BLOCKS "jsbsimBlocks")
-list(APPEND ARKSCICOS_SRCS
-    src/sci_jsbsimTrim.cpp
-    src/sci_jsbsimComm.cpp
+# osg blocks
+list(APPEND ARKSCICOS_BLOCKS
+    jet
+    plane
+    car
+    quad
+    sailboat
+    vector
 )
+
+# jsbsim
+list(APPEND ARKSCICOS_BLOCKS
+    jsbsimTrim
+    jsbsimComm
+)
+
+set(ARKSCICOS_BLOCKS_STRING "ArkScicosBlocks=[")
+foreach(BLOCK ${ARKSCICOS_BLOCKS})
+    list(APPEND ARKSCICOS_SRCS
+        src/sci_${BLOCK}.cpp
+        )
+    set(ARKSCICOS_BLOCKS_STRING "${ARKSCICOS_BLOCKS_STRING}'sci_${BLOCK}' ")
+endforeach()
+set(ARKSCICOS_BLOCKS_STRING "${ARKSCICOS_BLOCK_STRING}]'")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
@@ -425,6 +435,11 @@ file(COPY "${JSBSIM_DATADIR}/jsbsim"
         )
 
 # configure toolbox
+file(GLOB INTERFACE_SOURCES "src/sci_*")
+foreach(INTERFACE_SOURCE ${INTERFACE_SOURCES})
+    set(
+endforeach()
+
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
 configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce)
 configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)

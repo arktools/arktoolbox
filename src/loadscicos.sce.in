@@ -5,27 +5,7 @@ arkscicosDataPath=arkscicosPath+"data/"
 jsbsimDataPath=arkscicosDataPath+"jsbsim/"
 arkhangarDataPath=arkscicosDataPath+"arkhangar/"
 
-mathBlocks=[
-'sci_euler2Dcm';..
-'sci_waypointGuidance';..
-'sci_quat2EulerDcm';..
-'sci_magMeasModel';..
-'sci_gpsMeasModel';..
-'sci_geoMag';..
-'sci_randn';..
-'sci_invPend';..
-'sci_eom6Dof';..
-'sci_quadForceMoments';..
-'sci_insDynamics';..
-'sci_insErrorDynamics';..
-'sci_navigationEquations';..
-'sci_zeroOrderHold'];
-simgearBlocks=['sci_flightGearComm'];
-osgBlocks=['sci_jet';'sci_car';'sci_quad';'sci_sailboat';'sci_plane';'sci_vector'];
-jsbsimBlocks=['sci_jsbsimTrim';'sci_jsbsimComm'];
-lapackBlocks=['sci_gpsIns'];
-mavlinkBlocks=['sci_mavlinkHilSensor';'sci_mavlinkHilState';'sci_mavlinkHilTracker'];
-blocks=[@SCICOSLAB_BLOCKS@]';
+blocks=[@ARKSCICOS_BLOCK_STRING@]';
 link([pwd()+'/libarkscicos@CMAKE_SHARED_LIBRARY_SUFFIX@'],blocks,'c');
 
 add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');
@@ -34,4 +14,4 @@ genlib('lib_arkscicos',pwd()+'/arkscicos');
 printf("\n* type scicos to start a block diagram session\n")
 printf("* click Demos on the menu above to run arkscicos demos. If running windows, this is under the ? menu.\n")
 
-clear blocks mathBlocks simgearBlocks osgBlocks jsbsimBlocks lapackBlocks mavlinkBlocks
+clear blocks
