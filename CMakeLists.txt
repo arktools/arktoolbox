@@ -344,22 +344,22 @@ list(APPEND ARKSCICOS_BLOCKS
 
 # general blocks
 list(APPEND ARKSCICOS_BLOCKS
-    euler2dcm
-    waypointguidance
-    quat2eulerdcm
-    inserrordynamics
-    insdynamics
-    geomag
-    magmeasmodel
-    gpsmeasmodel
-    eom6dof
-    navigationequations
-    invpend
-    zeroorderhold
+    euler2Dcm
+    waypointGuidance
+    quat2EulerDcm
+    insErrorDynamics
+    insDynamics
+    geoMag
+    magMeasModel
+    gpsMeasModel
+    eom6Dof
+    navigationEquations
+    invPend
+    zeroOrderHold
     randn
-    quadforcemoments
-    piddlp
-    #piddfb
+    quadForceMoments
+    pidDLP
+    #pidDFB
     )
 
 # lapack blocks
@@ -383,14 +383,13 @@ list(APPEND ARKSCICOS_BLOCKS
     jsbsimComm
     )
 
-set(ARKSCICOS_BLOCKS_STRING "ArkScicosBlocks=[")
+set(ARKSCICOS_BLOCKS_STRING "")
 foreach(BLOCK ${ARKSCICOS_BLOCKS})
     list(APPEND ARKSCICOS_SRCS
         src/sci_${BLOCK}.cpp
         )
     set(ARKSCICOS_BLOCKS_STRING "${ARKSCICOS_BLOCKS_STRING}'sci_${BLOCK}' ")
 endforeach()
-set(ARKSCICOS_BLOCKS_STRING "${ARKSCICOS_BLOCK_STRING}]'")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
