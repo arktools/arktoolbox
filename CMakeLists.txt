@@ -394,7 +394,7 @@ set_target_properties(arkscicos PROPERTIES
     VERSION ${LIBRARY_VERSION}
     )
 set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
-file(GLOB_RECURSE TOOLBOX_SOURCES "arkscicos-toolbox/scicos/arkscicos/*.sci")
+file(GLOB_RECURSE TOOLBOX_SOURCES "arkscicos-toolbox/*.sci" "arkscicos-toolbox/*.sce")
 add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
         ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
