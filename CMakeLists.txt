@@ -13,10 +13,10 @@ set(LIBRARY_SOVERSION "0.0.0")
 
 # third party library version
 set(ARKOSG_REQUIRED_VERSION             0.2.3)
-set(ARKCOMM_REQUIRED_VERSION            0.1.6)
+set(ARKCOMM_REQUIRED_VERSION            0.1.7)
 set(ARKMATH_REQUIRED_VERSION            0.2.7)
 set(ARKHANGAR_REQUIRED_VERSION          1.3.0)
-set(JSBSIM_REQUIRED_VERSION             1.0.0.111) 
+set(JSBSIM_REQUIRED_VERSION             1.0.0.112) 
 set(SCICOSLAB_REQUIRED_VERSION          4.4.1) 
 set(OPENSCENEGRAPH_REQUIRED_VERSION     2.8.3) 
 set(BOOST_REQUIRED_VERSION              1.42.0) 
@@ -24,10 +24,11 @@ set(SIMGEAR_REQUIRED_VERSION            2.7.0)
 
 # md5 check sums
 set(ARKOSG_MD5      33f3d9f09f14efe53e5d15a4919d4663)
-set(ARKCOMM_MD5     58c5624b76f283169bbdef87f5d463d6)
+set(ARKCOMM_MD5     7d53cf1ef5ae734e97538b3c8ec14870)
 set(ARKMATH_MD5     4f82a86f0f301406eb51c4e147f0117e)
 set(ARKHANGAR_MD5   149c59d1093864f644278379ad7e5bb9)
-set(JSBSIM_MD5      c68e31520edff19c5d36ff15fce231ce)
+set(JSBSIM_MD5      434a3110a869df2ee282b63ab1259b34)
+set(SIMGEAR_MD5 fcb8eac3355778904b2d11e487033e4b)
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
@@ -157,6 +158,17 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
         -DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}
         )
 
+    if (NOT SIMGEAR_FOUND)
+        ExternalProjectWithFilename_Add(simgear
+            URL https://gitorious.org/fg/jgopperts-simgear/archive-tarball/mingw-fix
+            URL_MD5 ${SIMGEAR_MD5}
+            FILENAME jgoppert-jgopperts-simgear-mingw-fix.tar.gz
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DSIMGEAR_HEADLESS=ON -DENABLE_TESTS=OFF"
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
+            INSTALL_DIR ${E_INSTALL_DIR}
+           )
+    endif()
+
     if (NOT JSBSIM_FOUND)
         ExternalProjectWithFilename_Add(jsbsim
             URL https://github.com/jgoppert/jsbsim/tarball/${JSBSIM_REQUIRED_VERSION}
@@ -166,6 +178,9 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
             )
+        if (NOT SIMGEAR_FOUND)
+            add_dependencies(jsbsim simgear)
+        endif()
     endif()
 
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
@@ -210,6 +225,9 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
            )
+        if (NOT SIMGEAR_FOUND)
+            add_dependencies(arkcomm simgear)
+        endif()
     endif()
 
     # terminate non root cmake thread
@@ -379,7 +397,7 @@ set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
 file(GLOB_RECURSE TOOLBOX_SOURCES "arkscicos-toolbox/scicos/arkscicos/*.sci")
 add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
-        ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
+        ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('buildscicos.sce');exit\""
     COMMAND "${CMAKE_COMMAND}" -E touch "toolbox-stamp"
     DEPENDS ${TOOLBOX_SOURCES} arkscicos
     )
