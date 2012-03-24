@@ -28,7 +28,7 @@ set(ARKCOMM_MD5     7d53cf1ef5ae734e97538b3c8ec14870)
 set(ARKMATH_MD5     a12b72d9892d22fd0feebcd97e352ffa)
 set(ARKHANGAR_MD5   149c59d1093864f644278379ad7e5bb9)
 set(JSBSIM_MD5      434a3110a869df2ee282b63ab1259b34)
-set(SIMGEAR_MD5 fcb8eac3355778904b2d11e487033e4b)
+set(SIMGEAR_MD5     fcb8eac3355778904b2d11e487033e4b)
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
@@ -292,23 +292,23 @@ endif()
 
 include_directories( ${CMAKE_SOURCE_DIR}/src 
     ${CMAKE_BINARY_DIR}/src
-	${SCICOSLAB_INCLUDE_DIRS}
-	${JSBSIM_INCLUDE_DIRS} 
-	${Boost_INCLUDE_DIRS}
-	${ARKCOMM_INCLUDE_DIRS}
-	${ARKMATH_INCLUDE_DIRS}
-	${ARKOSG_INCLUDE_DIRS}
-	)
+    ${SCICOSLAB_INCLUDE_DIRS}
+    ${JSBSIM_INCLUDE_DIRS} 
+    ${Boost_INCLUDE_DIRS}
+    ${ARKCOMM_INCLUDE_DIRS}
+    ${ARKMATH_INCLUDE_DIRS}
+    ${ARKOSG_INCLUDE_DIRS}
+    )
 
 # scicoslab plugin
 if(JSBSIM_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${JSBSIM_LIBRARIES})
 endif()
 if(ARKOSG_FOUND)
-	list(APPEND ARKSCICOS_LIBRARIES ${ARKOSG_LIBRARIES})
+    list(APPEND ARKSCICOS_LIBRARIES ${ARKOSG_LIBRARIES})
 endif()
 if(ARKCOMM_FOUND)
-	list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
+    list(APPEND ARKSCICOS_LIBRARIES ${ARKCOMM_LIBRARIES})
 endif()
 if(ARKMATH_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${ARKMATH_LIBRARIES})
@@ -343,7 +343,7 @@ list(APPEND ARKSCICOS_BLOCKS
     )
 
 # general blocks
-list(APPEND_ARKSCICOS_BLOCKS
+list(APPEND ARKSCICOS_BLOCKS
     euler2dcm
     waypointguidance
     quat2eulerdcm
@@ -365,7 +365,7 @@ list(APPEND_ARKSCICOS_BLOCKS
 # lapack blocks
 list(APPEND ARKSCICOS_BLOCKS
     gpsIns
-)
+    )
 
 # osg blocks
 list(APPEND ARKSCICOS_BLOCKS
@@ -375,13 +375,13 @@ list(APPEND ARKSCICOS_BLOCKS
     quad
     sailboat
     vector
-)
+    )
 
 # jsbsim
 list(APPEND ARKSCICOS_BLOCKS
     jsbsimTrim
     jsbsimComm
-)
+    )
 
 set(ARKSCICOS_BLOCKS_STRING "ArkScicosBlocks=[")
 foreach(BLOCK ${ARKSCICOS_BLOCKS})
@@ -435,11 +435,6 @@ file(COPY "${JSBSIM_DATADIR}/jsbsim"
         )
 
 # configure toolbox
-file(GLOB INTERFACE_SOURCES "src/sci_*")
-foreach(INTERFACE_SOURCE ${INTERFACE_SOURCES})
-    set(
-endforeach()
-
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
 configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce)
 configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
