@@ -397,7 +397,7 @@ set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
 file(GLOB_RECURSE TOOLBOX_SOURCES "arkscicos-toolbox/scicos/arkscicos/*.sci")
 add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
-        ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('buildscicos.sce');exit\""
+        ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
     COMMAND "${CMAKE_COMMAND}" -E touch "toolbox-stamp"
     DEPENDS ${TOOLBOX_SOURCES} arkscicos
     )
@@ -406,10 +406,6 @@ add_custom_target(toolbox ALL
     )
 
 get_target_property(ARKSCICOS_SCICOS_LOCATION arkscicos LOCATION)
-
-configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
-configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce)
-configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
 
 # construct toolbox
 file(COPY ${CMAKE_SOURCE_DIR}/arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
@@ -431,6 +427,11 @@ file(COPY "${JSBSIM_DATADIR}/jsbsim"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
         PATTERN "*.git*" EXCLUDE
         )
+
+# configure toolbox
+configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
+configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce)
+configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
 
 # install
 set(ARKSCICOS_CONTRIB_DIR ${SCICOSLAB_CONTRIB_DIR})
