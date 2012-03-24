@@ -3,11 +3,9 @@ lines(0);
 
 origDir=pwd();
 mainpathB=get_absolute_file_path('builder.sce');
+arkscicosPath=get_absolute_file_path('builder.sce');
 
 chdir(mainpathB);
-
-mprintf('arkscicos version %s\n', stripblanks(read("VERSION",1,1,'(a)')) );
-mprintf('Copyright (C) 2011 James Goppert\n\n' );
 
 if isdir('src') then
   chdir('src');

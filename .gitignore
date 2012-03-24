@@ -5,7 +5,7 @@ install_manifest.txt
 tags
 Makefile
 _CPack_Packages
-build*
+build*/
 *~
 *.dat
 *.eps

@@ -28,10 +28,8 @@ mavlinkBlocks=['sci_mavlinkHilSensor';'sci_mavlinkHilState';'sci_mavlinkHilTrack
 blocks=[@SCICOSLAB_BLOCKS@]';
 link([pwd()+'/libarkscicos@CMAKE_SHARED_LIBRARY_SUFFIX@'],blocks,'c');
 
+create_palette('arkscicos');
 add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');
 genlib('lib_arkscicos',pwd()+'/arkscicos');
-
-printf("\n* type scicos to start a block diagram session\n")
-printf("* click Demos on the menu above to run arkscicos demos. If running windows, this is under the ? menu.\n")
 
 clear blocks mathBlocks simgearBlocks osgBlocks jsbsimBlocks lapackBlocks mavlinkBlocks

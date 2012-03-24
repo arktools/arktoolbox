@@ -3,7 +3,7 @@ project (arkscicos C CXX)
 # Requried cmake version
 cmake_minimum_required (VERSION 2.8)
 set(PROJECT_VERSION_MAJOR "0")
-set(PROJECT_VERSION_MINOR "7")
+set(PROJECT_VERSION_MINOR "8")
 set(PROJECT_VERSION_PATCH "0")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(PROJECT_CONTACT_EMAIL james.goppert@gmail.com)
@@ -376,15 +376,21 @@ set_target_properties(arkscicos PROPERTIES
     VERSION ${LIBRARY_VERSION}
     )
 set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
-add_custom_target(toolbox ALL
+file(GLOB_RECURSE TOOLBOX_SOURCES "arkscicos-toolbox/scicos/arkscicos/*.sci")
+add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
-        ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exit\""
-    DEPENDS arkscicos
+        ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
+    COMMAND "${CMAKE_COMMAND}" -E touch "toolbox-stamp"
+    DEPENDS ${TOOLBOX_SOURCES} arkscicos
+    )
+add_custom_target(toolbox ALL 
+    DEPENDS "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     )
 
 get_target_property(ARKSCICOS_SCICOS_LOCATION arkscicos LOCATION)
 
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
+configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce)
 configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
 
 # construct toolbox

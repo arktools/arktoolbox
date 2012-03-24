@@ -6,8 +6,11 @@ arkscicosPath=get_absolute_file_path('loader.sce');
 
 chdir(arkscicosPath);
 
-mprintf('arkscicos version %s\n', stripblanks(read("VERSION",1,1,'(a)')) );
-mprintf('Copyright (C) 2012 James Goppert\n\n' );
+mprintf('arkscicos version %s\n\n', stripblanks(read("VERSION",1,1,'(a)')) );
+mprintf('Copyright (C) 2012 James Goppert\n\n')
+mprintf('This software is released under GNU General Public License version 3\n')
+mprintf('and comes with ABSOLUTELY NO WARRANTY. You are welcome to redistribute it \n')
+mprintf('under certain conditions. See <http://www.gnu.org/licenses/> for details.\n\n')
 
 if isdir('sci_gateway') then
   chdir('sci_gateway');
