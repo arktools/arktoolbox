@@ -25,7 +25,7 @@ set(SIMGEAR_REQUIRED_VERSION            2.7.0)
 # md5 check sums
 set(ARKOSG_MD5      33f3d9f09f14efe53e5d15a4919d4663)
 set(ARKCOMM_MD5     7d53cf1ef5ae734e97538b3c8ec14870)
-set(ARKMATH_MD5     4f82a86f0f301406eb51c4e147f0117e)
+set(ARKMATH_MD5     a12b72d9892d22fd0feebcd97e352ffa)
 set(ARKHANGAR_MD5   149c59d1093864f644278379ad7e5bb9)
 set(JSBSIM_MD5      434a3110a869df2ee282b63ab1259b34)
 set(SIMGEAR_MD5 fcb8eac3355778904b2d11e487033e4b)
@@ -412,20 +412,16 @@ file(COPY ${CMAKE_SOURCE_DIR}/arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
 if (WITH_ARKOSG)
     file(COPY "${ARKOSG_DATADIR}/arkosg"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        PATTERN "*.git*" EXCLUDE
         )
 endif()
 file(COPY "${ARKMATH_DATADIR}/arkmath"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        PATTERN "*.git*" EXCLUDE
         )
 file(COPY "${ARKHANGAR_DATADIR}/arkhangar"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        PATTERN "*.git*" EXCLUDE
         )
 file(COPY "${JSBSIM_DATADIR}/jsbsim"
         DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        PATTERN "*.git*" EXCLUDE
         )
 
 # configure toolbox
@@ -436,7 +432,7 @@ configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
 # install
 set(ARKSCICOS_CONTRIB_DIR ${SCICOSLAB_CONTRIB_DIR})
 if (WIN32)
-    set(ARKSCICOS_CONTRIB_DIR "contrib")
+    set(ARKSCICOS_CONTRIB_DIR "/contrib")
 endif()
 install(DIRECTORY "${PROJECT_BINARY_DIR}/arkscicos-toolbox"
     DESTINATION ${ARKSCICOS_CONTRIB_DIR}
