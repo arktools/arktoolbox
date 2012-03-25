@@ -1,9 +1,26 @@
 Building
-=================
+===============================================================
 
-./cmake/arkcmake/autobuild.py
-Then follow menu.
+Command Line
+---------------------------------------------------------------
 
-Web
-=================
+mkdir build
+cd build
+cmake ..
+
+you can add options like this, cmake .. -DWITH_BUILD_DEPS=y
+
+CMake GUI
+---------------------------------------------------------------
+
+start cmake gui and configure
+
+Options
+---------------------------------------------------------------
+
+WITH_BUILD_DEPS: enables automatic dependency building
+
+
+Documentation on the Web
+===============================================================
 https://github.com/arktools/arkscicos
