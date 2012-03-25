@@ -1,0 +1,51 @@
+
+aircraft state
+	vt		:	55
+	alpha, deg	:	-4.48472e-15
+	theta, deg	:	-4.48472e-15
+	q, rad/s	:	0
+	thrust, lbf	:	0.250938
+	beta, deg	:	-0.701224
+	phi, deg	:	0
+	p, rad/s	:	0
+	r, rad/s	:	0
+	mass (lbm)	:	2
+
+actuator state
+	throttle, %	:	58.8453
+	elevator, %	:	-14.6478
+	aileron, %	:	0
+	rudder, %	:	-1.88121
+
+nav state
+	altitude, ft	:	10
+	psi, deg	:	0
+	lat, deg	:	0
+	lon, deg	:	0
+
+aircraft d/dt state
+	d/dt vt			:	0.000000e+00
+	d/dt alpha, deg/s	:	7.702563e-02
+	d/dt theta, deg/s	:	0.000000e+00
+	d/dt q, rad/s^2		:	2.389532e-03
+	d/dt thrust, lbf	:	6.661338e-15
+	d/dt beta, deg/s	:	4.264991e-01
+	d/dt phi, deg/s		:	0.000000e+00
+	d/dt p, rad/s^2		:	2.558043e-03
+	d/dt r, rad/s^2		:	5.049011e-04
+
+d/dt actuator state
+	d/dt throttle, %/s	:	-4.616224e+01
+	d/dt elevator, %/s	:	0.000000e+00
+	d/dt aileron, %/s	:	0.000000e+00
+	d/dt rudder, %/s	:	0.000000e+00
+
+d/dt nav state
+	d/dt altitude, ft/s	:	4.812059e-15
+	d/dt psi, deg/s		:	0.000000e+00
+	d/dt lat, deg/s		:	0.000000e+00
+	d/dt lon, deg/s		:	0.000000e+00
+
+propulsion system state   
+	tank 0: fuel (lbm)			:	0.000000e+00
+	engine 0: fuel flow rate (lbm/s)	:	0.000000e+00
