@@ -1,5 +1,34 @@
 function [x,y,typ]=pidDLP(job,arg1,arg2)
-//Generated from SuperBlock on 14-Mar-2011
+//
+// pidDFB.sci
+//
+// PID controller with derivative feedback.
+//
+// USAGE:
+//
+// input:
+//  [1]  r, reference signal
+//  [2]  v, feedback value 
+//
+// output:
+//  [1]  e, error (reference - feedback)
+//  [2]  y, output
+//
+// Copyright (C) James Goppert 2012 <jgoppert@users.sourceforge.net>
+//
+// car.sci is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// car.sci is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along
+// with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
 x=[];y=[];typ=[];
 
 
@@ -33,7 +62,7 @@ select job
             if ok then
                 model.rpar=[kP,kI,kD,i_min,i_max,y_min,y_max,w_cut];
                 graphics.exprs=exprs
-                x.grpahics=graphics;
+                x.graphics=graphics;
                 x.model=model;
                 break
             end
@@ -41,7 +70,7 @@ select job
 
     case 'define' then
         model=scicos_model()
-        model.sim=list('sci_pidDLB',4);
+        model.sim=list('sci_pidDLP',4);
         model.in=[-1;-1]
         model.out=[-1;-1]
         model.evtin=1
