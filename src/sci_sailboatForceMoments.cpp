@@ -25,9 +25,8 @@
  *  y1: sailPosition, rudderPosition
  *  y2: F_b
  *  y3: M_b
- *  y4: U,W,theta,wy,V,phi,wx,psi,wz (u3, direct feed throguh)
- *  y5: alpha, apparentWindDir, LRudder, DRudder, apparentWindSpeed, relativeCourseOverGround
- *  y6: sailPositionRate
+ *  y4: alpha, apparentWindDir, LRudder, DRudder, apparentWindSpeed, relativeCourseOverGround
+ *  y5: sailPositionRate
  *
  */
 
@@ -202,18 +201,14 @@ void sci_sailboatForceMoments(scicos_block *block, scicos::enumScicosFlags flag)
             y2[i] = F_b[i];
             y3[i] = M_b[i];
         }
-        for(i=0;i<GetSizeOfIn(block,4);i=i+1) {
-            y4[i] = u3[i];
-        }
+        y4[0] = alpha;
+        y4[1] = apparentWindDir;
+        y4[2] = LRudder;
+        y4[3] = DRudder;
+        y4[4] = apparentWindSpeed;
+        y4[5] = relativeCourseOverGround;
 
-        y5[0] = alpha;
-        y5[1] = apparentWindDir;
-        y5[2] = LRudder;
-        y5[3] = DRudder;
-        y5[4] = apparentWindSpeed;
-        y5[5] = relativeCourseOverGround;
-
-        y6[0] = sailPositionRate;
+        y5[0] = sailPositionRate;
     }
     else if (flag==scicos::terminate)
     {

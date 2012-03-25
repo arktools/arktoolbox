@@ -12,11 +12,10 @@ function [x,y,typ]=sailboatForceMoments(job,arg1,arg2)
 //
 // Output:
 //  y1: sailPosition, rudderPosition
-//  y2: F_b
-//  y3: M_b
-//  y4: U,W,theta,wy,V,phi,wx,psi,wz (u3, direct feed throguh)
-//  y5: alpha, apparentWindDir, LRudder, DRudder, apparentWindSpeed, relativeCourseOverGround
-//  y6: sailPositionRate
+//  y2: F_b (3-vector in body frame)
+//  y3: M_b (3-vector in body frame)
+//  y4: alpha, apparentWindDir, LRudder, DRudder, apparentWindSpeed, relativeCourseOverGround
+//  y5: sailPositionRate
 //
 // AUTHOR:
 //
@@ -86,7 +85,7 @@ select job
                 graphics.exprs=exprs;
 
             // set sizes
-            nOut=[2;3;3;9;6;1];
+            nOut=[2;3;3;6;1];
             nIn=[2;2;9;1]
 
             model.out=[nOut];
@@ -106,7 +105,7 @@ select job
 		model=scicos_model();
 		model.sim=list('sci_sailboatForceMoments',4);
 
-		nOut=[2;3;3;9;6;1];
+		nOut=[2;3;3;6;1];
 		nIn=[2;2;9;1];
 
 		model.in=nIn;
