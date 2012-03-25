@@ -9,6 +9,9 @@ wx=0; //trim
 phi=0; //trim
 psi=0; // trim
 gammaAngle=0; // flight path angle,for level flight is zero
+lat0 = 0;
+lon0 = 0;
+R = 6378000;
 
 // aerodynamics
 rho=1.225; // kg/m^3
@@ -140,7 +143,7 @@ wz]; //wz
 r = createIndex(["pN","pE","pD","yaw"]);
 m = createIndex(["Vfwd","psi","h","Vside"]);
 x = createIndex(["U","W","pitch","pitchRate","V","roll","rollRate","yaw",..
-	"yawRate","vN","vE","vD","lat","lon","alt","xAccel","yAccel","zAccel"]);
+	"yawRate","vN","vE","vD","lat","lon","alt","xAccel","yAccel","zAccel","pN","pE","pD"]);
 u = createIndex(["SUM","FB","LR","LRFB"]);
 y = x;
 ch = createIndex(['mode','right','left','front','back']);

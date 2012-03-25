@@ -37,6 +37,8 @@ option(WITH_ARKOSG "Build arkosg graphics." ON)
 option(WITH_LAPACK "Use lapack libraries." OFF)
 option(WITH_WARNINGS "Enable warnings." OFF)
 
+# options to cmake
+# when building dependencies
 set(RECURSE_OPTIONS_LIST
     WITH_BUILD_DEPS
     WITH_PREFER_STATIC
@@ -80,6 +82,19 @@ endif()
 set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
 set(EP_INSTALL_DIR "${EP_BASE_DIR}/Install")
 list(APPEND CMAKE_FIND_ROOT_PATH ${EP_INSTALL_DIR})
+
+# warnings
+if (WITH_WARNINGS)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -pedantic")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wshadow -Wmissing-prototypes -Wdeclaration-after-statement")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wmissing-format-attribute")
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-format-attribute")
+endif()
 
 # spawn new cmake to build deps
 if (WITH_BUILD_DEPS AND ROOT_THREAD)
@@ -276,18 +291,6 @@ if(MINGW)
     add_definitions(-D_WIN32_WINNT=0x0501)
     list(APPEND ARKSCICOS_LIBRARIES 
         ${SCICOSLAB_LIBRARIES})
-endif()
-
-if (WITH_WARNINGS)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -pedantic")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wshadow -Wmissing-prototypes -Wdeclaration-after-statement")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wmissing-format-attribute")
-
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmissing-format-attribute")
 endif()
 
 include_directories( ${CMAKE_SOURCE_DIR}/src 

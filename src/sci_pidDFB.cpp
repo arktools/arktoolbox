@@ -1,7 +1,6 @@
+extern "C" {
 
 #include <scicos/scicos_block4.h>
-//
-extern "C" {
 
     void sci_pidDFB(scicos_block *block,int flag)
     {

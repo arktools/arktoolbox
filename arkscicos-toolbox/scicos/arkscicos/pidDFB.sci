@@ -75,8 +75,8 @@ select job
     case 'define' then
         model=scicos_model()
         model.sim=list('sci_pidDFB',4);
-        model.in=[3]
-        model.out=[2]
+        model.in=[1;1;1]
+        model.out=[1;1]
         model.evtin=1
         model.dstate=[0;0;0];
         y_min=-1
