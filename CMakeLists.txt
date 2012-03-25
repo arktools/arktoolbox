@@ -357,7 +357,8 @@ list(APPEND ARKSCICOS_BLOCKS
     invPend
     zeroOrderHold
     randn
-    quadForceMoments
+    #quadForceMoments
+    sailboatForceMoments
     pidDLP
     #pidDFB
     )
@@ -379,8 +380,10 @@ list(APPEND ARKSCICOS_BLOCKS
 
 # jsbsim
 list(APPEND ARKSCICOS_BLOCKS
-    jsbsimTrim
     jsbsimComm
+    )
+list(APPEND ARKSCICOS_SRCS
+    src/sci_jsbsimTrim.cpp
     )
 
 set(ARKSCICOS_BLOCKS_STRING "")
@@ -389,8 +392,13 @@ foreach(BLOCK ${ARKSCICOS_BLOCKS})
         src/sci_${BLOCK}.cpp
         )
     set(ARKSCICOS_BLOCKS_STRING "${ARKSCICOS_BLOCKS_STRING}'sci_${BLOCK}' ")
+    set(INTERFACE_FUNCTION_FILE "${CMAKE_SOURCE_DIR}/arkscicos-toolbox/scicos/arkscicos/${BLOCK}.sci")
+    if ( NOT EXISTS ${INTERFACE_FUNCTION_FILE} )
+        message(FATAL_ERROR "block ${BLOCK} requires you to define an interface, please create : ${INTERFACE_FUNCTION_FILE}")
+    endif()
 endforeach()
 
+# flags for plugin, allows undefined symbols on mac/ linux
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
 set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -lpthread -Wl,-flat_namespace,-undefined,suppress")
