@@ -1,47 +1,47 @@
 
 aircraft state
 	vt		:	55
-	alpha, deg	:	-3.89155
-	theta, deg	:	-3.89155
+	alpha, deg	:	-3.76746
+	theta, deg	:	-3.76746
 	q, rad/s	:	0
-	thrust, lbf	:	0.222733
-	beta, deg	:	-0.627755
-	phi, deg	:	0
+	thrust, lbf	:	0.215089
+	beta, deg	:	-0.622831
+	phi, deg	:	1.38233e-33
 	p, rad/s	:	0
 	r, rad/s	:	0
 	mass (lbm)	:	2
 
 actuator state
-	throttle, %	:	56.2087
-	elevator, %	:	36.8213
+	throttle, %	:	55.5595
+	elevator, %	:	34.7708
 	aileron, %	:	0
-	rudder, %	:	-1.50303
+	rudder, %	:	-1.55227
 
 nav state
-	altitude, ft	:	10
-	psi, deg	:	0
+	altitude, ft	:	1000
+	psi, deg	:	9.59186e-51
 	lat, deg	:	0
 	lon, deg	:	0
 
 aircraft d/dt state
 	d/dt vt			:	0.000000e+00
-	d/dt alpha, deg/s	:	-4.425520e-02
+	d/dt alpha, deg/s	:	-7.838061e-04
 	d/dt theta, deg/s	:	0.000000e+00
-	d/dt q, rad/s^2		:	-7.712094e-04
-	d/dt thrust, lbf	:	0.000000e+00
-	d/dt beta, deg/s	:	3.763191e-01
+	d/dt q, rad/s^2		:	4.933058e-05
+	d/dt thrust, lbf	:	2.597922e-13
+	d/dt beta, deg/s	:	3.624516e-01
 	d/dt phi, deg/s		:	0.000000e+00
-	d/dt p, rad/s^2		:	-5.125395e-04
-	d/dt r, rad/s^2		:	-6.025937e-03
+	d/dt p, rad/s^2		:	-1.523950e-03
+	d/dt r, rad/s^2		:	-4.335827e-05
 
 d/dt actuator state
-	d/dt throttle, %/s	:	-4.614003e+01
+	d/dt throttle, %/s	:	-4.609089e+01
 	d/dt elevator, %/s	:	0.000000e+00
 	d/dt aileron, %/s	:	0.000000e+00
 	d/dt rudder, %/s	:	0.000000e+00
 
 d/dt nav state
-	d/dt altitude, ft/s	:	-5.094789e-12
+	d/dt altitude, ft/s	:	-2.670079e-12
 	d/dt psi, deg/s		:	0.000000e+00
 	d/dt lat, deg/s		:	0.000000e+00
 	d/dt lon, deg/s		:	0.000000e+00
