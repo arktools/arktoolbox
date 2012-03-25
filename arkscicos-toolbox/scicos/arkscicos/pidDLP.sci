@@ -46,7 +46,7 @@ select job
         graphics=arg1.graphics;
         exprs=graphics.exprs
         model=arg1.model;
-        title=..
+        blockTitle=..
             "Set block parameters"
         labels=..
             ["y_min";"y_max";"w_cut";"kP";"kI";"kD";"i_min";"i_max"]
@@ -55,7 +55,7 @@ select job
   
         while %t do
 
-            [ok,y_min,y_max,w_cut,kP,kI,kD,i_min,i_max,exprs]=getvalue(title,labels,types,exprs)
+            [ok,y_min,y_max,w_cut,kP,kI,kD,i_min,i_max,exprs]=getvalue(blockTitle,labels,types,exprs)
             if ~ok then break,end
 
             graphics.exprs=exprs;

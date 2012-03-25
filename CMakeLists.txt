@@ -431,16 +431,15 @@ add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
         ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
     COMMAND "${CMAKE_COMMAND}" -E touch "toolbox-stamp"
-    DEPENDS 
+    )
+add_custom_target(toolbox ALL 
+    DEPENDS
         arkscicos
         toolboxSrcs
         ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce
         ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce
         arkosgData arkmathData arkhangarData jsbsimData
-    )
-
-add_custom_target(toolbox ALL 
-    DEPENDS "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
+        "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     )
 
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
