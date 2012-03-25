@@ -13,3 +13,4 @@ arkcmake/*
 !arkcmake/MacroCheckCCompilerFlagSSP.cmake
 !arkcmake/MacroEnsureOutOfSourceBuild.cmake
 !arkcmake/ExternalProjectWithFilename.cmake
+!arkcmake/GlobCopyTracked.cmake

@@ -26,7 +26,7 @@ set(SIMGEAR_REQUIRED_VERSION            2.7.0)
 set(ARKOSG_MD5      33f3d9f09f14efe53e5d15a4919d4663)
 set(ARKCOMM_MD5     7d53cf1ef5ae734e97538b3c8ec14870)
 set(ARKMATH_MD5     a12b72d9892d22fd0feebcd97e352ffa)
-set(ARKHANGAR_MD5   149c59d1093864f644278379ad7e5bb9)
+set(ARKHANGAR_MD5   5077d05701a15951e6a47689cbbf0a13)
 set(JSBSIM_MD5      434a3110a869df2ee282b63ab1259b34)
 set(SIMGEAR_MD5     fcb8eac3355778904b2d11e487033e4b)
 
@@ -74,6 +74,7 @@ include(CheckLibraryExists)
 #include(CheckCXXSourceCompiles)
 #include(CheckCSourceCompiles)
 include(ExternalProjectWithFilename)
+include(GlobCopyTracked)
 
 # external projects find path
 if(NOT EP_BASE_DIR)
@@ -108,7 +109,10 @@ if (WITH_BUILD_DEPS AND ROOT_THREAD)
         message(FATAL_ERROR "error, recursing loop returned error code: ${ERROR}")
     endif()
     message("** Making dependencies")
-    execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} "-j4" "-f${CMAKE_BINARY_DIR}/Makefile")
+    if("${RECURSE_THREADS}" STREQUAL "")
+        set(RECURSE_THREADS "1")
+    endif()
+    execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} "-j${RECURSE_THREADS}" "-f${CMAKE_BINARY_DIR}/Makefile")
     message("** Configuring ${PROJECT_NAME}")
 endif()
 
@@ -258,26 +262,6 @@ endif()
 # config files
 configure_file(src/config.h.in src/config.h)
 
-# copy components of toolbox
-file(COPY arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
-if (WITH_ARKOSG)
-    file(COPY "${ARKOSG_DATADIR}/arkosg"
-        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        PATTERN "*.git*" EXCLUDE)
-endif()
-file(COPY "${ARKMATH_DATADIR}/arkmath"
-        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        PATTERN "*.git*" EXCLUDE
-        )
-file(COPY "${ARKHANGAR_DATADIR}/arkhangar"
-        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        PATTERN "*.git*" EXCLUDE
-        )
-file(COPY "${JSBSIM_DATADIR}/jsbsim"
-        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        PATTERN "*.git*" EXCLUDE
-        )
-
 # build settings
 add_definitions(-DBOOST_FILESYSTEM_VERSION=2)
 set(ARKSCICOS_LIBRARIES ${SIMGEAR_LIBRARIES})
@@ -414,37 +398,56 @@ set_target_properties(arkscicos PROPERTIES
     VERSION ${LIBRARY_VERSION}
     )
 set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
-file(GLOB_RECURSE TOOLBOX_SOURCES "arkscicos-toolbox/*.sci" "arkscicos-toolbox/*.sce")
+
+# create toolbox
+glob_copy_tracked(TARGET "toolboxSrcs" 
+    RECURSE
+    SRCDIR ${CMAKE_SOURCE_DIR}
+    DESTDIR ${CMAKE_BINARY_DIR}
+    GLOB_ARGS "${CMAKE_SOURCE_DIR}/arkscicos-toolbox/*")
+
+if (WITH_ARKOSG)
+    glob_copy_tracked(TARGET "arkosgData"
+        RECURSE
+        SRCDIR ${ARKOSG_DATADIR}
+        DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data 
+        GLOB_ARGS "${ARKOSG_DATADIR}/arkosg/*")
+endif()
+
+glob_copy_tracked(TARGET "arkmathData"
+    RECURSE
+    SRCDIR ${ARKMATH_DATADIR}
+    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
+    GLOB_ARGS "${ARKMATH_DATADIR}/arkmath/*")
+
+glob_copy_tracked(TARGET "arkhangarData"
+    RECURSE
+    SRCDIR ${ARKHANGAR_DATADIR}
+    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
+    GLOB_ARGS "${ARKHANGAR_DATADIR}/arkhangar/*")
+
+glob_copy_tracked(TARGET "jsbsimData"
+    RECURSE
+    SRCDIR ${JSBSIM_DATADIR}
+    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
+    GLOB_ARGS "${JSBSIM_DATADIR}/jsbsim/*")
+
 add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
         ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
     COMMAND "${CMAKE_COMMAND}" -E touch "toolbox-stamp"
-    DEPENDS ${TOOLBOX_SOURCES} arkscicos
+    DEPENDS 
+        arkscicos
+        toolboxSrcs
+        ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce
+        ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce
+        arkosgData arkmathData arkhangarData jsbsimData
     )
+
 add_custom_target(toolbox ALL 
     DEPENDS "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     )
 
-get_target_property(ARKSCICOS_SCICOS_LOCATION arkscicos LOCATION)
-
-# construct toolbox
-file(COPY ${CMAKE_SOURCE_DIR}/arkscicos-toolbox DESTINATION ${CMAKE_BINARY_DIR})
-if (WITH_ARKOSG)
-    file(COPY "${ARKOSG_DATADIR}/arkosg"
-        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        )
-endif()
-file(COPY "${ARKMATH_DATADIR}/arkmath"
-        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        )
-file(COPY "${ARKHANGAR_DATADIR}/arkhangar"
-        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        )
-file(COPY "${JSBSIM_DATADIR}/jsbsim"
-        DESTINATION ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-        )
-
-# configure toolbox
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
 configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce)
 configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
