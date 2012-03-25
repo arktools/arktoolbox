@@ -90,30 +90,30 @@ void sci_sailboatForceMoments(scicos_block *block, scicos::enumScicosFlags flag)
     if (flag==scicos::computeOutput)
     {
         // environment constants
-        double rho = 1.225; // density of air, kg/m^3
-        double rhoW = 1000; // density of water, kg/m^3
+        double rho = rpar[0]; // 1.225; // density of air, kg/m^3
+        double rhoW = rpar[1]; //1000; // density of water, kg/m^3
 
         // sail constants
-        double s = 1; // area of sail, m^2
-        double cD0 = 0.1; // zero order sail drag polar coefficient
-        double cD2 = 0.01; // 2nd order sail drag polar coefficient
-        double cLAlpha = 2*M_PI; // lift curve slope for sail
-        double alphaStall = 20*M_PI/180; // stall angle of attack for sail
-        double xSail = 0.2; // distance mast to sail center of effort, m
-        double dSail = 0.3; // distance from center of mass to mast, m
+        double s = rpar[2]; // 1; // area of sail, m^2
+        double cD0 =rpar[3]; // 0.1; // zero order sail drag polar coefficient
+        double cD2 =rpar[4]; // 0.01; // 2nd order sail drag polar coefficient
+        double cLAlpha =rpar[5]; // 2*M_PI; // lift curve slope for sail
+        double alphaStall =rpar[6]; // 20*M_PI/180; // stall angle of attack for sail
+        double xSail =rpar[7]; // 0.2; // distance mast to sail center of effort, m
+        double dSail =rpar[8]; // 0.3; // distance from center of mass to mast, m
 
         // rudder constants
-        double xRudder = 0.5; // distance from center of mass to rudder, m
-        double cD0Rudder = 0.1; // zero order rudder drag polar coefficient
-        double cD2Rudder = 0.01; // zero order rudder drag polar coefficient
-        double sRudder = 0.05; // area of rudder, m^2
-        double alphaRudderStall = 20*M_PI/180; // rudder stall angle, rad
-        double cLAlphaRudder = 2; // rudder lift curve slope
+        double xRudder =rpar[9]; // 0.5; // distance from center of mass to rudder, m
+        double cD0Rudder =rpar[10]; // 0.1; // zero order rudder drag polar coefficient
+        double cD2Rudder =rpar[11]; // 0.01; // zero order rudder drag polar coefficient
+        double sRudder =rpar[12]; // 0.05; // area of rudder, m^2
+        double alphaRudderStall =rpar[13]; // 20*M_PI/180; // rudder stall angle, rad
+        double cLAlphaRudder =rpar[14]; // 2; // rudder lift curve slope
 
         // hull constants
-        double sWater = 1; // wetted area of boat, m^2
-        double cDWater = 0.03; // drag coefficient, need to measure (can adjust using top speed)
-        double cWaterRot = 5; // coefficient of damping for spinning in the water
+        double sWater =rpar[15]; // 1; // wetted area of boat, m^2
+        double cDWater =rpar[16]; // 0.03; // drag coefficient, need to measure (can adjust using top speed)
+        double cWaterRot =rpar[17]; // 5; // coefficient of damping for spinning in the water
 
         // local variables
         double F_b[3] = {0,0,0}; // force in the body frame

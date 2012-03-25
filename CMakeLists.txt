@@ -400,37 +400,32 @@ set_target_properties(arkscicos PROPERTIES
 set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
 
 # create toolbox
-glob_copy_tracked(TARGET "toolboxSrcs" 
-    RECURSE
+glob_copy_tracked(TARGET "toolboxSrcs" RECURSE
     SRCDIR ${CMAKE_SOURCE_DIR}
-    DESTDIR ${CMAKE_BINARY_DIR}
-    GLOB_ARGS "${CMAKE_SOURCE_DIR}/arkscicos-toolbox/*")
+    GLOB_ARGS "${CMAKE_SOURCE_DIR}/arkscicos-toolbox/*"
+    DESTDIR ${CMAKE_BINARY_DIR})
 
 if (WITH_ARKOSG)
-    glob_copy_tracked(TARGET "arkosgData"
-        RECURSE
+    glob_copy_tracked(TARGET "arkosgData" RECURSE
         SRCDIR ${ARKOSG_DATADIR}
-        DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data 
-        GLOB_ARGS "${ARKOSG_DATADIR}/arkosg/*")
+        GLOB_ARGS "${ARKOSG_DATADIR}/arkosg/*"
+        DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
 endif()
 
-glob_copy_tracked(TARGET "arkmathData"
-    RECURSE
+glob_copy_tracked(TARGET "arkmathData" RECURSE
     SRCDIR ${ARKMATH_DATADIR}
-    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-    GLOB_ARGS "${ARKMATH_DATADIR}/arkmath/*")
+    GLOB_ARGS "${ARKMATH_DATADIR}/arkmath/*"
+    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
 
-glob_copy_tracked(TARGET "arkhangarData"
-    RECURSE
+glob_copy_tracked(TARGET "arkhangarData" RECURSE
     SRCDIR ${ARKHANGAR_DATADIR}
-    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-    GLOB_ARGS "${ARKHANGAR_DATADIR}/arkhangar/*")
+    GLOB_ARGS "${ARKHANGAR_DATADIR}/arkhangar/*"
+    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
 
-glob_copy_tracked(TARGET "jsbsimData"
-    RECURSE
+glob_copy_tracked(TARGET "jsbsimData" RECURSE
     SRCDIR ${JSBSIM_DATADIR}
-    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data
-    GLOB_ARGS "${JSBSIM_DATADIR}/jsbsim/*")
+    GLOB_ARGS "${JSBSIM_DATADIR}/jsbsim/*"
+    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
 
 add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
@@ -461,6 +456,7 @@ install(DIRECTORY "${PROJECT_BINARY_DIR}/arkscicos-toolbox"
     DESTINATION ${ARKSCICOS_CONTRIB_DIR}
     COMPONENT Runtime
     PATTERN "*.git*" EXCLUDE
+    PATTERN "*.cvs*" EXCLUDE
     )
 
 # packaging
