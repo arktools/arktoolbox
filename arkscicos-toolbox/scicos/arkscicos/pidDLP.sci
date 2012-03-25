@@ -2,7 +2,7 @@ function [x,y,typ]=pidDLP(job,arg1,arg2)
 //
 // pidDFB.sci
 //
-// PID controller with derivative feedback.
+// Digital PID controller with derivative feedback.
 //
 // USAGE:
 //
@@ -29,8 +29,8 @@ function [x,y,typ]=pidDLP(job,arg1,arg2)
 // You should have received a copy of the GNU General Public License along
 // with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+mode(-1)
 x=[];y=[];typ=[];
-
 
 select job
     case 'plot' then
@@ -46,15 +46,16 @@ select job
         graphics=arg1.graphics;
         exprs=graphics.exprs
         model=arg1.model;
-        Btitre=..
+        title=..
             "Set block parameters"
-        Bitems=..
+        labels=..
             ["y_min";"y_max";"w_cut";"kP";"kI";"kD";"i_min";"i_max"]
-        Ss=..
-            list("pol",-1,"pol",-1,"pol",-1,"pol",-1,"pol",-1,"pol",-1,"pol",-1,"pol",-1)
+        types=..
+            list("vec",1,"vec",1,"vec",1,"vec",1,"vec",1,"vec",1,"vec",1,"vec",1)
   
         while %t do
-            [ok,y_min,y_max,w_cut,kP,kI,kD,i_min,i_max,exprs]=getvalue(Btitre,Bitems,Ss,exprs)
+
+            [ok,y_min,y_max,w_cut,kP,kI,kD,i_min,i_max,exprs]=getvalue(title,labels,types,exprs)
             if ~ok then break,end
 
             graphics.exprs=exprs;
@@ -71,9 +72,10 @@ select job
     case 'define' then
         model=scicos_model()
         model.sim=list('sci_pidDLP',4);
-        model.in=[-1;-1]
-        model.out=[-1;-1]
+        model.in=[2]
+        model.out=[2]
         model.evtin=1
+        model.dstate=[0;0;0;0];
         y_min=-1
         y_max=1
         w_cut=10
@@ -84,8 +86,8 @@ select job
         i_max=1
         model.rpar=[kP,kI,kD,i_min,i_max,y_min,y_max,w_cut];
         model.ipar=1
-        model.blocktype="c"
-        model.dep_ut=[%f,%f]
+        model.blocktype='d'
+        model.dep_ut=[%t,%f]
   
         exprs=[sci2exp(y_min,0);sci2exp(y_max,0);sci2exp(w_cut,0);sci2exp(kP,0);sci2exp(kI,0);sci2exp(kD,0);sci2exp(i_min,0);sci2exp(i_max,0);]
         gr_i=list(..

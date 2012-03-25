@@ -70,11 +70,11 @@ extern "C" {
             x[1] = i;
             x[2] = e;
             x[3] = d;
-            ;
+            
             // save output;
             y1[0] = y;
             y2[0] = e;
-            ;
+
             /* ending */
         } else  if (flag == 5) {
 

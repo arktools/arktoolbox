@@ -2,7 +2,7 @@ function [x,y,typ]=pidDFB(job,arg1,arg2)
 //
 // pidDFB.sci
 //
-// PID controller with low pass filter on
+// Digital PID controller with low pass filter on
 //   computed derivative.
 //
 // USAGE:
@@ -75,9 +75,10 @@ select job
     case 'define' then
         model=scicos_model()
         model.sim=list('sci_pidDFB',4);
-        model.in=[-1;-1]
-        model.out=[-1;-1]
+        model.in=[3]
+        model.out=[2]
         model.evtin=1
+        model.dstate=[0;0;0];
         y_min=-1
         y_max=1
         kP=1

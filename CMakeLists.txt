@@ -360,7 +360,7 @@ list(APPEND ARKSCICOS_BLOCKS
     #quadForceMoments
     sailboatForceMoments
     pidDLP
-    #pidDFB
+    pidDFB
     )
 
 # lapack blocks

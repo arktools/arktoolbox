@@ -3,7 +3,7 @@
 //
 extern "C" {
 
-    void pidDFB(scicos_block *block,int flag)
+    void sci_pidDFB(scicos_block *block,int flag)
     {
         /* init */
         if (flag == 4) {
