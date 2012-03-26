@@ -23,12 +23,12 @@ set(BOOST_REQUIRED_VERSION              1.42.0)
 set(SIMGEAR_REQUIRED_VERSION            2.7.0) 
 
 # md5 check sums
-set(ARKOSG_MD5      33f3d9f09f14efe53e5d15a4919d4663)
-set(ARKCOMM_MD5     62625f974f36fbeff19c72209a928506)
-set(ARKMATH_MD5     a12b72d9892d22fd0feebcd97e352ffa)
-set(ARKHANGAR_MD5   4381c5e0284144b665557dcf2a2e3c30)
-set(JSBSIM_MD5      d3d41b848bbecdd925c85fed011a0b0b)
-set(SIMGEAR_MD5     fcb8eac3355778904b2d11e487033e4b)
+set(ARKOSG_TAG      0722940bc9626096c81630fcca354cd6638745c7)
+set(ARKCOMM_TAG     55937395c2589c8ba151374239ed1bff0805575a)
+set(ARKMATH_TAG     bb0e623831246664358c916ded7a8ec6165bd805)
+set(ARKHANGAR_TAG   4a0633892be6f9993d2dfe86b969c9ab93ebc87e)
+set(JSBSIM_TAG      4ef3b736e6d1f97e2295319712956972effb3595)
+set(SIMGEAR_TAG     43ab2b6ecb31fb6ca72f3cfdb4395b352a95e365)
 
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
@@ -179,8 +179,7 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT SIMGEAR_FOUND)
         ExternalProjectWithFilename_Add(simgear
-            URL http://gitorious.org/fg/jgopperts-simgear/archive-tarball/mingw-fix
-            URL_MD5 ${SIMGEAR_MD5}
+            URL http://gitorious.org/fg/jgopperts-simgear/archive-tarball/${SIMGEAR_TAG}
             FILENAME jgoppert-jgopperts-simgear-mingw-fix.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DSIMGEAR_HEADLESS=ON -DENABLE_TESTS=OFF"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
@@ -191,9 +190,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT JSBSIM_FOUND)
         ExternalProjectWithFilename_Add(jsbsim
-            URL http://nodeload.github.com/jgoppert/jsbsim/tarball/${JSBSIM_REQUIRED_VERSION}
-            URL_MD5 ${JSBSIM_MD5}
-            FILENAME jsbsim-${JSBSIM_MD5}.tar.gz
+            URL http://nodeload.github.com/jgoppert/jsbsim/tarball/${JSBSIM_TAG}
+            FILENAME jsbsim-${JSBSIM_TAG}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -205,9 +203,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
         ExternalProjectWithFilename_Add(arkosg
-            URL http://nodeload.github.com/arktools/arkosg/tarball/${ARKOSG_REQUIRED_VERSION}
-            URL_MD5 ${ARKOSG_MD5}
-            FILENAME arkosg-${ARKOSG_MD5}.tar.gz
+            URL http://nodeload.github.com/arktools/arkosg/tarball/${ARKOSG_TAG}
+            FILENAME arkosg-${ARKOSG_TAG}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -216,9 +213,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKHANGAR_FOUND)
         ExternalProjectWithFilename_Add(arkhangar
-            URL http://nodeload.github.com/arktools/arkhangar/tarball/${ARKHANGAR_REQUIRED_VERSION}
-            URL_MD5 ${ARKHANGAR_MD5} 
-            FILENAME arkhangar-${ARKHANGAR_MD5}.tar.gz 
+            URL http://nodeload.github.com/arktools/arkhangar/tarball/${ARKHANGAR_TAG}
+            FILENAME arkhangar-${ARKHANGAR_TAG}.tar.gz 
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -227,9 +223,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKMATH_FOUND)
         ExternalProjectWithFilename_Add(arkmath
-            URL http://nodeload.github.com/arktools/arkmath/tarball/${ARKMATH_REQUIRED_VERSION}
-            URL_MD5 ${ARKMATH_MD5}
-            FILENAME arkmath-${ARKMATH_MD5}.tar.gz
+            URL http://nodeload.github.com/arktools/arkmath/tarball/${ARKMATH_TAG}
+            FILENAME arkmath-${ARKMATH_TAG}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_LAPACK=${WITH_LAPACK}"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -238,9 +233,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKCOMM_FOUND)
         ExternalProjectWithFilename_Add(arkcomm
-            URL http://nodeload.github.com/arktools/arkcomm/tarball/${ARKCOMM_REQUIRED_VERSION}
-            URL_MD5 ${ARKCOMM_MD5}
-            FILENAME arkcomm-${ARKCOMM_MD5}.tar.gz
+            URL http://nodeload.github.com/arktools/arkcomm/tarball/${ARKCOMM_TAG}
+            FILENAME arkcomm-${ARKCOMM_TAG}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
