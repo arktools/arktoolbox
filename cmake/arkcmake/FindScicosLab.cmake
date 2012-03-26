@@ -41,7 +41,7 @@ if (APPLE)
     if (RESULT) 
         MESSAGE(FATAL_ERROR "Could not locate 'ScicosLabGtk.app' - ${ERROR_MESSAGE}")
     endif (RESULT)
-    list(APPEND _SCICOSLAB_GUESS_SUFFIXES ${_SCICOSLAB_APP})
+    list(APPEND _SCICOSLAB_EXTRA_SEARCH_PATHS ${_SCICOSLAB_APP}/Contents/Resources)
 endif()
 
 # root directory
