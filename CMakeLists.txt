@@ -179,18 +179,19 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT SIMGEAR_FOUND)
         ExternalProjectWithFilename_Add(simgear
-            URL https://gitorious.org/fg/jgopperts-simgear/archive-tarball/mingw-fix
+            URL http://gitorious.org/fg/jgopperts-simgear/archive-tarball/mingw-fix
             URL_MD5 ${SIMGEAR_MD5}
             FILENAME jgoppert-jgopperts-simgear-mingw-fix.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DSIMGEAR_HEADLESS=ON -DENABLE_TESTS=OFF"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${E_INSTALL_DIR}
+            TIMEOUT 100
            )
     endif()
 
     if (NOT JSBSIM_FOUND)
         ExternalProjectWithFilename_Add(jsbsim
-            URL https://github.com/jgoppert/jsbsim/tarball/${JSBSIM_REQUIRED_VERSION}
+            URL http://nodeload.github.com/jgoppert/jsbsim/tarball/${JSBSIM_REQUIRED_VERSION}
             URL_MD5 ${JSBSIM_MD5}
             FILENAME jsbsim-${JSBSIM_MD5}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
@@ -204,7 +205,7 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
         ExternalProjectWithFilename_Add(arkosg
-            URL https://github.com/arktools/arkosg/tarball/${ARKOSG_REQUIRED_VERSION}
+            URL http://nodeload.github.com/arktools/arkosg/tarball/${ARKOSG_REQUIRED_VERSION}
             URL_MD5 ${ARKOSG_MD5}
             FILENAME arkosg-${ARKOSG_MD5}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
@@ -215,7 +216,7 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKHANGAR_FOUND)
         ExternalProjectWithFilename_Add(arkhangar
-            URL https://github.com/arktools/arkhangar/tarball/${ARKHANGAR_REQUIRED_VERSION}
+            URL http://nodeload.github.com/arktools/arkhangar/tarball/${ARKHANGAR_REQUIRED_VERSION}
             URL_MD5 ${ARKHANGAR_MD5} 
             FILENAME arkhangar-${ARKHANGAR_MD5}.tar.gz 
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
@@ -226,7 +227,7 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKMATH_FOUND)
         ExternalProjectWithFilename_Add(arkmath
-            URL https://github.com/arktools/arkmath/tarball/${ARKMATH_REQUIRED_VERSION}
+            URL http://nodeload.github.com/arktools/arkmath/tarball/${ARKMATH_REQUIRED_VERSION}
             URL_MD5 ${ARKMATH_MD5}
             FILENAME arkmath-${ARKMATH_MD5}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_LAPACK=${WITH_LAPACK}"
@@ -237,7 +238,7 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKCOMM_FOUND)
         ExternalProjectWithFilename_Add(arkcomm
-            URL https://github.com/arktools/arkcomm/tarball/${ARKCOMM_REQUIRED_VERSION}
+            URL http://nodeload.github.com/arktools/arkcomm/tarball/${ARKCOMM_REQUIRED_VERSION}
             URL_MD5 ${ARKCOMM_MD5}
             FILENAME arkcomm-${ARKCOMM_MD5}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
