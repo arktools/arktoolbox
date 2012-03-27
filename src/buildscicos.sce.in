@@ -6,7 +6,7 @@ jsbsimDataPath=arkscicosDataPath+"jsbsim/"
 arkhangarDataPath=arkscicosDataPath+"arkhangar/"
 
 blocks=[@ARKSCICOS_BLOCKS_STRING@]';
-link([pwd()+'/libarkscicos@CMAKE_SHARED_LIBRARY_SUFFIX@'],blocks,'c');
+link([pwd()+'/libarkscicos@CMAKE_MODULE_SUFFIX@'],blocks,'c');
 
 create_palette('arkscicos');
 add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');

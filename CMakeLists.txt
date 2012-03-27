@@ -22,12 +22,12 @@ set(OPENSCENEGRAPH_REQUIRED_VERSION     2.8.3)
 set(BOOST_REQUIRED_VERSION              1.42.0) 
 set(SIMGEAR_REQUIRED_VERSION            2.7.0) 
 
-# md5 check sums
+# tags
 set(ARKOSG_TAG      0722940bc9626096c81630fcca354cd6638745c7)
 set(ARKCOMM_TAG     55937395c2589c8ba151374239ed1bff0805575a)
 set(ARKMATH_TAG     bb0e623831246664358c916ded7a8ec6165bd805)
 set(ARKHANGAR_TAG   4a0633892be6f9993d2dfe86b969c9ab93ebc87e)
-set(JSBSIM_TAG      4ef3b736e6d1f97e2295319712956972effb3595)
+set(JSBSIM_TAG      16428a9d1a99cd206c332a45e7d42c05588da18b)
 set(SIMGEAR_TAG     43ab2b6ecb31fb6ca72f3cfdb4395b352a95e365)
 
 # options
@@ -82,6 +82,15 @@ if(NOT EP_BASE_DIR)
 endif()
 set_property(DIRECTORY PROPERTY EP_BASE ${EP_BASE_DIR})
 set(EP_INSTALL_DIR "${EP_BASE_DIR}/Install")
+
+# prefer opt local directory for libs on apple
+if(APPLE)
+    list(APPEND CMAKE_FIND_ROOT_PATH "/opt/local/include")
+    set(CMAKE_MODULE_SUFFIX ".so")
+else()
+    set(CMAKE_MODULE_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+endif()
+
 list(APPEND CMAKE_FIND_ROOT_PATH ${EP_INSTALL_DIR})
 
 # warnings
@@ -175,13 +184,14 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
         -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
         -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
         -DWITH_BUILD_DEPS=${WITH_BUILD_DEPS}
+        -DCMAKE_FIND_ROOT=${CMAKE_FIND_ROOT}
         )
 
     if (NOT SIMGEAR_FOUND)
         ExternalProjectWithFilename_Add(simgear
             URL http://gitorious.org/fg/jgopperts-simgear/archive-tarball/${SIMGEAR_TAG}
             FILENAME jgoppert-jgopperts-simgear-mingw-fix.tar.gz
-            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DSIMGEAR_HEADLESS=ON -DENABLE_TESTS=OFF"
+            CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DSIMGEAR_HEADLESS=ON" "-DENABLE_TESTS=OFF"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${E_INSTALL_DIR}
             TIMEOUT 100
@@ -270,6 +280,11 @@ if(MINGW)
     add_definitions(-D_WIN32_WINNT=0x0501)
     list(APPEND ARKSCICOS_LIBRARIES 
         ${SCICOSLAB_LIBRARIES})
+elseif(APPLE)
+    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+    set(CMAKE_EXE_LINKER_FLAGS "-framework cocoa -framework carbon")
+    set(CMAKE_SHARED_LINKER_FLAGS "-framework cocoa -framework carbon")
+    set(CMAKE_MODULE_LINKER_FLAGS "-framework cocoa -framework carbon -undefined suppress -flat_namespace")
 endif()
 
 include_directories( ${CMAKE_SOURCE_DIR}/src 
@@ -380,17 +395,12 @@ foreach(BLOCK ${ARKSCICOS_BLOCKS})
     endif()
 endforeach()
 
-# flags for plugin, allows undefined symbols on mac/ linux
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-flat_namespace,-undefined,suppress")
-set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -lpthread -Wl,-flat_namespace,-undefined,suppress")
-
 add_library(arkscicos MODULE ${ARKSCICOS_SRCS})
 add_dependencies(arkscicos arkcomm arkmath arkhangar arkosg jsbsim)
 target_link_libraries(arkscicos ${ARKSCICOS_LIBRARIES})
 set_target_properties(arkscicos PROPERTIES
     SOVERSION ${LIBRARY_SOVERSION}
-    VERSION ${LIBRARY_VERSION}
+    #VERSION ${LIBRARY_VERSION}
     )
 set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
 
@@ -422,20 +432,26 @@ glob_copy_tracked(TARGET "jsbsimData" RECURSE
     GLOB_ARGS "${JSBSIM_DATADIR}/jsbsim/*"
     DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
 
+set(TOOLBOX_DEPS
+    arkscicos
+    toolboxSrcs
+    ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce
+    ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce
+    arkosgData arkmathData arkhangarData jsbsimData
+    )
+
+if (APPLE)
+    message(STATUS "apple scicoslab command-line does not function, please run builde.sce using the ScicosLab app before packaging with cmake")
+else()
+    list(APPEND TOOLBOX_DEPS  "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf")
+endif()
+
 add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
         ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
     COMMAND "${CMAKE_COMMAND}" -E touch "toolbox-stamp"
     )
-add_custom_target(toolbox ALL 
-    DEPENDS
-        arkscicos
-        toolboxSrcs
-        ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce
-        ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce
-        arkosgData arkmathData arkhangarData jsbsimData
-        "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
-    )
+add_custom_target(toolbox ALL DEPENDS ${TOOLBOX_DEPS})
 
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
 configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce)

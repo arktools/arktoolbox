@@ -23,7 +23,13 @@
 
 USE_OSGPLUGIN(ac);
 USE_OSGPLUGIN(rgb);
-USE_GRAPHICSWINDOW();
+
+#if defined(__APPLE__) 
+    USE_GRAPICSWINDOW_IMPLEMENTATION(Cocoa) 
+#else 
+    USE_GRAPHICSWINDOW() 
+#endif 
+
 #endif
 
 // vim:ts=4:sw=4
