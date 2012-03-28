@@ -42,6 +42,19 @@ function [x,y,typ]=jsbsimComm(job,arg1,arg2)
 //  [3] Elevator
 //  [4] Rudder
 //
+// Options: 
+//
+//  enable flightgear comm:
+//
+//      0: will be turned off
+//      1: will broadcast udp messages to the host and port name given 
+//
+//      If using flightgear, this will required the following command-line options
+//      --fdm=external --native-fdm=socket,in,10,,6001,udp
+// 
+//      Here 6001 is the default udp port used for the jsbsimcomm block, but you may
+//      subsitute another port number.
+//
 // AUTHOR:
 //
 // Copyright (C) James Goppert 2010 <jgoppert@users.sourceforge.net>
