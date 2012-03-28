@@ -1,3 +1,8 @@
+Documentation on the Web
+===============================================================
+https://github.com/arktools/arkscicos/wiki
+
+
 Building
 ===============================================================
 
@@ -23,7 +28,3 @@ WITH_BUILD_DEPS: enables automatic dependency building
     If you are using the feature it will attempt to download and
     build missing projects from source. If it fails to find a project
     after downloading it, try typing make again.
-
-Documentation on the Web
-===============================================================
-https://github.com/arktools/arkscicos
