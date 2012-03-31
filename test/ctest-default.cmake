@@ -1,5 +1,5 @@
 ## The directory to run ctest in.
-set(CTEST_DIRECTORY "$ENV{HOME}/workspace/tmp/dashboards/${CTEST_PROJECT_NAME}")
+set(CTEST_DIRECTORY "$ENV{HOME}/workspace/tmp/dashboards/arkscicos")
 
 ## The hostname of the machine
 set(CTEST_SITE "arktools.github.com")
