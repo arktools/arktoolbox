@@ -36,6 +36,7 @@ option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." ON)
 option(WITH_LAPACK "Use lapack libraries." OFF)
 option(WITH_WARNINGS "Enable warnings." OFF)
+option(WITH_TESTING "Enable testing." OFF)
 
 # options to cmake
 # when building dependencies
@@ -75,6 +76,8 @@ include(CheckLibraryExists)
 #include(CheckCSourceCompiles)
 include(ExternalProjectWithFilename)
 include(GlobCopyTracked)
+enable_testing()
+include(CTest)
 
 # external projects find path
 if(NOT EP_BASE_DIR)
@@ -268,6 +271,14 @@ endif()
 configure_file(src/config.h.in src/config.h)
 
 # build settings
+if(UNIX)
+    set(PROFILING_FLAGS "-fprofile-arcs -ftest-coverage")
+    set(CMAKE_C_FLAGS_PROFILING "${CMAKE_C_FLAGS_DEBUG} ${PROFILING_FLAGS}" CACHE STRING "Profiling Compiler Flags")
+    set(CMAKE_CXX_FLAGS_PROFILING "${CMAKE_CXX_FLAGS_DEBUG} ${PROFILING_FLAGS}" CACHE STRING "Profiling Compiler Flags")
+    set(CMAKE_SHARED_LINKER_FLAGS_PROFILING "${PROFILING_FLAGS}" CACHE STRING "Profiling Linker Flags")
+    set(CMAKE_MODULE_LINKER_FLAGS_PROFILING "${PROFILING_FLAGS}" CACHE STRING "Profiling Linker Flags")
+    set(CMAKE_EXEC_LINKER_FLAGS_PROFILING "${PROFILING_FLAGS}" CACHE STRING "Profiling Linker Flags")
+endif()
 add_definitions(-DBOOST_FILESYSTEM_VERSION=2)
 set(ARKSCICOS_LIBRARIES ${SIMGEAR_LIBRARIES})
 if(WITH_PREFER_STATIC OR MINGW)
