@@ -21,6 +21,7 @@ set(SCICOSLAB_REQUIRED_VERSION          4.4.1)
 set(OPENSCENEGRAPH_REQUIRED_VERSION     2.8.3) 
 set(BOOST_REQUIRED_VERSION              1.42.0) 
 set(SIMGEAR_REQUIRED_VERSION            2.7.0) 
+set(PLIB_REQUIRED_VERSION               1.8.5) 
 
 # tags
 set(ARKOSG_TAG      0722940bc9626096c81630fcca354cd6638745c7)
@@ -30,10 +31,14 @@ set(ARKHANGAR_TAG   4a0633892be6f9993d2dfe86b969c9ab93ebc87e)
 set(JSBSIM_TAG      16428a9d1a99cd206c332a45e7d42c05588da18b)
 set(SIMGEAR_TAG     43ab2b6ecb31fb6ca72f3cfdb4395b352a95e365)
 
+# md5 check sums
+set(PLIB_MD5        47a6fbf63668c1eed631024038b2ea90)
+
 # options
 option(WITH_BUILD_DEPS "Build dependencies." OFF)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." ON)
+option(WITH_JOYSTICK "Build joystick support." ON)
 option(WITH_LAPACK "Use lapack libraries." OFF)
 option(WITH_WARNINGS "Enable warnings." OFF)
 option(WITH_TESTING "Enable testing." OFF)
@@ -44,8 +49,10 @@ set(RECURSE_OPTIONS_LIST
     WITH_BUILD_DEPS
     WITH_PREFER_STATIC
     WITH_ARKOSG
+    WITH_JOYSTICK
     WITH_LAPACK
     WITH_WARNINGS
+    WITH_TESTING
     CMAKE_TOOLCHAIN_FILE
     CMAKE_INSTALL_PREFIX
     EP_BASE_DIR
@@ -176,6 +183,9 @@ find_package(ArkMath ${ARKMATH_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD})
 find_package(ArkHangar ${ARKHANGAR_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD})
 find_package(JSBSim ${JSBSIM_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD})
 find_package(SimGear ${SIMGEAR_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD} COMPONENTS io props xml structure misc debug magvar)
+if (WITH_JOYSTICK)
+    find_package(PLIB ${PLIB_REQUIRED_VERSION} ${REQUIRED_IF_ROOT_THREAD} COMPONENTS js ul)
+endif()
 
 # build dependencies
 if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
@@ -257,6 +267,24 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
         endif()
     endif()
 
+    if (WITH_JOYSTICK AND (NOT PLIB_FOUND))
+        if (MINGW)
+            set(PLIB_CROSS_CONFIG "--host=i686-pc-mingw32" "--build=i386-linux" "--prefix=${CMAKE_INSTALL_PREFIX}")
+        else()
+            set(PLIB_CROSS_CONFIG "--prefix=${CMAKE_INSTALL_PREFIX}")
+        endif()
+        ExternalProjectWithFilename_Add(plib
+            URL http://plib.sourceforge.net/dist/plib-${PLIB_REQUIRED_VERSION}.tar.gz
+            FILENAME plib-${PLIB_MD5}.tar.gz
+            URL_MD5 ${PLIB_MD5}
+            CONFIGURE_COMMAND ./configure ${PLIB_CROSS_CONFIG}
+            BUILD_COMMAND ${CMAKE_MAKE_COMMAND}
+            INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
+            INSTALL_DIR ${EP_INSTALL_DIR}
+            BUILD_IN_SOURCE 1
+           )
+    endif()
+
     # terminate non root cmake thread
     return()
 endif()
@@ -306,6 +334,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/src
     ${ARKCOMM_INCLUDE_DIRS}
     ${ARKMATH_INCLUDE_DIRS}
     ${ARKOSG_INCLUDE_DIRS}
+    ${PLIB_INCLUDE_DIRS}
     )
 
 # scicoslab plugin
@@ -331,8 +360,11 @@ endif()
 if(Boost_FOUND)
     list(APPEND ARKSCICOS_LIBRARIES ${Boost_LIBRARIES})
 endif()
+if(PLIB_FOUND)
+    list(APPEND ARKSCICOS_LIBRARIES ${PLIB_LIBRARIES})
+endif()
 if(MINGW)
-    list(APPEND ARKSCICOS_LIBRARIES wsock32)
+    list(APPEND ARKSCICOS_LIBRARIES winmm wsock32)
 endif()
 
 set(ARKSCICOS_SRCS
@@ -343,7 +375,17 @@ set(ARKSCICOS_SRCS
     src/utilities.cpp
     )
 
-    # mavlink blocks
+# joystick
+if(WITH_JOYSTICK)
+    list(APPEND ARKSCICOS_SRCS
+        src/jsinput.cxx
+        src/jssuper.cxx
+        src/jsinput.h
+        src/jssuper.h
+    )
+endif()
+
+# mavlink blocks
 list(APPEND ARKSCICOS_BLOCKS
     mavlinkHilSensor
     mavlinkHilState
