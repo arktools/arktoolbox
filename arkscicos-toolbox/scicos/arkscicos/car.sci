@@ -28,7 +28,7 @@ function [x,y,typ]=car(job,arg1,arg2)
 // You should have received a copy of the GNU General Public License along
 // with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-mode(-1)
+mode(-1);
 x=[];y=[];typ=[];
 select job
 	case 'plot' then
@@ -39,21 +39,22 @@ select job
 	 	[x,y,typ]=standard_outputs(arg1)
 	case 'getorigin' then
 	 	[x,y]=standard_origin(arg1)
-	case 'set' then
+    case 'set' then
 		x=arg1;
 		graphics=arg1.graphics;exprs=graphics.exprs
 		model=arg1.model;
         while %t do
             labels=[..
-                'car model'];
-            [ok,ModelPath,exprs]=..
-                getvalue('Set Car Parameters',labels,..
-                list('str',-1),exprs);
+                'car model';'ground texture'];
+            [ok,ModelPath,TexturePath,exprs]=..
+                getvalue('Set Quad Parameters',labels,..
+                list('str',-1,'str',-1),exprs);
             if ~ok then break,end
             [model,graphics,ok]=check_io(model,graphics,6,[],1,[])
             if ok then
                 model.ipar=[..
-                    length(evstr(ModelPath)),ascii(evstr(ModelPath)),0];
+                    length(evstr(ModelPath)),ascii(evstr(ModelPath)),0,..
+                    length(evstr(TexturePath)),ascii(evstr(TexturePath)),0];
                 graphics.exprs=exprs;
                 x.graphics=graphics;
                 x.model=model;
@@ -72,8 +73,10 @@ select job
 
 		// jsbsim parameters
         ModelPath="arkscicosPath+""/data/arkosg/models/rcTruck.ac""";
+        TexturePath="arkscicosPath+""/data/arkosg/images/lz.rgb""";
         model.ipar=[..
-                    length(evstr(ModelPath)),ascii(evstr(ModelPath)),0];
+                    length(evstr(ModelPath)),ascii(evstr(ModelPath)),0,..
+                    length(evstr(TexturePath)),ascii(evstr(TexturePath)),0];
 		
 		// intial state
 
@@ -81,7 +84,8 @@ select job
 
 		// initialize strings for gui
         exprs=[
-            strcat(ModelPath)];
+            strcat(ModelPath),..
+            strcat(TexturePath)];
 
         //setup icon
         gr_i=['xstringb(orig(1),orig(2),..

@@ -33,9 +33,10 @@ class VisCar : public Viewer
 public:
 
     Car * car;
-    VisCar(char* model) : car(new Car(std::string(model)))
+    VisCar(char* model, char * texture) : car(new Car(std::string(model)))
     {
         osg::Group * root = new Frame(1,"N","E","D");
+        root->addChild(new Terrain(std::string(texture),osg::Vec3(10,10,0)));
         if (car) root->addChild(car);
         getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
                                                 osg::Vec3(0,0,0),osg::Vec3(0,0,-1));
@@ -65,15 +66,16 @@ extern "C"
         int * ipar=block->ipar;
         char ** stringArray;
         int * intArray;
-        getIpars(1,0,ipar,&stringArray,&intArray);
+        getIpars(2,0,ipar,&stringArray,&intArray);
         char * model = stringArray[0];
+        char * texture = stringArray[1];
 
         // handle flags
         if (flag==scicos::initialize)
         {
             try
             {
-                vis = new VisCar(model);
+                vis = new VisCar(model,texture);
             }
             catch (const std::runtime_error & e)
             {

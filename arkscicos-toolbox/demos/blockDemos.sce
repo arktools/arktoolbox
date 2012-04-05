@@ -13,6 +13,7 @@ n=x_choose([
 'Sailboat Autopilot';
 'Digtal PID Controller w/ Low Pass Filter';
 'Digtal PID Controller w/ Derivative Feedback';
+'Joystick Demo';
 ],'arkscicos demos');
 if (n==1)
 	scicos(arkscicosPath+'demos/block/JSBSimBackside.cos');
@@ -42,6 +43,8 @@ elseif (n==13)
 	scicos(arkscicosPath+'demos/block/PidDLP.cos');
 elseif (n==14)
 	scicos(arkscicosPath+'demos/block/PidDFB.cos');
+elseif (n==15)
+	scicos(arkscicosPath+'demos/block/joystick.cos');
 else
 	disp('unknown demo');
 end

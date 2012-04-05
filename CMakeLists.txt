@@ -383,6 +383,9 @@ if(WITH_JOYSTICK)
         src/jsinput.h
         src/jssuper.h
     )
+list(APPEND ARKSCICOS_BLOCKS
+    joystick
+    )
 endif()
 
 # mavlink blocks
@@ -496,13 +499,14 @@ set(TOOLBOX_DEPS
 if (APPLE)
     message(STATUS "apple scicoslab command-line does not function, please run builde.sce using the ScicosLab app before packaging with cmake")
 else()
-    list(APPEND TOOLBOX_DEPS  "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf")
+    list(APPEND TOOLBOX_DEPS "toolbox-build-stamp")
 endif()
 
-add_custom_command(OUTPUT "arkscicos-toolbox/scicos/arkscicos/arkscicos.cosf"
+add_custom_command(OUTPUT "toolbox-build-stamp"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
         ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
-    COMMAND "${CMAKE_COMMAND}" -E touch "toolbox-stamp"
+    COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
+    DEPENDS arkscicos
     )
 add_custom_target(toolbox ALL DEPENDS ${TOOLBOX_DEPS})
 
@@ -521,6 +525,14 @@ install(DIRECTORY "${PROJECT_BINARY_DIR}/arkscicos-toolbox"
     PATTERN "*.git*" EXCLUDE
     PATTERN "*.cvs*" EXCLUDE
     )
+
+# tests
+if (WITH_TESTING)
+    if (WITH_JOYSTICK)
+        add_executable(joystick src/js_demo.cxx)
+        target_link_libraries(joystick ${PLIB_LIBRARIES})
+    endif()
+endif()
 
 # packaging
 if (WIN32)
