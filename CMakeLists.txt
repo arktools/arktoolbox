@@ -3,7 +3,7 @@ project (arkscicos C CXX)
 # Requried cmake version
 cmake_minimum_required (VERSION 2.8)
 set(PROJECT_VERSION_MAJOR "0")
-set(PROJECT_VERSION_MINOR "8")
+set(PROJECT_VERSION_MINOR "9")
 set(PROJECT_VERSION_PATCH "0")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 set(PROJECT_CONTACT_EMAIL james.goppert@gmail.com)
