@@ -33,7 +33,7 @@
 
 class Joystick {
 public:
-    Joystick(int portNumber) : _joystick(NULL), _portNumber(0) {
+    Joystick(int portNumber) : _joystick(NULL), _portNumber(0), _enabled(false) {
 
         // set the port number
         setPortNumber(portNumber);
@@ -46,11 +46,16 @@ public:
 
         // allocate joystick
         _joystick = new jsJoystick(getPortNumber());
+        _enabled = true;
 
-        // check joystick is functional
+        // check if joystick is functional
         checkJoystick();
     }
     void read(double * y) {
+
+        // return if joystick not enabled
+        if (!getEnabled()) return;
+
         // check joystick is functional
         checkJoystick();
 
@@ -68,8 +73,12 @@ public:
     int getPortNumber() {
         return _portNumber;
     }
+    bool getEnabled() {
+        return _enabled;
+    }
 private:
     static bool _jsInitialized;
+    bool _enabled;;
     jsJoystick * _joystick;
     int _portNumber;
     void checkJoystick() {
@@ -77,11 +86,14 @@ private:
         // check joystick is functional
         if (!_joystick) {
             sprintf(message,"failed to allocate joystick #%i",_portNumber);
+            _enabled = false;
             throw std::runtime_error(message);
             return;
         } else if(_joystick->notWorking()) {
             sprintf(message,"unable to connect to joystick #%i",_portNumber);
-            throw std::runtime_error(message);
+            _enabled = false;
+            std::cout << message << std::endl;
+            // this is not an error, so diagrams w/o joystick can still run
             return;
         }
     }

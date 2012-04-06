@@ -60,7 +60,10 @@ extern "C"
     void sci_car(scicos_block *block, scicos::enumScicosFlags flag)
     {
         // definitions
-        double *u=(double*)GetInPortPtrs(block,1);
+        double *u1=(double*)GetInPortPtrs(block,1);
+        double *u2=(double*)GetInPortPtrs(block,2);
+        double *u3=(double*)GetInPortPtrs(block,3);
+
         void ** work =  GetPtrWorkPtrs(block);
         VisCar * vis = NULL;
         int * ipar=block->ipar;
@@ -100,8 +103,9 @@ extern "C"
             if (vis)
             {
                 vis->lock();
-                vis->car->setEuler(u[0],u[1],u[2]);
-                vis->car->setU(u[3],u[4],u[5]);
+                vis->car->setEuler(u1[0],u1[1],u1[2]);
+                vis->car->setPositionScalars(u2[0],u2[1],u2[2]);
+                vis->car->setU(u3[0],u3[1]);
                 vis->unlock();
             }
         }

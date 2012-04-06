@@ -4,14 +4,19 @@ function [x,y,typ]=car(job,arg1,arg2)
 //
 // USAGE:
 //
-// input 1:
-//  [1]  roll
-//  [2]  pitch
-//  [3]  yaw
-//  [4]  throttle
-//  [5]  steering
-//  [6]  velocity
+// u1:
+// 	1: roll (rad)
+// 	2: pitch (rad)
+// 	3: yaw( rad)
 //
+// u2:
+// 	1: xN (distance)
+// 	2: xE (distance)
+// 	3: xD (distance)
+//
+// u3:
+// 	1: Throttle (0 -> 1)
+// 	2: Steering (-1 -> 1) 
 //
 // Copyright (C) James Goppert 2010 <jgoppert@users.sourceforge.net>
 //
@@ -50,7 +55,7 @@ select job
                 getvalue('Set Quad Parameters',labels,..
                 list('str',-1,'str',-1),exprs);
             if ~ok then break,end
-            [model,graphics,ok]=check_io(model,graphics,6,[],1,[])
+            [model,graphics,ok]=check_io(model,graphics,[3;3;2],[],1,[])
             if ok then
                 model.ipar=[..
                     length(evstr(ModelPath)),ascii(evstr(ModelPath)),0,..
@@ -66,7 +71,7 @@ select job
 		// set model properties
 	  	model=scicos_model()
 	  	model.sim=list('sci_car',4)
-		model.in=6
+		model.in=[3;3;2];
 		model.evtin=1
 	  	model.blocktype='c'
 	  	model.dep_ut=[%t %f]
