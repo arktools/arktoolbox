@@ -25,17 +25,17 @@ set(PLIB_REQUIRED_VERSION               1.8.5)
 
 # tags
 set(ARKOSG_TAG      e31f22c0b8584f7d0fd01405a68560049f94dfe2)
-set(ARKCOMM_TAG     2ce68cd2fef4fb10a58a495fdf1795fa9f72cd53)
-set(ARKMATH_TAG     671d03bfce36d3333e145acaed96bb9a28387e42)
+set(ARKCOMM_TAG     877f135c3bf1b76215c7f3426d1e1df964e9ad9e)
+set(ARKMATH_TAG     445935e60aeaa3dd97df085a8907f464e77ed47c)
 set(ARKHANGAR_TAG   4a0633892be6f9993d2dfe86b969c9ab93ebc87e)
-set(JSBSIM_TAG      16428a9d1a99cd206c332a45e7d42c05588da18b)
-set(SIMGEAR_TAG     43ab2b6ecb31fb6ca72f3cfdb4395b352a95e365)
+set(JSBSIM_TAG      8169e81cd66f5252eea082042d5991cd6f01a0bc)
+set(SIMGEAR_TAG     9ab31e0d88ef2a09f6a8dd33837ba547366151fa)
 
 # md5 check sums
 set(PLIB_MD5        47a6fbf63668c1eed631024038b2ea90)
 
 # options
-option(WITH_BUILD_DEPS "Build dependencies." OFF)
+option(WITH_BUILD_DEPS "Build dependencies." ON)
 option(WITH_PREFER_STATIC "Build preferring static linking." ON)
 option(WITH_ARKOSG "Build arkosg graphics." ON)
 option(WITH_JOYSTICK "Build joystick support." ON)
