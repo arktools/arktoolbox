@@ -351,6 +351,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/src
     ${ARKMATH_INCLUDE_DIRS}
     ${ARKOSG_INCLUDE_DIRS}
     ${PLIB_INCLUDE_DIRS}
+    ${OPENSCENEGRAPH_INCLUDE_DIRS}
     )
 
 # scicoslab plugin
