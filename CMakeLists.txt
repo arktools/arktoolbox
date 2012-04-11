@@ -28,7 +28,7 @@ set(ARKOSG_TAG      e31f22c0b8584f7d0fd01405a68560049f94dfe2)
 set(ARKCOMM_TAG     877f135c3bf1b76215c7f3426d1e1df964e9ad9e)
 set(ARKMATH_TAG     445935e60aeaa3dd97df085a8907f464e77ed47c)
 set(ARKHANGAR_TAG   4a0633892be6f9993d2dfe86b969c9ab93ebc87e)
-set(JSBSIM_TAG      8169e81cd66f5252eea082042d5991cd6f01a0bc)
+set(JSBSIM_TAG      3cd13dd303f5c0be3511762841cdb9e67e6d26ea)
 set(SIMGEAR_TAG     9ab31e0d88ef2a09f6a8dd33837ba547366151fa)
 
 # md5 check sums
@@ -408,7 +408,6 @@ endif()
 list(APPEND ARKSCICOS_BLOCKS
     mavlinkHilSensor
     mavlinkHilState
-    mavlinkHilTracker
     )
 
 # general blocks

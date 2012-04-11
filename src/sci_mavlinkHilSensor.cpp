@@ -77,6 +77,7 @@
 
 // mavlink system definition and headers
 #include <arkcomm/AsyncSerial.hpp>
+#include <mavlink/v1.0/mavlink_types.h>
 #include <mavlink/v1.0/common/mavlink.h>
 
 class MAVLinkHilSensor {
@@ -87,7 +88,6 @@ private:
     
     mavlink_system_t _system;
     mavlink_status_t _status;
-    boost::timer _clock;
     BufferedAsyncSerial * _comm;
     static const double _rad2deg = 180.0/3.14159;
     static const double _g0 = 9.81;
@@ -104,7 +104,7 @@ private:
 public:
     MAVLinkHilSensor(const uint8_t sysid, const uint8_t compid, const MAV_TYPE type,
             const std::string & device, const uint32_t baudRate) : 
-        _system(), _status(), _clock(), _comm() {
+        _system(), _status(), _comm() {
           
         // system
         _system.sysid = sysid;
@@ -131,7 +131,7 @@ public:
         }
     }
     
-    void sendImu(double *u) {
+    void sendImu(double *u, uint64_t timeStamp) {
         // accelerometer in milli g's
         int16_t ax = u[0]*1000/9.81;
         int16_t ay = u[1]*1000/9.81;
@@ -147,21 +147,28 @@ public:
         int16_t my = u[7]*1000;
         int16_t mz = u[8]*1000;
 
-        mavlink_msg_raw_imu_send(chan,timeStamp,ax,ay,az,gx,gy,gz,mx,my,mz);
+        mavlink_message_t msg;
+        mavlink_msg_raw_imu_pack(_system.sysid,_system.compid,&msg,
+                timeStamp,ax,ay,az,gx,gy,gz,mx,my,mz);
+        _sendMessage(msg);
     }
 
-    void sendGps(double *u) {
+    void sendGps(double *u, uint64_t timeStamp) {
         // gps
-        double cog = u[9];
-        double sog = u[10];
-        double lat = u[11]*rad2deg;
-        double lon = u[12]*rad2deg;
-        double alt = u[13];
+        uint8_t fixType = 3; // 3d fix
+        uint16_t cog = u[9]*100;
+        uint16_t sog = u[10]*100;
+        int32_t lat = u[11]*_rad2deg*1e7;
+        int32_t lon = u[12]*_rad2deg*1e7;
+        int32_t alt = u[13]*1e3;
+        uint16_t eph = 1.0*1e2; // horiz prec unknown
+        uint16_t epv = 1.0*1e2; // vert prec unknown
+        uint8_t satVisible = 6; // 3d fix
 
-        //double rawPress = 1;
-        //double airspeed = 1;
-
-        mavlink_msg_gps_raw_send(chan,timeStamp,1,lat,lon,alt,2,10,sog,cog);
+        mavlink_message_t msg;
+        mavlink_msg_gps_raw_int_pack(_system.sysid,_system.compid,&msg,
+                timeStamp,fixType,lat,lon,alt,eph,epv,sog,cog,satVisible);
+        _sendMessage(msg);
     }
 
     void receive(double * y) {
@@ -193,30 +200,6 @@ public:
                         y[7] = rc_channels.chan8_scaled/10000.0f;
                         break;
                     }
-                    case MAVLINK_MSG_ID_GLOBAL_POSITION:
-                    {
-                        mavlink_global_position_t global_position;
-                        mavlink_msg_global_position_decode(&msg,&global_position);
-                        y[8] = global_position.lat;
-                        y[9] = global_position.lon;
-                        y[10] = global_position.alt;
-                        y[11] = global_position.vx;
-                        y[12] = global_position.vy;
-                        y[13] = global_position.vz;
-                        break;
-                    }
-                    case MAVLINK_MSG_ID_ATTITUDE:
-                    {
-                        mavlink_attitude_t attitude;
-                        mavlink_msg_attitude_decode(&msg,&attitude);
-                        y[14] = attitude.roll;
-                        y[15] = attitude.pitch;
-                        y[16] = attitude.yaw;
-                        y[17] = attitude.rollspeed;
-                        y[18] = attitude.pitchspeed;
-                        y[19] = attitude.yawspeed;
-                        break;
-                    }
 
                     default:
                     {
@@ -236,8 +219,6 @@ extern "C"
 #include <math.h>
 #include "definitions.hpp"
 
-    static const double rad2deg = 180.0/3.14159;
-
     void sci_mavlinkHilSensor(scicos_block *block, scicos::enumScicosFlags flag)
     {
 
@@ -246,15 +227,19 @@ extern "C"
         double * y=GetRealOutPortPtrs(block,1);
         int * ipar=block->ipar;
         void ** work = GetPtrWorkPtrs(block);
+        int & evtFlag = GetNevIn(block);
         MAVLinkHilSensor * mavlink = NULL;
+
+        // compute flags
+        int evtFlagReceive = scicos::evtPortNumToFlag(0);
+        int evtFlagSendGps = scicos::evtPortNumToFlag(1);
+        int evtFlagSendImu = scicos::evtPortNumToFlag(2);
 
         static char * device;
         static int baudRate;
         static char ** stringArray;
         static int * intArray;
         static int count = 0;
-
-        static uint16_t packet_drops = 0;
 
         //handle flags
         if (flag==scicos::initialize)
@@ -287,10 +272,17 @@ extern "C"
         else if (flag==scicos::computeOutput)
         {
             mavlink = (MAVLinkHilSensor *)*work;
-            if (mavlink) 
-            {
-                mavlink->send(u);
-                mavlink->receive(y);
+            uint64_t t = get_scicos_time()*1e6;
+            if (mavlink) {
+                if (evtFlag & evtFlagSendImu) {
+                    mavlink->sendImu(u,t);
+                }
+                if (evtFlag & evtFlagSendGps) { 
+                    mavlink->sendGps(u,t);
+                }
+                if (evtFlag & evtFlagReceive) { 
+                    mavlink->receive(y);
+                }
             }
         } // compute output
     }

@@ -87,7 +87,6 @@ private:
     
     mavlink_system_t _system;
     mavlink_status_t _status;
-    boost::timer _clock;
     BufferedAsyncSerial * _comm;
     static const double _rad2deg = 180.0/3.14159;
     static const double _g0 = 9.81;
@@ -104,7 +103,7 @@ private:
 public:
     MAVLinkHilState(const uint8_t sysid, const uint8_t compid, const MAV_TYPE type,
             const std::string & device, const uint32_t baudRate) : 
-        _system(), _status(), _clock(), _comm() {
+        _system(), _status(), _comm() {
           
         // system
         _system.sysid = sysid;
@@ -131,9 +130,7 @@ public:
         }
     }
     
-    void send(double * u) {
-
-        double timeStamp = get_scicos_time();
+    void send(double * u, uint64_t timeStamp) {
 
         // attitude states (rad)
         float roll = u[0];
@@ -146,17 +143,17 @@ public:
         float yawRate = u[5];
 
         // position
-        int32_t lat = u[6]*rad2deg*1e7;
-        int32_t lon = u[7]*rad2deg*1e7;
+        int32_t lat = u[6]*_rad2deg*1e7;
+        int32_t lon = u[7]*_rad2deg*1e7;
         int16_t alt = u[8]*1e3;
 
         int16_t vx = u[9]*1e2;
         int16_t vy = u[10]*1e2;
         int16_t vz = u[11]*1e2;
 
-        int16_t xacc = u[12]*1e3/g0;
-        int16_t yacc = u[13]*1e3/g0;
-        int16_t zacc = u[14]*1e3/g0;
+        int16_t xacc = u[12]*1e3/_g0;
+        int16_t yacc = u[13]*1e3/_g0;
+        int16_t zacc = u[14]*1e3/_g0;
 
         mavlink_message_t msg;
         mavlink_msg_hil_state_pack(_system.sysid, _system.compid, &msg, 
@@ -236,8 +233,6 @@ extern "C"
 #include <math.h>
 #include "definitions.hpp"
 
-    static const double rad2deg = 180.0/3.14159;
-
     void sci_mavlinkHilState(scicos_block *block, scicos::enumScicosFlags flag)
     {
 
@@ -249,7 +244,8 @@ extern "C"
         int & evtFlag = GetNevIn(block);
 
         // compute flags
-        int evtFlagUpdate = scicos::evtPortNumToFlag(0);
+        int evtFlagReceive = scicos::evtPortNumToFlag(0);
+        int evtFlagSend = scicos::evtPortNumToFlag(1);
 
         MAVLinkHilState * mavlink = NULL;
 
@@ -264,7 +260,7 @@ extern "C"
         //handle flags
         if (flag==scicos::initialize)
         {
-            if (mavlink_comm_0_port == NULL)
+            if (mavlink == NULL)
             {
                 getIpars(1,1,ipar,&stringArray,&intArray);
                 device = stringArray[0];
@@ -292,10 +288,14 @@ extern "C"
         else if (flag==scicos::computeOutput)
         {
             mavlink = (MAVLinkHilState *)*work;
-            if (mavlink && (evtFlag & evtFlagUpdate)) 
-            {
-                mavlink->send(u);
-                mavlink->receive(y);
+            uint64_t t =  get_scicos_time()*1e6;
+            if (mavlink) {
+                if (evtFlag & evtFlagSend) { 
+                    mavlink->send(u,t);
+                }
+                if (evtFlag & evtFlagReceive) {
+                    mavlink->receive(y);
+                }
             }
         } // compute output
     }
