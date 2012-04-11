@@ -461,7 +461,7 @@ foreach(BLOCK ${ARKSCICOS_BLOCKS})
         src/sci_${BLOCK}.cpp
         )
     set(ARKSCICOS_BLOCKS_STRING "${ARKSCICOS_BLOCKS_STRING}'sci_${BLOCK}' ")
-    set(INTERFACE_FUNCTION_FILE "${CMAKE_SOURCE_DIR}/arkscicos-toolbox/scicos/arkscicos/${BLOCK}.sci")
+    set(INTERFACE_FUNCTION_FILE "${CMAKE_SOURCE_DIR}/scicos-toolbox/scicos/arkscicos/${BLOCK}.sci")
     if ( NOT EXISTS ${INTERFACE_FUNCTION_FILE} )
         message(FATAL_ERROR "block ${BLOCK} requires you to define an interface, please create : ${INTERFACE_FUNCTION_FILE}")
     endif()
@@ -479,7 +479,7 @@ set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
 # create toolbox
 glob_copy_tracked(TARGET "toolboxSrcs" RECURSE
     SRCDIR ${CMAKE_SOURCE_DIR}
-    GLOB_ARGS "${CMAKE_SOURCE_DIR}/arkscicos-toolbox/*"
+    GLOB_ARGS "${CMAKE_SOURCE_DIR}/scicos-toolbox/*"
     DESTDIR ${CMAKE_BINARY_DIR})
 
 if (WITH_ARKOSG)
