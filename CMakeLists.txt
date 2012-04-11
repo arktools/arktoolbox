@@ -537,7 +537,13 @@ if (WIN32)
 endif()
 install(DIRECTORY "${PROJECT_BINARY_DIR}/arktoolbox-scicos"
     DESTINATION ${ARKSCICOS_CONTRIB_DIR}
-    COMPONENT Runtime
+    COMPONENT scicos
+    PATTERN "*.git*" EXCLUDE
+    PATTERN "*.cvs*" EXCLUDE
+    )
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/arktoolbox-xcos"
+    DESTINATION ${ARKSCICOS_CONTRIB_DIR}
+    COMPONENT xcos
     PATTERN "*.git*" EXCLUDE
     PATTERN "*.cvs*" EXCLUDE
     )
