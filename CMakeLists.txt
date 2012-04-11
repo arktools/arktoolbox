@@ -268,16 +268,32 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
     endif()
 
     if (WITH_JOYSTICK AND (NOT PLIB_FOUND))
+        set(PLIB_CONFIG
+            "--prefix=${CMAKE_INSTALL_PREFIX}"
+            "--disable-fnt"
+            "--disable-pw"
+            "--disable-net"
+            "--disable-pw"
+            "--disable-pui"
+            "--disable-sg"
+            "--disable-psl"
+            "--disable-sl"
+            "--disable-ssgaux"
+            "--disable-ssg"
+            "--disable-puaux"
+            )
         if (MINGW)
-            set(PLIB_CROSS_CONFIG "--host=i686-pc-mingw32" "--build=i386-linux" "--prefix=${CMAKE_INSTALL_PREFIX}")
+            set(PLIB_CONFIG
+                "--host=i686-pc-mingw32"
+                "--build=i386-linux"
+                "--prefix=${CMAKE_INSTALL_PREFIX}")
         else()
-            set(PLIB_CROSS_CONFIG "--prefix=${CMAKE_INSTALL_PREFIX}")
         endif()
         ExternalProjectWithFilename_Add(plib
             URL http://plib.sourceforge.net/dist/plib-${PLIB_REQUIRED_VERSION}.tar.gz
             FILENAME plib-${PLIB_MD5}.tar.gz
             URL_MD5 ${PLIB_MD5}
-            CONFIGURE_COMMAND ./configure ${PLIB_CROSS_CONFIG}
+            CONFIGURE_COMMAND ./configure ${PLIB_CONFIG}
             BUILD_COMMAND ${CMAKE_MAKE_COMMAND}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
