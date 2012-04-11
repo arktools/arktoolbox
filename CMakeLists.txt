@@ -513,7 +513,7 @@ set(TOOLBOX_DEPS
     )
 
 if (APPLE)
-    message(STATUS "apple scicoslab command-line does not function, please run builde.sce using the ScicosLab app before packaging with cmake")
+    message(STATUS "apple scicoslab command-line does not function, please run builder.sce using the ScicosLab app before packaging with cmake")
 else()
     list(APPEND TOOLBOX_DEPS "toolbox-build-stamp")
 endif()
