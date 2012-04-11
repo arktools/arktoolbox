@@ -213,7 +213,7 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT JSBSIM_FOUND)
         ExternalProjectWithFilename_Add(jsbsim
-            URL http://nodeload.github.com/jgoppert/jsbsim/tarball/${JSBSIM_TAG}
+            URL http://nodeload.github.com/arktools/jsbsim/tarball/${JSBSIM_TAG}
             FILENAME jsbsim-${JSBSIM_TAG}.tar.gz
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
