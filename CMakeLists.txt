@@ -461,7 +461,7 @@ foreach(BLOCK ${ARKSCICOS_BLOCKS})
         src/sci_${BLOCK}.cpp
         )
     set(ARKSCICOS_BLOCKS_STRING "${ARKSCICOS_BLOCKS_STRING}'sci_${BLOCK}' ")
-    set(INTERFACE_FUNCTION_FILE "${CMAKE_SOURCE_DIR}/scicos-toolbox/scicos/arktoolbox/${BLOCK}.sci")
+    set(INTERFACE_FUNCTION_FILE "${CMAKE_SOURCE_DIR}/arktoolbox-scicos/scicos/arktoolbox/${BLOCK}.sci")
     if ( NOT EXISTS ${INTERFACE_FUNCTION_FILE} )
         message(FATAL_ERROR "block ${BLOCK} requires you to define an interface, please create : ${INTERFACE_FUNCTION_FILE}")
     endif()
@@ -474,41 +474,41 @@ set_target_properties(arktoolbox PROPERTIES
     SOVERSION ${LIBRARY_SOVERSION}
     #VERSION ${LIBRARY_VERSION}
     )
-set(LIBRARY_OUTPUT_PATH arktoolbox-toolbox/scicos)
+set(LIBRARY_OUTPUT_PATH arktoolbox-scicos/scicos)
 
 # create toolbox
 glob_copy_tracked(TARGET "toolboxSrcs" RECURSE
     SRCDIR ${CMAKE_SOURCE_DIR}
-    GLOB_ARGS "${CMAKE_SOURCE_DIR}/scicos-toolbox/*"
+    GLOB_ARGS "${CMAKE_SOURCE_DIR}/arktoolbox-scicos/*"
     DESTDIR ${CMAKE_BINARY_DIR})
 
 if (WITH_ARKOSG)
     glob_copy_tracked(TARGET "arkosgData" RECURSE
         SRCDIR ${ARKOSG_DATADIR}
         GLOB_ARGS "${ARKOSG_DATADIR}/arkosg/*"
-        DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/data)
+        DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-scicos/data)
 endif()
 
 glob_copy_tracked(TARGET "arkmathData" RECURSE
     SRCDIR ${ARKMATH_DATADIR}
     GLOB_ARGS "${ARKMATH_DATADIR}/arkmath/*"
-    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/data)
+    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-scicos/data)
 
 glob_copy_tracked(TARGET "arkhangarData" RECURSE
     SRCDIR ${ARKHANGAR_DATADIR}
     GLOB_ARGS "${ARKHANGAR_DATADIR}/arkhangar/*"
-    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/data)
+    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-scicos/data)
 
 glob_copy_tracked(TARGET "jsbsimData" RECURSE
     SRCDIR ${JSBSIM_DATADIR}
     GLOB_ARGS "${JSBSIM_DATADIR}/jsbsim/*"
-    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/data)
+    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-scicos/data)
 
 set(TOOLBOX_DEPS
     arktoolbox
     toolboxSrcs
-    ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/scicos/loadscicos.sce
-    ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/scicos/buildscicos.sce
+    ${CMAKE_BINARY_DIR}/arktoolbox-scicos/scicos/loadscicos.sce
+    ${CMAKE_BINARY_DIR}/arktoolbox-scicos/scicos/buildscicos.sce
     arkosgData arkmathData arkhangarData jsbsimData
     )
 
@@ -519,23 +519,23 @@ else()
 endif()
 
 add_custom_command(OUTPUT "toolbox-build-stamp"
-    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arktoolbox-toolbox" 
+    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arktoolbox-scicos" 
         ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
     COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
     DEPENDS arktoolbox
     )
 add_custom_target(toolbox ALL DEPENDS ${TOOLBOX_DEPS})
 
-configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/scicos/loadscicos.sce)
-configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/scicos/buildscicos.sce)
-configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/VERSION)
+configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arktoolbox-scicos/scicos/loadscicos.sce)
+configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arktoolbox-scicos/scicos/buildscicos.sce)
+configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arktoolbox-scicos/VERSION)
 
 # install
 set(ARKSCICOS_CONTRIB_DIR ${SCICOSLAB_CONTRIB_DIR})
 if (WIN32)
     set(ARKSCICOS_CONTRIB_DIR "/contrib")
 endif()
-install(DIRECTORY "${PROJECT_BINARY_DIR}/arktoolbox-toolbox"
+install(DIRECTORY "${PROJECT_BINARY_DIR}/arktoolbox-scicos"
     DESTINATION ${ARKSCICOS_CONTRIB_DIR}
     COMPONENT Runtime
     PATTERN "*.git*" EXCLUDE
