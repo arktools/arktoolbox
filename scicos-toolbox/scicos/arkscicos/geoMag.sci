@@ -84,7 +84,7 @@ select job
 		nTerms = 12;
 
         // strings
-        wmmDataPath="arkscicosPath+""/data/arkmath/data/WMM.COF""";
+        wmmDataPath="arktoolboxPath+""/data/arkmath/data/WMM.COF""";
 		
 		model.rpar=decYear;
 

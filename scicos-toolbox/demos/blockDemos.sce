@@ -14,37 +14,37 @@ n=x_choose([
 'Digtal PID Controller w/ Low Pass Filter';
 'Digtal PID Controller w/ Derivative Feedback';
 'Joystick Demo';
-],'arkscicos demos');
+],'arktoolbox demos');
 if (n==1)
-	scicos(arkscicosPath+'demos/block/JSBSimBackside.cos');
+	scicos(arktoolboxPath+'demos/block/JSBSimBackside.cos');
 elseif (n==2)
-	scicos(arkscicosPath+'demos/block/JSBSimTrim.cos');
+	scicos(arktoolboxPath+'demos/block/JSBSimTrim.cos');
 elseif (n==3)
-	scicos(arkscicosPath+'demos/block/JSBSimTrimF16.cos');
+	scicos(arktoolboxPath+'demos/block/JSBSimTrimF16.cos');
 elseif (n==4)
-	scicos(arkscicosPath+'demos/block/JSBSimMavLinkHilState.cos');
+	scicos(arktoolboxPath+'demos/block/JSBSimMavLinkHilState.cos');
 elseif (n==5)
-	scicos(arkscicosPath+'demos/block/JSBSimMavLinkHilSensor.cos');
+	scicos(arktoolboxPath+'demos/block/JSBSimMavLinkHilSensor.cos');
 elseif (n==6)
-	scicos(arkscicosPath+'demos/block/JSBSimBacksideNav.cos');
+	scicos(arktoolboxPath+'demos/block/JSBSimBacksideNav.cos');
 elseif (n==7)
-	scicos(arkscicosPath+'demos/block/UgvBackside.cos');
+	scicos(arktoolboxPath+'demos/block/UgvBackside.cos');
 elseif (n==8)
-	scicos(arkscicosPath+'demos/block/quadrotor.cos');
+	scicos(arktoolboxPath+'demos/block/quadrotor.cos');
 elseif (n==9)
-	scicos(arkscicosPath+'demos/block/UgvMavlinkHilSensor.cos');
+	scicos(arktoolboxPath+'demos/block/UgvMavlinkHilSensor.cos');
 elseif (n==10)
-	scicos(arkscicosPath+'demos/block/UgvMavlinkHilState.cos');
+	scicos(arktoolboxPath+'demos/block/UgvMavlinkHilState.cos');
 elseif (n==11)
-	scicos(arkscicosPath+'demos/block/quadrotorHil.cos');
+	scicos(arktoolboxPath+'demos/block/quadrotorHil.cos');
 elseif (n==12)
-	scicos(arkscicosPath+'demos/block/sailboat.cos');
+	scicos(arktoolboxPath+'demos/block/sailboat.cos');
 elseif (n==13)
-	scicos(arkscicosPath+'demos/block/PidDLP.cos');
+	scicos(arktoolboxPath+'demos/block/PidDLP.cos');
 elseif (n==14)
-	scicos(arkscicosPath+'demos/block/PidDFB.cos');
+	scicos(arktoolboxPath+'demos/block/PidDFB.cos');
 elseif (n==15)
-	scicos(arkscicosPath+'demos/block/joystick.cos');
+	scicos(arktoolboxPath+'demos/block/joystick.cos');
 else
 	disp('unknown demo');
 end

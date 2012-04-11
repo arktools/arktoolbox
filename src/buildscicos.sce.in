@@ -1,15 +1,15 @@
 mode(-1);
 lines(0);
 
-arkscicosDataPath=arkscicosPath+"data/"
-jsbsimDataPath=arkscicosDataPath+"jsbsim/"
-arkhangarDataPath=arkscicosDataPath+"arkhangar/"
+arktoolboxDataPath=arktoolboxPath+"data/"
+jsbsimDataPath=arktoolboxDataPath+"jsbsim/"
+arkhangarDataPath=arktoolboxDataPath+"arkhangar/"
 
 blocks=[@ARKSCICOS_BLOCKS_STRING@]';
-link([pwd()+'/libarkscicos@CMAKE_MODULE_SUFFIX@'],blocks,'c');
+link([pwd()+'/libarktoolbox@CMAKE_MODULE_SUFFIX@'],blocks,'c');
 
-create_palette('arkscicos');
-add_palette('arkscicos',pwd()+'/arkscicos/arkscicos.cosf');
-genlib('lib_arkscicos',pwd()+'/arkscicos');
+create_palette('arktoolbox');
+add_palette('arktoolbox',pwd()+'/arktoolbox/arktoolbox.cosf');
+genlib('lib_arktoolbox',pwd()+'/arktoolbox');
 
 clear blocks

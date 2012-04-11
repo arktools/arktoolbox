@@ -2,11 +2,11 @@ mode(-1);
 lines(0);
 
 origDir=pwd()
-arkscicosPath=get_absolute_file_path('loader.sce');
+arktoolboxPath=get_absolute_file_path('loader.sce');
 
-chdir(arkscicosPath);
+chdir(arktoolboxPath);
 
-mprintf('arkscicos version %s\n\n', stripblanks(read("VERSION",1,1,'(a)')) );
+mprintf('arktoolbox version %s\n\n', stripblanks(read("VERSION",1,1,'(a)')) );
 mprintf('Copyright (C) 2012 James Goppert\n\n')
 mprintf('This software is released under GNU General Public License version 3\n')
 mprintf('and comes with ABSOLUTELY NO WARRANTY. You are welcome to redistribute it \n')

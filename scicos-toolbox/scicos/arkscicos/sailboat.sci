@@ -77,8 +77,8 @@ select job
 	  	model.dep_ut=[%t %f]
 
 		// jsbsim parameters
-        ModelPath="arkscicosPath+""/data/arkosg/models/sailboat.ac""";
-        TexturePath="arkscicosPath+""/data/arkosg/images/ocean.rgb""";
+        ModelPath="arktoolboxPath+""/data/arkosg/models/sailboat.ac""";
+        TexturePath="arktoolboxPath+""/data/arkosg/images/ocean.rgb""";
         model.ipar=[..
                     length(evstr(ModelPath)),ascii(evstr(ModelPath)),0,..
                     length(evstr(TexturePath)),ascii(evstr(TexturePath)),0];

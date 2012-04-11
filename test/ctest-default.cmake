@@ -1,5 +1,5 @@
 ## The directory to run ctest in.
-set(CTEST_DIRECTORY "$ENV{HOME}/workspace/tmp/dashboards/arkscicos")
+set(CTEST_DIRECTORY "$ENV{HOME}/workspace/tmp/dashboards/arktoolbox")
 
 ## The hostname of the machine
 set(CTEST_SITE "arktools.github.com")
@@ -46,7 +46,7 @@ find_program(CTEST_COVERAGE_COMMAND NAMES gcov)
 find_program(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
 
 if(NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
-    set(CTEST_CHECKOUT_COMMAND "${CTEST_GIT_COMMAND} clone ${CTEST_GIT_BRANCH} git://github.com/arktools/arkscicos.git ${CTEST_SOURCE_DIRECTORY}")
+    set(CTEST_CHECKOUT_COMMAND "${CTEST_GIT_COMMAND} clone ${CTEST_GIT_BRANCH} git://github.com/arktools/arktoolbox.git ${CTEST_SOURCE_DIRECTORY}")
 endif()
 
 set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")

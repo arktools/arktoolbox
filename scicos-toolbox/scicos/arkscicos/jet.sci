@@ -72,7 +72,7 @@ select job
 	  	model.dep_ut=[%t %f]
 
 		// jsbsim parameters
-        ModelPath="arkscicosPath+""/data/arkosg/models/jet.ac""";
+        ModelPath="arktoolboxPath+""/data/arkosg/models/jet.ac""";
         model.ipar=[..
                     length(evstr(ModelPath)),ascii(evstr(ModelPath)),0];
 		

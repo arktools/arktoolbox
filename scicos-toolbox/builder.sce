@@ -3,7 +3,7 @@ lines(0);
 
 origDir=pwd();
 mainpathB=get_absolute_file_path('builder.sce');
-arkscicosPath=get_absolute_file_path('builder.sce');
+arktoolboxPath=get_absolute_file_path('builder.sce');
 
 chdir(mainpathB);
 

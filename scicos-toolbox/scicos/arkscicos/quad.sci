@@ -79,8 +79,8 @@ select job
 	  	model.dep_ut=[%t %f]
 
 		// jsbsim parameters
-        ModelPath="arkscicosPath+""/data/arkosg/models/arducopter.ac""";
-        TexturePath="arkscicosPath+""/data/arkosg/images/lz.rgb""";
+        ModelPath="arktoolboxPath+""/data/arkosg/models/arducopter.ac""";
+        TexturePath="arktoolboxPath+""/data/arkosg/images/lz.rgb""";
         model.ipar=[..
                     length(evstr(ModelPath)),ascii(evstr(ModelPath)),0,..
                     length(evstr(TexturePath)),ascii(evstr(TexturePath)),0];

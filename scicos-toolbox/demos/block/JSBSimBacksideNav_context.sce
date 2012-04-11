@@ -31,7 +31,7 @@ oBus = createIndex(['lat','lon','alt','spd','psi']);
 // --------------------------------------- INITIAL STATE  ------------------------------------------------------
 
 // load plane
-exec(arkscicosPath+'/demos/data/easystar-windtunnel_lin.sce');
+exec(arktoolboxPath+'/demos/data/easystar-windtunnel_lin.sce');
 
 // no aileron
 u0(u.ail) = 0; // just for visualization

@@ -1,3 +1,3 @@
 mode(-1);
 lines(0);
-genlib('lib_arkscicosMacros',pwd());
+genlib('lib_arktoolboxMacros',pwd());

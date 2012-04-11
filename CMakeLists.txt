@@ -1,4 +1,4 @@
-project (arkscicos C CXX)
+project (arktoolbox C CXX)
 
 # Requried cmake version
 cmake_minimum_required (VERSION 2.8)
@@ -461,20 +461,20 @@ foreach(BLOCK ${ARKSCICOS_BLOCKS})
         src/sci_${BLOCK}.cpp
         )
     set(ARKSCICOS_BLOCKS_STRING "${ARKSCICOS_BLOCKS_STRING}'sci_${BLOCK}' ")
-    set(INTERFACE_FUNCTION_FILE "${CMAKE_SOURCE_DIR}/scicos-toolbox/scicos/arkscicos/${BLOCK}.sci")
+    set(INTERFACE_FUNCTION_FILE "${CMAKE_SOURCE_DIR}/scicos-toolbox/scicos/arktoolbox/${BLOCK}.sci")
     if ( NOT EXISTS ${INTERFACE_FUNCTION_FILE} )
         message(FATAL_ERROR "block ${BLOCK} requires you to define an interface, please create : ${INTERFACE_FUNCTION_FILE}")
     endif()
 endforeach()
 
-add_library(arkscicos MODULE ${ARKSCICOS_SRCS})
-add_dependencies(arkscicos arkcomm arkmath arkhangar arkosg jsbsim)
-target_link_libraries(arkscicos ${ARKSCICOS_LIBRARIES})
-set_target_properties(arkscicos PROPERTIES
+add_library(arktoolbox MODULE ${ARKSCICOS_SRCS})
+add_dependencies(arktoolbox arkcomm arkmath arkhangar arkosg jsbsim)
+target_link_libraries(arktoolbox ${ARKSCICOS_LIBRARIES})
+set_target_properties(arktoolbox PROPERTIES
     SOVERSION ${LIBRARY_SOVERSION}
     #VERSION ${LIBRARY_VERSION}
     )
-set(LIBRARY_OUTPUT_PATH arkscicos-toolbox/scicos)
+set(LIBRARY_OUTPUT_PATH arktoolbox-toolbox/scicos)
 
 # create toolbox
 glob_copy_tracked(TARGET "toolboxSrcs" RECURSE
@@ -486,29 +486,29 @@ if (WITH_ARKOSG)
     glob_copy_tracked(TARGET "arkosgData" RECURSE
         SRCDIR ${ARKOSG_DATADIR}
         GLOB_ARGS "${ARKOSG_DATADIR}/arkosg/*"
-        DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
+        DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/data)
 endif()
 
 glob_copy_tracked(TARGET "arkmathData" RECURSE
     SRCDIR ${ARKMATH_DATADIR}
     GLOB_ARGS "${ARKMATH_DATADIR}/arkmath/*"
-    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
+    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/data)
 
 glob_copy_tracked(TARGET "arkhangarData" RECURSE
     SRCDIR ${ARKHANGAR_DATADIR}
     GLOB_ARGS "${ARKHANGAR_DATADIR}/arkhangar/*"
-    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
+    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/data)
 
 glob_copy_tracked(TARGET "jsbsimData" RECURSE
     SRCDIR ${JSBSIM_DATADIR}
     GLOB_ARGS "${JSBSIM_DATADIR}/jsbsim/*"
-    DESTDIR ${CMAKE_BINARY_DIR}/arkscicos-toolbox/data)
+    DESTDIR ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/data)
 
 set(TOOLBOX_DEPS
-    arkscicos
+    arktoolbox
     toolboxSrcs
-    ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce
-    ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce
+    ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/scicos/loadscicos.sce
+    ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/scicos/buildscicos.sce
     arkosgData arkmathData arkhangarData jsbsimData
     )
 
@@ -519,23 +519,23 @@ else()
 endif()
 
 add_custom_command(OUTPUT "toolbox-build-stamp"
-    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arkscicos-toolbox" 
+    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arktoolbox-toolbox" 
         ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
     COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
-    DEPENDS arkscicos
+    DEPENDS arktoolbox
     )
 add_custom_target(toolbox ALL DEPENDS ${TOOLBOX_DEPS})
 
-configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/loadscicos.sce)
-configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/scicos/buildscicos.sce)
-configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arkscicos-toolbox/VERSION)
+configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/scicos/loadscicos.sce)
+configure_file(src/buildscicos.sce.in ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/scicos/buildscicos.sce)
+configure_file(src/VERSION.in ${CMAKE_BINARY_DIR}/arktoolbox-toolbox/VERSION)
 
 # install
 set(ARKSCICOS_CONTRIB_DIR ${SCICOSLAB_CONTRIB_DIR})
 if (WIN32)
     set(ARKSCICOS_CONTRIB_DIR "/contrib")
 endif()
-install(DIRECTORY "${PROJECT_BINARY_DIR}/arkscicos-toolbox"
+install(DIRECTORY "${PROJECT_BINARY_DIR}/arktoolbox-toolbox"
     DESTINATION ${ARKSCICOS_CONTRIB_DIR}
     COMPONENT Runtime
     PATTERN "*.git*" EXCLUDE
@@ -553,9 +553,9 @@ endif()
 # packaging
 if (WIN32)
     # set NSIS image, nsis bug requuires atleast one file with 4 slashes to install correctly
-    #set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\\\/cmake/arkscicos-nsis.bmp")
-    #set(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/cmake/arkscicos.ico")
-    #set(CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}/cmake/arkscicos.ico")
+    #set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\\\/cmake/arktoolbox-nsis.bmp")
+    #set(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/cmake/arktoolbox.ico")
+    #set(CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}/cmake/arktoolbox.ico")
     set(CPACK_NSIS_INSTALL_ROOT "C:\\\\Program Files\\\\scicoslab-4.4.1")
     set(CPACK_NSIS_PACKAGE_NAME "${PROJECT_NAME} ${PROJECT_VERSION}")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "")
