@@ -43,10 +43,19 @@ endif()
 set(ARKTOOLBOX_HDRS
     VisSailboat.hpp
     VisJet.hpp
+    VisQuad.hpp
+    VisCar.hpp
+    jsinput.h
+    jssuper.h
     )
 set(ARKTOOLBOX_SRCS
     VisSailboat.cpp
     VisJet.cpp
+    VisQuad.cpp
+    VisCar.cpp
+    jsinput.cxx
+    jssuper.cxx
+    osgPlugins.cpp
     )
 add_library(arktoolbox MODULE ${ARKTOOLBOX_SRCS} ${ARKTOOLBOX_HDRS})
 target_link_libraries(arktoolbox ${ARKTOOLBOX_LIBRARIES})

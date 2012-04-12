@@ -4,14 +4,14 @@ function [x,y,typ]=jet(job,arg1,arg2)
 //
 // USAGE:
 //
-// input 1:
-//  [1]  roll
-//  [2]  pitch
-//  [3]  yaw
-//  [4]  throttle
-//  [5]  aileron
-//  [6]  elevator
-//  [7]  rudder
+// input:
+//  1:  roll
+//  2:  pitch
+//  3:  yaw
+//  4:  throttle
+//  5:  aileron
+//  6:  elevator
+//  7:  rudder
 //
 //
 // Copyright (C) James Goppert 2010 <jgoppert@users.sourceforge.net>
