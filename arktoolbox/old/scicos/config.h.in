@@ -1,0 +1,37 @@
+/* Name of package */
+#cmakedefine PACKAGE "${PROJECT_NAME}"
+
+/* Version number of package */
+#cmakedefine VERSION "${PROJECT_VERSION}"
+
+/************************** HEADER FILES *************************/
+
+
+/* Define to 1 if you have the <termios.h> header file. */
+#cmakedefine HAVE_TERMIOS_H 1
+
+/* Define to 1 if you have the <pthread.h> header file. */
+#cmakedefine HAVE_PTHREAD_H 1
+
+
+/*************************** FUNCTIONS ***************************/
+
+/* Define to 1 if you have the `snprintf' function. */
+#cmakedefine HAVE_SNPRINTF 1
+
+/*************************** LIBRARIES ***************************/
+
+/* Define to 1 if you have the `pthread' library (-lpthread). */
+#cmakedefine HAVE_PTHREAD 1
+
+
+/**************************** OPTIONS ****************************/
+
+#cmakedefine WITH_ARKOSG 1
+#cmakedefine WITH_LAPACK 1
+
+/*************************** ENDIAN *****************************/
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#cmakedefine WORDS_BIGENDIAN 1
