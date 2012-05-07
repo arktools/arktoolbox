@@ -524,6 +524,13 @@ add_custom_command(OUTPUT "toolbox-build-stamp"
     COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
     DEPENDS arktoolbox
     )
+
+add_custom_command(OUTPUT "toolbox-build-stamp"
+    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arktoolbox-scicos" 
+        ${SCICOSLAB_SCILAB_PROGRAM} "-nb" "-nwni" "-e" "\"exec('builder.sce');exit\""
+    COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
+    DEPENDS arktoolbox
+    )
 add_custom_target(toolbox ALL DEPENDS ${TOOLBOX_DEPS})
 
 configure_file(src/loadscicos.sce.in ${CMAKE_BINARY_DIR}/arktoolbox-scicos/scicos/loadscicos.sce)
