@@ -158,6 +158,10 @@ if (ROOT_THREAD)
     set(REQUIRED_IF_ROOT_THREAD "REQUIRED")
 endif()
 find_package(ScicosLab REQUIRED ${SCICOSLAB_REQUIRED_VERSION})
+if (APPLE)
+    set(SCICOSLAB_SCILAB_PROGRAM "${CMAKE_SOURCE_DIR}/scripts/scilab-mac")
+endif()
+
 if (MSVC)
     set(Boost_USE_MULITHREADED ON)
     find_package(Boost ${BOOST_REQUIRED_VERSION} COMPONENTS thread system REQUIRED)
@@ -510,13 +514,8 @@ set(TOOLBOX_DEPS
     ${CMAKE_BINARY_DIR}/arktoolbox-scicos/scicos/loadscicos.sce
     ${CMAKE_BINARY_DIR}/arktoolbox-scicos/scicos/buildscicos.sce
     arkosgData arkmathData arkhangarData jsbsimData
+    toolbox-build-stamp
     )
-
-if (APPLE)
-    message(STATUS "apple scicoslab command-line does not function, please run builder.sce using the ScicosLab app before packaging with cmake")
-else()
-    list(APPEND TOOLBOX_DEPS "toolbox-build-stamp")
-endif()
 
 add_custom_command(OUTPUT "toolbox-build-stamp"
     COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_BINARY_DIR}/arktoolbox-scicos" 
