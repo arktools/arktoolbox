@@ -112,7 +112,7 @@ extern "C"
             // The separation window defines the radius that the vehicle will
             // attempt to clear. The hard window is the radius inside which
             // the vehicle will turn 90 degrees to clear.
-            double separationWindow = 0.000075;
+            double separationWindow = 0.0000375;
 
             /*
                basic safety zone collision avoidance
