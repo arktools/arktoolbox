@@ -216,8 +216,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT JSBSIM_FOUND)
         ExternalProjectWithFilename_Add(jsbsim
-            URL http://nodeload.github.com/arktools/jsbsim/tarball/${JSBSIM_TAG}
-            FILENAME jsbsim-${JSBSIM_TAG}.tar.gz
+            URL http://nodeload.github.com/arktools/jsbsim/zip/${JSBSIM_TAG}
+            FILENAME jsbsim-${JSBSIM_TAG}.zip
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -229,8 +229,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (WITH_ARKOSG AND (NOT ARKOSG_FOUND))
         ExternalProjectWithFilename_Add(arkosg
-            URL http://nodeload.github.com/arktools/arkosg/tarball/${ARKOSG_TAG}
-            FILENAME arkosg-${ARKOSG_TAG}.tar.gz
+            URL http://nodeload.github.com/arktools/arkosg/zip/${ARKOSG_TAG}
+            FILENAME arkosg-${ARKOSG_TAG}.zip
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -239,8 +239,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKHANGAR_FOUND)
         ExternalProjectWithFilename_Add(arkhangar
-            URL http://nodeload.github.com/arktools/arkhangar/tarball/${ARKHANGAR_TAG}
-            FILENAME arkhangar-${ARKHANGAR_TAG}.tar.gz 
+            URL http://nodeload.github.com/arktools/arkhangar/zip/${ARKHANGAR_TAG}
+            FILENAME arkhangar-${ARKHANGAR_TAG}.zip
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -249,8 +249,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKMATH_FOUND)
         ExternalProjectWithFilename_Add(arkmath
-            URL http://nodeload.github.com/arktools/arkmath/tarball/${ARKMATH_TAG}
-            FILENAME arkmath-${ARKMATH_TAG}.tar.gz
+            URL http://nodeload.github.com/arktools/arkmath/zip/${ARKMATH_TAG}
+            FILENAME arkmath-${ARKMATH_TAG}.zip
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS} "-DWITH_LAPACK=${WITH_LAPACK}"
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
@@ -259,8 +259,8 @@ if (WITH_BUILD_DEPS AND (NOT ROOT_THREAD) )
 
     if (NOT ARKCOMM_FOUND)
         ExternalProjectWithFilename_Add(arkcomm
-            URL http://nodeload.github.com/arktools/arkcomm/tarball/${ARKCOMM_TAG}
-            FILENAME arkcomm-${ARKCOMM_TAG}.tar.gz
+            URL http://nodeload.github.com/arktools/arkcomm/zip/${ARKCOMM_TAG}
+            FILENAME arkcomm-${ARKCOMM_TAG}.zip
             CMAKE_ARGS ${CMAKE_EP_DEFAULT_ARGS}
             INSTALL_COMMAND ${CMAKE_MAKE_PROGRAM} DESTDIR=${EP_INSTALL_DIR} install
             INSTALL_DIR ${EP_INSTALL_DIR}
