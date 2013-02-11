@@ -2,6 +2,7 @@
 
 #include <business.h>
 #include <scicos_block4.h>
+#include "Joystick.hpp"
 
 void block_joystick(scicos_block* block, scicos_flag flag)
 {

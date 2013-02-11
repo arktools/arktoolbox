@@ -8,6 +8,7 @@ function builder_c()
   CFLAGS = ilib_include_flag(src_c_path);
   LDFLAGS = "";
   if (getos()<>"Windows") then
+    LDFLAGS = LDFLAGS + " """ + src_c_path + "../../bin/libsupport.a""";
     if ~isdir(SCI+"/../../share") then
       // Source version
       CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos_blocks/includes" ;
@@ -18,9 +19,9 @@ function builder_c()
       CFLAGS = CFLAGS + " -I" + SCI + "/../../include/scilab/scicos";
     end
   else
+    LDFLAGS = LDFLAGS + " """ + src_c_path + "../../bin/libsupport.lib""";
     CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos_blocks/includes";
     CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos/includes";
-
     // Getting symbols
     if findmsvccompiler() <> "unknown" & haveacompiler() then
       LDFLAGS = LDFLAGS + " """ + SCI + "/bin/scicos.lib""";
