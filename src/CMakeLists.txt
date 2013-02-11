@@ -4,7 +4,7 @@ add_library(support
 
 target_link_libraries(support ${PLIB_LIBRARIES})
 
-# copy to xcos bin directory
+# copy support library to xcos bin directory
 get_target_property(supportPath support LOCATION)
 add_custom_command(
     TARGET support POST_BUILD 
