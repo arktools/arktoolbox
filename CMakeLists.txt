@@ -393,7 +393,10 @@ endif()
 if(MINGW)
     list(APPEND ARKSCICOS_LIBRARIES winmm wsock32)
 elseif(UNIX)
-    list(APPEND ARKSCICOS_LIBRARIES pthread dl Xrandr xcb rt)
+    list(APPEND ARKSCICOS_LIBRARIES pthread dl)
+    if (NOT APPLE)
+        list(APPEND ARKSCICOS_LIBRARIES xcb Xrandr rt)
+    endif()
 endif()
 
 set(ARKSCICOS_SRCS
