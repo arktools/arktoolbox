@@ -16,6 +16,7 @@ set(BOOST_REQUIRED_VERSION                  1.4.2) # math
 
 # options
 option(WITH_PREFER_STATIC "Prefer static linking." ON)
+set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE)
 
 # modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -35,6 +36,10 @@ endif()
 find_package(PLIB ${PLIB_REQUIRED_VERSION} REQUIRED COMPONENTS js ul)
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED COMPONENTS system thread)
+if (APPLE)
+    find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+    find_library(IOKIT_LIBRARY IOKit)
+endif()
 
 # library
 add_subdirectory(src)

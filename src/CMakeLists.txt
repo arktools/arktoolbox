@@ -1,9 +1,11 @@
-link_libraries(
-    ${PLIB_LIBRARIES}
-    )
-include_directories(
-    ${PLIB_INCLUDE_DIRS}
-    )
+link_libraries(${PLIB_LIBRARIES})
+include_directories(${PLIB_INCLUDE_DIRS})
+if (APPLE)
+    link_libraries(
+        ${COREFOUNDATION_LIBRARY}
+        ${IOKIT_LIBRARY}
+        )
+endif()
 
 set(SUPPORT_HDRS
     Joystick.hpp
