@@ -37,3 +37,13 @@ foreach(HDR ${SUPPORT_HDRS})
         ${CMAKE_SOURCE_DIR}/xcos/support/include/${HDR}
         )
 endforeach()
+
+# call scilab to finalize toolbox build
+set(SCILAB_PROGRAM scilab-adv-cli)
+add_custom_command(OUTPUT "toolboxBox"
+    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_SOURCE_DIR}/xcos"
+    ${SCILAB_PROGRAM} "-nb" "-nw" "-e" "\"exec('builder.sce');exit\""
+    COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
+    DEPENDS support
+    )
+add_custom_target(toolbox ALL DEPENDS toolboxBox)
