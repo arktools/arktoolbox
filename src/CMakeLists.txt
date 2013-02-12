@@ -1,3 +1,10 @@
+link_libraries(
+    ${PLIB_LIBRARIES}
+    )
+include_directories(
+    ${PLIB_INCLUDE_DIRS}
+    )
+
 set(SUPPORT_HDRS
     Joystick.hpp
     )
@@ -6,12 +13,10 @@ set(SUPPORT_SRCS
     Joystick.cpp
     )
 
-add_library(support
+add_library(support MODULE
     ${SUPPORT_HDRS}
     ${SUPPORT_SRCS}
     )
-
-target_link_libraries(support ${PLIB_LIBRARIES})
 
 # copy support library to xcos bin directory
 get_target_property(supportPath support LOCATION)

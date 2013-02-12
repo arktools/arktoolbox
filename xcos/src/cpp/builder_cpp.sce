@@ -5,13 +5,13 @@
 function builder_cpp()
   src_c_path = get_absolute_file_path("builder_cpp.sce");
   support_path = src_c_path + "../../support/";
+  support_lib = support_path + "/bin/libsupport";
 
   CFLAGS = ilib_include_flag(src_c_path);
   CFLAGS = CFLAGS + " -I" + support_path + "/include";
   LDFLAGS = "";
 
   if (getos()<>"Windows") then
-    LDFLAGS = LDFLAGS + " """ + support_path + "/bin/libsupport.a""";
     if ~isdir(SCI+"/../../share") then
       // Source version
       CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos_blocks/includes" ;
@@ -22,7 +22,6 @@ function builder_cpp()
       CFLAGS = CFLAGS + " -I" + SCI + "/../../include/scilab/scicos";
     end
   else
-    LDFLAGS = LDFLAGS + " """ + support_path + "/bin/libsupport.lib""";
     CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos_blocks/includes";
     CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos/includes";
     // Getting symbols
@@ -36,7 +35,7 @@ function builder_cpp()
                 ["block_sum.c", "business_sum.c", "block_joystick.cpp"],    ..
                 "c",                                  ..
                 src_c_path,                           ..
-                "",                                   ..
+                [support_lib],                        ..
                 LDFLAGS,                              ..
                 CFLAGS,                               ..
                 "",                                   ..

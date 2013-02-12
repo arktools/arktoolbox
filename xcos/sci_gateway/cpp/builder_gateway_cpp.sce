@@ -8,7 +8,8 @@ function builder_gw_cpp()
                     ["tbx_sum", "sci_tbx_sum"],                         ..
                     ["sci_tbx_sum.c"],                                  ..
                     get_absolute_file_path("builder_gateway_cpp.sce"),  ..
-                    ["../../src/cpp/libxcos_tbx_skel"],                 ..
+                    ["../../src/cpp/libxcos_tbx_skel",                  ..
+                     "../../support/bin/libsupport"],                   ..
                     "",                                                 ..
                     includes_src_cpp);
 
