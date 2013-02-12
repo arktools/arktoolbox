@@ -36,7 +36,7 @@ function xcos_skeletonlib = startModule()
   mprintf("\tLoad palette\n");
   pal = xcosPal("Xcos toolbox blocks");
 
-  blocks = ["TBX_SUM_c" "TBX_MUT_STYLE" "TBX_JOYSTICK"];
+  blocks = ["TBX_SUM_c" "TBX_MUT_STYLE" "ARK_JOYSTICK"];
   for i=1:size(blocks, "*")
     h5  = ls(root_tlbx + "/images/h5/"  + blocks(i) + "." + ["sod" "h5"]);
     gif = ls(root_tlbx + "/images/gif/" + blocks(i) + "." + ["png" "jpg" "gif"]);
