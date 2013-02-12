@@ -26,7 +26,7 @@ extern "C"
 #include <scilab/scicos_block4.h>
 #include <math.h>
 
-void sci_joystick(scicos_block *block, scicos_flag flag)
+void block_joystick(scicos_block *block, scicos_flag flag)
 {
     // data
     double *y=(double*)GetOutPortPtrs(block,1);
