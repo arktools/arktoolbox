@@ -2,13 +2,16 @@
 
 // This macro compiles the files
 
-function builder_c()
-  src_c_path = get_absolute_file_path("builder_c.sce");
+function builder_cpp()
+  src_c_path = get_absolute_file_path("builder_cpp.sce");
+  support_path = src_c_path + "../../support/";
 
   CFLAGS = ilib_include_flag(src_c_path);
+  CFLAGS = CFLAGS + " -I" + support_path + "/include";
   LDFLAGS = "";
+
   if (getos()<>"Windows") then
-    LDFLAGS = LDFLAGS + " """ + src_c_path + "../../bin/libsupport.a""";
+    LDFLAGS = LDFLAGS + " """ + support_path + "/bin/libsupport.a""";
     if ~isdir(SCI+"/../../share") then
       // Source version
       CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos_blocks/includes" ;
@@ -19,7 +22,7 @@ function builder_c()
       CFLAGS = CFLAGS + " -I" + SCI + "/../../include/scilab/scicos";
     end
   else
-    LDFLAGS = LDFLAGS + " """ + src_c_path + "../../bin/libsupport.lib""";
+    LDFLAGS = LDFLAGS + " """ + support_path + "/bin/libsupport.lib""";
     CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos_blocks/includes";
     CFLAGS = CFLAGS + " -I" + SCI + "/modules/scicos/includes";
     // Getting symbols
@@ -30,7 +33,7 @@ function builder_c()
   end
 
   tbx_build_src(["block_sum", "business_sum", "block_joystick"],        ..
-                ["block_sum.c", "business_sum.c", "block_joystick.c"],    ..
+                ["block_sum.c", "business_sum.c", "block_joystick.cpp"],    ..
                 "c",                                  ..
                 src_c_path,                           ..
                 "",                                   ..
@@ -41,5 +44,5 @@ function builder_c()
                 "xcos_tbx_skel");
 endfunction
 
-builder_c();
-clear builder_c; // remove builder_c on stack
+builder_cpp();
+clear builder_cpp; // remove builder_cpp on stack

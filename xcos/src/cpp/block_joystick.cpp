@@ -1,8 +1,11 @@
 /* This file is released under the 3-clause BSD license. See COPYING-BSD. */
 
+#include "Joystick.hpp"
+
+extern "C" {
+
 #include <business.h>
 #include <scicos_block4.h>
-#include "Joystick.hpp"
 
 void block_joystick(scicos_block* block, scicos_flag flag)
 {
@@ -24,3 +27,4 @@ void block_joystick(scicos_block* block, scicos_flag flag)
     }
 }
 
+} // extern C

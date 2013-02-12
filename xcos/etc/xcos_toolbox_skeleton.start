@@ -54,7 +54,7 @@ function xcos_skeletonlib = startModule()
   mprintf("\tLoad simulations functions\n");
   verboseMode = ilib_verbose();
   ilib_verbose(0);
-  exec(pathconvert(root_tlbx+"/src/c/loader.sce", %f));
+  exec(pathconvert(root_tlbx+"/src/cpp/loader.sce", %f));
   ilib_verbose(verboseMode);
 
 // load gateways

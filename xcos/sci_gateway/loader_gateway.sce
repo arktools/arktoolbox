@@ -15,8 +15,8 @@ sci_gateway_dir = get_absolute_file_path("loader_gateway.sce");
 current_dir     = pwd();
 
 chdir(sci_gateway_dir);
-if ( isdir("c") ) then
-    chdir("c");
+if ( isdir("cpp") ) then
+    chdir("cpp");
     exec("loader.sce");
 end
 
