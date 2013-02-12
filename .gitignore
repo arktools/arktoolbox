@@ -34,3 +34,5 @@ help/*/scilab_*_help
 *.vcxproj
 *.vcxproj.filters
 *.vfproj
+
+.*.swp
