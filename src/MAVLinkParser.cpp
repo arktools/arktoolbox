@@ -34,15 +34,8 @@ MAVLinkParser::MAVLinkParser(const uint8_t sysid, const uint8_t compid, const MA
     _system.type = type;
 
     // start comm
-    try
-    {
-        _comm = new BufferedAsyncSerial(device,baudRate);
-    }
-    catch(const boost::system::system_error & e)
-    {
-        std::cout << "error: " << e.what() << std::endl;
-        exit(1);
-    }
+    // throws boost::system::system_error
+    _comm = new BufferedAsyncSerial(device,baudRate);
 }
 
 MAVLinkParser::~MAVLinkParser() {

@@ -41,6 +41,7 @@ if (APPLE)
     find_library(IOKIT_LIBRARY IOKit)
 endif()
 find_package(Threads)
+find_program(SCILAB_ADV_CLI scilab-adv-cli)
 
 # library
 add_subdirectory(src)

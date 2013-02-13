@@ -56,11 +56,12 @@ foreach(HDR ${SUPPORT_HDRS})
 endforeach()
 
 # call scilab to finalize toolbox build
-set(SCILAB_PROGRAM scilab-adv-cli)
-add_custom_command(OUTPUT "toolbox-build-stamp"
-    COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_SOURCE_DIR}/xcos"
-    ${SCILAB_PROGRAM} "-nb" "-nw" "-e" "\"exec('builder.sce');exit\""
-    COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
-    DEPENDS support
-    )
+if (NOT SCILAB_ADV_CLI STREQUAL "SCILAB_ADV_CLI-NOTFOUND")
+    add_custom_command(OUTPUT "toolbox-build-stamp"
+        COMMAND "${CMAKE_COMMAND}" -E chdir "${CMAKE_SOURCE_DIR}/xcos"
+        ${SCILAB_ADV_CLI} "-nb" "-nw" "-e" "\"exec('builder.sce');exit\""
+        COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
+        DEPENDS support
+        )
+endif()
 add_custom_target(toolbox ALL DEPENDS toolbox-build-stamp)
