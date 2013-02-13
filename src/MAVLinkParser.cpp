@@ -47,7 +47,6 @@ MAVLinkParser::~MAVLinkParser() {
 }
 
 void MAVLinkParser::send(double * u, uint64_t timeStamp) {
-
     // attitude states (rad)
     float roll = u[0];
     float pitch = u[1];
@@ -83,11 +82,11 @@ void MAVLinkParser::send(double * u, uint64_t timeStamp) {
 }
 
 void MAVLinkParser::receive(double * y) {
-
     // receive messages
     mavlink_message_t msg;
     while(_comm->available())
     {
+
         uint8_t c = 0;
         if (!_comm->read((char*)&c,1)) return;
 
@@ -133,7 +132,7 @@ void MAVLinkParser::receive(double * y) {
 
                 default:
                 {
-                    std::cout << "received message: " << uint32_t(msg.msgid) << std::endl;
+                    //std::cout << "received message: " << uint32_t(msg.msgid) << std::endl;
                 }
 
             }

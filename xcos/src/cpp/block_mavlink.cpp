@@ -138,12 +138,12 @@ void block_mavlink(scicos_block *block, scicos_flag flag)
         mavlink = (MAVLinkParser *)*work;
         uint64_t t =  get_scicos_time()*1e6;
         if (mavlink) {
-            if (evtFlag & evtFlagSend) { 
-                mavlink->send(u,t);
-            }
-            if (evtFlag & evtFlagReceive) {
-                mavlink->receive(y);
-            }
+            //if (evtFlag & evtFlagSend) { 
+            mavlink->send(u,t);
+            //}
+            //if (evtFlag & evtFlagReceive) {
+            mavlink->receive(y);
+            //}
         }
     } // compute output
 }
