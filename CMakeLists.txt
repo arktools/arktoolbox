@@ -41,9 +41,6 @@ if (APPLE)
     find_library(IOKIT_LIBRARY IOKit)
 endif()
 
-# build flags
-set(CMAKE_CXX_FLAGS "-static-libgcc")
-
 # library
 add_subdirectory(src)
 

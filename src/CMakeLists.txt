@@ -1,5 +1,6 @@
-link_libraries(${PLIB_LIBRARIES})
-include_directories(${PLIB_INCLUDE_DIRS})
+set(CMAKE_CXX_FLAGS "-static-libgcc -static-libstdc++")
+link_libraries(${PLIB_LIBRARIES} ${Boost_LIBRARIES})
+include_directories(${PLIB_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 if (APPLE)
     link_libraries(
         ${COREFOUNDATION_LIBRARY}
@@ -19,7 +20,7 @@ set(SUPPORT_SRCS
     MAVLinkParser.cpp
     )
 
-add_library(support MODULE
+add_library(support SHARED
     ${SUPPORT_HDRS}
     ${SUPPORT_SRCS}
     )
