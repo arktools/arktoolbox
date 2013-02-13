@@ -4,7 +4,7 @@ function builder_gw_cpp()
 
   includes_src_cpp = ilib_include_flag(get_absolute_file_path("builder_gateway_cpp.sce") + "../../src/cpp");
 
-  tbx_build_gateway("xcos_toolbox_skeleton_cpp",                        ..
+  tbx_build_gateway("arktoolbox_cpp",                        ..
                     ["tbx_sum", "sci_tbx_sum"],                         ..
                     ["sci_tbx_sum.c"],                                  ..
                     get_absolute_file_path("builder_gateway_cpp.sce"),  ..

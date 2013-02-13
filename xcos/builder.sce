@@ -8,8 +8,8 @@ lines(0);
 
 function main_builder()
 
-  TOOLBOX_NAME  = "xcos_toolbox_skeleton";
-  TOOLBOX_TITLE = "Xcos toolbox skeleton";
+  TOOLBOX_NAME  = "arktoolbox";
+  TOOLBOX_TITLE = "ARKToolbox";
   toolbox_dir   = get_absolute_file_path("builder.sce");
 
 // Check Scilab's version

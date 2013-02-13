@@ -2,12 +2,12 @@
 
 // This file is released under the 3-clause BSD license. See COPYING-BSD.
 
-function xcos_skeletonlib = startModule()
+function arktoolboxlib = startModule()
 
-  mprintf("Start Xcos toolbox skeleton\n");
+  mprintf("Start ARKToolbox\n");
 
-  if isdef("xcos_toolbox_skeletonlib") then
-    warning("Xcos toolbox skeleton library is already loaded");
+  if isdef("arktoolboxlib") then
+    warning("ARKToolbox is already loaded");
     return;
   end
 
@@ -21,7 +21,7 @@ function xcos_skeletonlib = startModule()
 // force to load some libraries (dependancies)
   loadScicos();
 // =============================================================================
-  etc_tlbx  = get_absolute_file_path("xcos_toolbox_skeleton.start");
+  etc_tlbx  = get_absolute_file_path("arktoolbox.start");
   etc_tlbx  = getshortpathname(etc_tlbx);
   root_tlbx = strncpy( etc_tlbx, length(etc_tlbx)-length("\etc\") );
 
@@ -29,12 +29,12 @@ function xcos_skeletonlib = startModule()
 // =============================================================================
   mprintf("\tLoad macros\n");
   pathmacros = pathconvert( root_tlbx ) + "macros" + filesep();
-  xcos_skeletonlib = lib(pathmacros);
+  arktoolboxlib = lib(pathmacros);
 
 // Add blocks to the Xcos palette
 // =============================================================================
   mprintf("\tLoad palette\n");
-  pal = xcosPal("Xcos toolbox blocks");
+  pal = xcosPal("ARKToolbox");
 
   blocks = ["TBX_SUM_c" "TBX_MUT_STYLE" "ARK_JOYSTICK" "ARK_MAVLINK"];
   for i=1:size(blocks, "*")
@@ -60,7 +60,7 @@ function xcos_skeletonlib = startModule()
   end
 
   if ~xcosPalAdd(pal) then
-    error(msprintf(gettext("%s: Unable to export %s.\n"), "xcos_toolbox_skeleton.start", "pal"));
+    error(msprintf(gettext("%s: Unable to export %s.\n"), "arktoolbox.start", "pal"));
   end
 
 // Load simulation functions
@@ -85,7 +85,7 @@ function xcos_skeletonlib = startModule()
     mprintf("\tLoad help\n");
     path_addchapter = pathconvert(root_tlbx+"/jar");
     if ( isdir(path_addchapter) <> [] ) then
-        add_help_chapter("Xcos toolbox skeleton", path_addchapter, %F);
+        add_help_chapter("ARKToolbox", path_addchapter, %F);
     end
   end
 
@@ -93,13 +93,13 @@ function xcos_skeletonlib = startModule()
 // =============================================================================
   if or(getscilabmode() == ["NW";"STD"]) then
     mprintf("\tLoad demos\n");
-    pathdemos = pathconvert(root_tlbx+"/demos/xcos_toolbox_skeleton.dem.gateway.sce", %F, %T);
-    add_demo("Xcos toolbox skeleton", pathdemos);
+    pathdemos = pathconvert(root_tlbx+"/demos/arktoolbox.dem.gateway.sce", %F, %T);
+    add_demo("ARKToolbox", pathdemos);
   end
 
 endfunction
 
 if with_module('xcos') then
-  xcos_skeletonlib = startModule();
+  arktoolboxlib = startModule();
   clear startModule; // remove startModule on stack
 end

@@ -1,33 +1,33 @@
-Toolbox: xcos_toolbox_skeleton
+Toolbox: arktoolbox
 
-Title: Xcos toolbox skeleton
+Title: ARKtoolbox
 
 Summary: Add some blocks to a palette
 
 Version: 1.0
 
-Author: Clément DAVID <clement.david@scilab-enterprises.com>
+Author: James Goppert <james.goppert@gmail.com>
 
-Maintainer: Clément DAVID <clement.david@scilab-enterprises.com>
+Maintainer: James Goppert <james.goppert@gmail.com>
 
 Category: Xcos
 
-Entity: Scilab Enterprises
+Entity:
 
-WebSite: http://www.scilab.org
+WebSite:
 
-License: CeCILL
+License: GPLv3
 
 ScilabVersion: >= 5.4
 
 Depends: 
 
-Date: 2011-03-15
+Date: 2013-01-13
 
-Description: Example for an Xcos toolbox
+Description: Autonomous Robotics Kit
  
  exec builder.sce
  exec loader.sce
  
- help xcos_toolbox_skeleton 
+ help arktoolbox 
 

@@ -1,6 +1,5 @@
-changelog of the Xcos toolbox skeleton
+changelog of the ARKToolbox
 
-xcos_toolbox_skeleton (1.0)
-    * Default implementation
- -- Clément DAVID <clement.david@scilab.org> Tue, 15 Mar 2011 13:34:06 +0100
-
+arktoolbox (0.1)
+   * Initial release, MAVLink/ Joystick support.
+ -- James Goppert <james.goppert@gmail.com> Wed Feb 13 18:01:58 EST 2013
