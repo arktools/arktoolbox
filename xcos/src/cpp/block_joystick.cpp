@@ -23,7 +23,8 @@
 extern "C"
 {
 
-#include <scilab/scicos_block4.h>
+#include <scicos_block4.h>
+#include <Scierror.h>
 #include <math.h>
 
 void block_joystick(scicos_block *block, scicos_flag flag)
@@ -48,12 +49,12 @@ void block_joystick(scicos_block *block, scicos_flag flag)
         catch (const std::exception & e)
         {
             std::cout << "exception: " << e.what() << std::endl;
-            //Coserror((char *)e.what());
+            Scierror(999, "%s", e.what());
             return;
         }
         catch (...)
         {
-            //Coserror((char *)"unknown error");
+            Scierror(999, "unknown error");
             return;
         }
         *work = (void *)joystick;
@@ -77,12 +78,12 @@ void block_joystick(scicos_block *block, scicos_flag flag)
         } catch (const std::exception & e)
         {
             std::cout << "exception: " << e.what() << std::endl;
-            //Coserror((char *)e.what());
+            Scierror(999, "%s", e.what());
             return;
         }
         catch (...)
         {
-            //Coserror((char *)"unknown error");
+            Scierror(999, "unknown error");
             return;
         }
     }

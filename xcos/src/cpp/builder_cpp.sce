@@ -31,6 +31,7 @@ function builder_cpp()
     end
   end
 
+  ilib_verbose(2);
   tbx_build_src(["block_sum", "business_sum", "block_joystick"],        ..
                 ["block_sum.c", "business_sum.c", "block_joystick.cpp"],    ..
                 "c",                                  ..
@@ -38,7 +39,7 @@ function builder_cpp()
                 [support_lib],                        ..
                 LDFLAGS,                              ..
                 CFLAGS,                               ..
-                "",                                   ..
+                "",                           ..
                 "",                                   ..
                 "xcos_tbx_skel");
 endfunction

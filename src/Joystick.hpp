@@ -1,13 +1,13 @@
 /*
- * sci_joystick.cpp
+ * Joystick.hpp
  * Copyright (C) James Goppert 2010 <jgoppert@users.sourceforge.net>
  *
- * sci_joystick.cpp is free software: you can redistribute it and/or modify it
+ * This file is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * sci_joystick.cpp is distributed in the hope that it will be useful, but
+ * This file is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -18,7 +18,10 @@
  * y: vector of axis values
  */
 
-#include <string.h>		// plib/js.h should really include this !!!!!!
+#ifndef _ARKTOOLBOX_JOYSTICK_HPP
+#define _ARKTOOLBOX_JOYSTICK_HPP
+
+#include <string.h>
 #include <plib/js.h>
 #include <stdexcept>
 #include <iostream>
@@ -38,5 +41,7 @@ private:
     void checkJoystick();
     void setPortNumber(int portNumber);
 };
+
+#endif // _ARKTOOLBOX_JOYSTICK_HPP
 
 // vim:ts=4:sw=4

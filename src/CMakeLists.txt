@@ -9,10 +9,14 @@ endif()
 
 set(SUPPORT_HDRS
     Joystick.hpp
+    AsyncSerial.hpp
+    MAVLinkParser.hpp
     )
 
 set(SUPPORT_SRCS
     Joystick.cpp
+    AsyncSerial.cpp
+    MAVLinkParser.cpp
     )
 
 add_library(support MODULE
