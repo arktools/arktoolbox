@@ -3,7 +3,7 @@
 function buildmacros()
   macros_path = get_absolute_file_path("buildmacros.sce");
   tbx_build_macros(TOOLBOX_NAME, macros_path);
-  blocks = ["TBX_SUM_c" "TBX_MUT_STYLE" "ARK_JOYSTICK"];
+  blocks = ["TBX_SUM_c" "TBX_MUT_STYLE" "ARK_JOYSTICK" "ARK_MAVLINK"];
   tbx_build_blocks(toolbox_dir, blocks);
 endfunction
 

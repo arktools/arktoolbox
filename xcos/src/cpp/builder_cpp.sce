@@ -3,11 +3,11 @@
 // This macro compiles the files
 
 function builder_cpp()
-  src_c_path = get_absolute_file_path("builder_cpp.sce");
-  support_path = src_c_path + "../../support/";
+  src_cpp_path = get_absolute_file_path("builder_cpp.sce");
+  support_path = src_cpp_path + "../../support/";
   support_lib = support_path + "/bin/libsupport";
 
-  CFLAGS = ilib_include_flag(src_c_path);
+  CFLAGS = ilib_include_flag(src_cpp_path);
   CFLAGS = CFLAGS + " -I" + support_path + "/include";
   LDFLAGS = "";
 
@@ -32,10 +32,24 @@ function builder_cpp()
   end
 
   //ilib_verbose(2);
-  tbx_build_src(["block_sum", "business_sum", "block_joystick"],        ..
-                ["block_sum.c", "business_sum.c", "block_joystick.cpp"],    ..
+  entry_points = [..
+    "block_sum", ..
+    "business_sum", ..
+    "block_joystick", ..
+    "block_mavlink", ..
+    ];
+   
+  srcs =  [..
+    "block_sum.c", ..
+    "business_sum.c", ..
+    "block_joystick.cpp", ..
+    "block_mavlink.cpp", ..
+    ];
+  
+
+  tbx_build_src(entry_points, srcs, ..
                 "c",                                  ..
-                src_c_path,                           ..
+                src_cpp_path,                           ..
                 [support_lib],                        ..
                 LDFLAGS,                              ..
                 CFLAGS,                               ..

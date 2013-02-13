@@ -70,12 +70,15 @@
  *
  */
 
-#include "MavlinkParser.hpp"
+#include "utilities.hpp"
+#include "MAVLinkParser.hpp"
 
 extern "C"
 {
 
-#include <scicos/scicos_block4.h>
+#include <scicos_block4.h>
+#include <scicos.h>
+#include <Scierror.h>
 #include <math.h>
 
 void block_mavlink(scicos_block *block, scicos_flag flag)
@@ -85,14 +88,14 @@ void block_mavlink(scicos_block *block, scicos_flag flag)
     double * u=GetRealInPortPtrs(block,1);
     double * y=GetRealOutPortPtrs(block,1);
     int * ipar=block->ipar;
-    void ** work = GetPtrWorkPtrs(block);
+    void ** work = &GetWorkPtrs(block);
     int & evtFlag = GetNevIn(block);
 
     // compute flags
-    int evtFlagReceive = scicos::evtPortNumToFlag(0);
-    int evtFlagSend = scicos::evtPortNumToFlag(1);
+    int evtFlagReceive = evtPortNumToFlag(1);
+    int evtFlagSend = evtPortNumToFlag(2);
 
-    MAVLinkHilState * mavlink = NULL;
+    MAVLinkParser * mavlink = NULL;
 
     static char * device;
     static int baudRate;
@@ -116,7 +119,7 @@ void block_mavlink(scicos_block *block, scicos_flag flag)
             }
             catch(const boost::system::system_error & e)
             {
-                Coserror((char *)e.what());
+                Scierror(999, "%s", e.what());
             }
         }
         *work = (void *)mavlink;

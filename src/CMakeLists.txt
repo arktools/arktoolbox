@@ -20,12 +20,14 @@ set(SUPPORT_HDRS
     Joystick.hpp
     AsyncSerial.hpp
     MAVLinkParser.hpp
+    utilities.hpp
     )
 
 set(SUPPORT_SRCS
     Joystick.cpp
     AsyncSerial.cpp
     MAVLinkParser.cpp
+    utilities.cpp
     )
 
 add_library(support SHARED
