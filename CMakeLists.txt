@@ -17,11 +17,12 @@ set(OPENSCENEGRAPH_REQUIRED_VERSION         3.0.0) # 3D graphics
 
 # options
 option(WITH_PREFER_STATIC "Prefer static linking." ON)
-set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+set(WITH_SUPPORT_TEST "Build support library unit tests." ON)
 
 # modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(CPack)
+enable_testing()
 
 # find packages
 #   prefer static packages if building static library

@@ -83,5 +83,5 @@ if (NOT SCILAB_ADV_CLI STREQUAL "SCILAB_ADV_CLI-NOTFOUND")
         COMMAND "${CMAKE_COMMAND}" -E touch toolbox-build-stamp
         DEPENDS support
         )
+    add_custom_target(toolbox ALL DEPENDS toolbox-build-stamp)
 endif()
-add_custom_target(toolbox ALL DEPENDS toolbox-build-stamp)

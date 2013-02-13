@@ -3,6 +3,9 @@
 
 #include <osgGA/TrackballManipulator>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp> 
+
 // Static linking of OSG needs special macros
 #ifdef OSG_LIBRARY_STATIC
 #include <osgDB/Registry>
@@ -38,7 +41,29 @@ int main(int argc, char * argv[]) {
     plane->addChild(new Frame(15,"X","Y","Z"));
     sceneRoot->addChild(plane);
 
-    return viewer.run();
+    viewer.realize();
+
+    for (int i=0;i<1000;i++) {
+        viewer.frame();
+        boost::this_thread::sleep(boost::posix_time::milliseconds(1));
+        float t= i/1000.0;
+        float period = 1; // seconds
+        float phi = 0.5*sin(2*M_PI/period*t);
+        float theta = 0.5*sin(2*M_PI/period*t);
+        float psi = 0.5*sin(2*M_PI/period*t);
+        float throttle = 0.5*sin(2*M_PI/period*t);	
+        float aileron = 0.5*sin(2*M_PI/period*t);
+        float elevator = 0.5*sin(2*M_PI/period*t);
+        float rudder = 0.5*sin(2*M_PI/period*t);
+        float pN = 10*sin(2*M_PI/period*t);
+        float pE = 10*cos(2*M_PI/period*t);
+        float pD = -(10+10*sin(2*M_PI/period*t));
+        plane->setPosition(osg::Vec3(pN,pE,pD));
+        plane->setEuler(phi,theta,psi);
+        plane->setU(throttle,aileron,elevator,rudder);
+    }
+
+    return 0;
 }
 
 // vim:ts=4:sw=4
