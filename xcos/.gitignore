@@ -11,7 +11,7 @@ cleaner_gateway.sce
 *.bin
 macros/lib
 macros/names
-images/*
+images/h5/*
 help/*/master_help.xml
 help/*/scilab_*_help
 
