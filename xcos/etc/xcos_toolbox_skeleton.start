@@ -41,8 +41,22 @@ function xcos_skeletonlib = startModule()
     h5  = ls(root_tlbx + "/images/h5/"  + blocks(i) + "." + ["sod" "h5"]);
     gif = ls(root_tlbx + "/images/gif/" + blocks(i) + "." + ["png" "jpg" "gif"]);
     svg = ls(root_tlbx + "/images/svg/" + blocks(i) + "." + ["png" "jpg" "gif" "svg"]);
-    
-    pal = xcosPalAddBlock(pal, h5(1), gif(1), svg(1));
+
+    style = struct();
+    style.shape = "label";
+    style.verticalLabelPosition = "middle";
+    style.perimeter = "rectanglePerimeter";
+    style.strokeColor = "black"; 
+    style.fontColor = "black";
+    style.noLabel = 0;
+    style.spacing = 13;
+    style.fillColor = "#cdcdcd";
+    style.gradientColor = "white";
+    style.rounded = 1;
+    style.displayedLabel = blocks(i);
+    //style.image = "file://" + svg(1);
+    pal = xcosPalAddBlock(pal, h5(1), gif(1), style);
+
   end
 
   if ~xcosPalAdd(pal) then

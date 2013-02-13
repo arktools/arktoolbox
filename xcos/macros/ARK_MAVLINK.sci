@@ -130,7 +130,8 @@ select job
 		exprs=[strcat(device);strcat(sci2exp(baudRate))];
 
 		// setup icon
-	  	gr_i=['xstringb(orig(1),orig(2),''MAVLink'',sz(1),sz(2),''fill'');']
+	  	gr_i=['txt=[''ARK_MAVLINK''];';
+              'xstringb(orig(1),orig(2),txt,sz(1),sz(2),''fill'');']
 	  	x=standard_define([5 2],model,exprs,gr_i)
 	end
 endfunction

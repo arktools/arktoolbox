@@ -79,7 +79,7 @@ select job
 		exprs=[strcat(sci2exp(portNumber))];
 
 		// setup icon
-	  	gr_i=['xstringb(orig(1),orig(2),''joystick'',sz(1),sz(2),''fill'');']
+        gr_i='xstringb(orig(1),orig(2),''ARK_JOYSTICK'',sz(1),sz(2),''fill'')'
 	  	x=standard_define([5 2],model,exprs,gr_i)
 	end
 endfunction
