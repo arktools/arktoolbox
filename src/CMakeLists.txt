@@ -1,6 +1,14 @@
-set(CMAKE_CXX_FLAGS "-static-libgcc -static-libstdc++")
-link_libraries(${PLIB_LIBRARIES} ${Boost_LIBRARIES})
-include_directories(${PLIB_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+set(CMAKE_SHARED_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+
+link_libraries(
+    ${PLIB_LIBRARIES}
+    ${Boost_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    )
+include_directories(
+    ${PLIB_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
+    )
 if (APPLE)
     link_libraries(
         ${COREFOUNDATION_LIBRARY}

@@ -40,6 +40,7 @@ if (APPLE)
     find_library(COREFOUNDATION_LIBRARY CoreFoundation)
     find_library(IOKIT_LIBRARY IOKit)
 endif()
+find_package(Threads)
 
 # library
 add_subdirectory(src)
