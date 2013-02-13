@@ -12,7 +12,8 @@ set(CPACK_SOURCE_GENERATOR "ZIP")
 
 # dependencies
 set(PLIB_REQUIRED_VERSION                   1.8.5) # joystick 
-set(BOOST_REQUIRED_VERSION                  1.4.2) # math
+set(BOOST_REQUIRED_VERSION                  1.4.2) # math, serial
+set(OPENSCENEGRAPH_REQUIRED_VERSION         3.0.0) # 3D graphics
 
 # options
 option(WITH_PREFER_STATIC "Prefer static linking." ON)
@@ -42,9 +43,18 @@ if (APPLE)
 endif()
 find_package(Threads)
 find_program(SCILAB_ADV_CLI scilab-adv-cli)
+find_package(OpenGL REQUIRED)
+find_package(OpenSceneGraph ${OPENSCENEGRAPH_REQUIRED_VERSION} REQUIRED COMPONENTS osgViewer osgUtil osgDB osgGA osgManipulator)
+find_package(OsgPlugin ${OPENSCENEGRAPH_REQUIRED_VERSION} REQUIRED COMPONENTS ac rgb)
+
+# build settings
+add_definitions(-DOSG_LIBRARY_STATIC)
 
 # library
 add_subdirectory(src)
+
+# test
+add_subdirectory(test)
 
 # install xcos toolbox
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/xcos/"

@@ -1,0 +1,232 @@
+AC3Db
+MATERIAL "DefaultWhite" rgb 1 1 1  amb 1 1 1  emis 0 0 0  spec 0.5 0.5 0.5  shi 64  trans 0
+MATERIAL "Plastic" rgb 0.890196 0.898039 0.827451 amb 0.5 0.5 0.5 emis 0 0 0 spec 1 1 1 shi 32 trans 0
+MATERIAL "Hull.001" rgb 1 1 1 amb 0.5 0.5 0.5 emis 0 0 0 spec 1 1 1 shi 32 trans 0
+MATERIAL "Sail" rgb 0.713726 0.823529 0.85098 amb 0.5 0.5 0.5 emis 0 0 0 spec 1 1 1 shi 32 trans 0.363539
+OBJECT world
+kids 1
+OBJECT group
+name "Hull"
+kids 4
+OBJECT poly
+name "Hull"
+data 8
+Sail.001
+crease 30.000000
+numvert 15
+0.183923 -0.002517 0.10438
+0.183923 -0.002517 -0.10438
+-0.438995 -0.002517 0.053346
+-0.438995 -0.002517 -0.053346
+0.183923 0.045946 0.156842
+0.183923 0.045946 -0.156842
+-0.454189 0.045946 0.090078
+-0.454189 0.045946 -0.090078
+-0.439116 -0.007998 0
+0.48301 0.007764 0
+-0.4595 0.045946 0
+0.5405 0.045946 0
+0 -0.034096 0
+0.249876 -0.015012 0
+0 0 0
+numsurf 16
+SURF 0x30
+mat 1
+refs 4
+0 0 0
+4 0 0
+6 0 0
+2 0 0
+SURF 0x30
+mat 1
+refs 4
+7 0 0
+5 0 0
+1 0 0
+3 0 0
+SURF 0x30
+mat 1
+refs 4
+10 0 0
+6 0 0
+4 0 0
+11 0 0
+SURF 0x30
+mat 1
+refs 4
+5 0 0
+7 0 0
+10 0 0
+11 0 0
+SURF 0x30
+mat 1
+refs 4
+0 0 0
+9 0 0
+11 0 0
+4 0 0
+SURF 0x30
+mat 1
+refs 4
+11 0 0
+9 0 0
+1 0 0
+5 0 0
+SURF 0x30
+mat 1
+refs 4
+8 0 0
+2 0 0
+6 0 0
+10 0 0
+SURF 0x30
+mat 1
+refs 4
+7 0 0
+3 0 0
+8 0 0
+10 0 0
+SURF 0x30
+mat 1
+refs 3
+12 0 0
+0 0 0
+2 0 0
+SURF 0x30
+mat 1
+refs 3
+3 0 0
+1 0 0
+12 0 0
+SURF 0x30
+mat 1
+refs 3
+8 0 0
+12 0 0
+2 0 0
+SURF 0x30
+mat 1
+refs 3
+3 0 0
+12 0 0
+8 0 0
+SURF 0x30
+mat 1
+refs 3
+13 0 0
+0 0 0
+12 0 0
+SURF 0x30
+mat 1
+refs 3
+12 0 0
+1 0 0
+13 0 0
+SURF 0x30
+mat 1
+refs 3
+9 0 0
+0 0 0
+13 0 0
+SURF 0x30
+mat 1
+refs 3
+13 0 0
+1 0 0
+9 0 0
+kids 0
+OBJECT poly
+name "CenterBoard"
+data 11
+CenterBoard
+crease 30.000000
+numvert 5
+0.057939 -0.299501 0
+0.08 -0.015 0
+-0.002612 -0.015 0
+-0.005183 -0.30602 0
+-0.002612 -0.187344 0
+numsurf 3
+SURF 0x20
+mat 1
+refs 3
+0 0 0
+3 0 0
+4 0 0
+SURF 0x20
+mat 1
+refs 3
+1 0 0
+0 0 0
+4 0 0
+SURF 0x20
+mat 1
+refs 3
+4 0 0
+2 0 0
+1 0 0
+kids 0
+OBJECT poly
+name "Rudder"
+data 6
+Rudder
+crease 30.000000
+numvert 5
+-0.488966 -0.037608 0
+-0.48975 -0.133784 0
+-0.485043 0.046 0
+-0.46 0.046 0
+-0.466733 -0.130621 0
+numsurf 3
+SURF 0x20
+mat 1
+refs 3
+0 0 0
+2 0 0
+3 0 0
+SURF 0x20
+mat 1
+refs 3
+4 0 0
+0 0 0
+3 0 0
+SURF 0x20
+mat 1
+refs 3
+1 0 0
+0 0 0
+4 0 0
+kids 0
+OBJECT poly
+name "Sail"
+data 4
+Sail
+crease 30.000000
+numvert 6
+0.133227 1.216992 -0.000254
+0.17469 0.67093 -0.000254
+0.17469 0.796242 -0.000254
+0.133227 1.309183 -0.000254
+0.17469 0.124867 -0.000466
+-0.316184 0.124867 -0.000254
+numsurf 3
+SURF 0x20
+mat 3
+refs 4
+0 0 0
+1 0 0
+2 0 0
+3 0 0
+SURF 0x20
+mat 3
+refs 3
+2 0 0
+4 0 0
+5 0 0
+SURF 0x20
+mat 3
+refs 3
+3 0 0
+2 0 0
+5 0 0
+kids 0
