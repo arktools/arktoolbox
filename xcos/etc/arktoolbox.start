@@ -2,7 +2,7 @@
 
 // This file is released under the 3-clause BSD license. See COPYING-BSD.
 
-function [arktoolboxlib, root_tlbx] = startModule()
+function arktoolboxlib = startModule()
 
   mprintf("Start ARKToolbox\n");
 
