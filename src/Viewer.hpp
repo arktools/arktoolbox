@@ -24,6 +24,8 @@
 #include <boost/scoped_ptr.hpp>
 #include <osgDB/ReadFile>
 
+#include "osgUtils.hpp"
+
 /**
  * The purpose of this class is to create a viewer for simulation purposes.
  */
@@ -55,6 +57,13 @@ private:
     boost::scoped_ptr<boost::thread> myThread; // viewer thread
     boost::mutex myMutex; // mutex lock to protect data for multi-threading
     int myFps; // Approxmiate frames per second, neglects framing time
+};
+
+class VisCar : public Viewer
+{
+public:
+    VisCar(char* model, char * texture);
+    Car * car;
 };
 
 #endif

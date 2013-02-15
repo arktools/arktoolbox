@@ -31,6 +31,7 @@ Viewer::Viewer(int fps) :
 
 Viewer::~Viewer()
 {
+    setDone(true);
     if (myThread) myThread->join();
 }
 
@@ -60,6 +61,18 @@ void Viewer::lock()
 void Viewer::unlock()
 {
     myMutex.unlock();
+}
+
+VisCar::VisCar(char* model, char * texture) : car(new Car(std::string(model)))
+{
+    osg::Group * root = new Frame(1,"N","E","D");
+    root->addChild(new Terrain(std::string(texture),osg::Vec3(10,10,0)));
+    if (car) root->addChild(car);
+    getCameraManipulator()->setHomePosition(osg::Vec3(-3,3,-3),
+                                            osg::Vec3(0,0,0),osg::Vec3(0,0,-1));
+    if (root) setSceneData(root);
+    setUpViewInWindow(0,0,400,400);
+    run();
 }
 
 // vim:ts=4:sw=4

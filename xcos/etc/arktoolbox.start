@@ -2,7 +2,7 @@
 
 // This file is released under the 3-clause BSD license. See COPYING-BSD.
 
-function arktoolboxlib = startModule()
+function [arktoolboxlib, root_tlbx] = startModule()
 
   mprintf("Start ARKToolbox\n");
 
@@ -36,7 +36,9 @@ function arktoolboxlib = startModule()
   mprintf("\tLoad palette\n");
   pal = xcosPal("ARKToolbox");
 
-  exec(pathconvert(root_tlbx+"/macros/load_defs.sce", %f));
+  exec(pathconvert(root_tlbx+"/macros/definitions.sce", %f));
+  blocks = arktoolboxBlocks;
+
   for i=1:size(blocks, "*")
     h5  = ls(root_tlbx + "/images/h5/"  + blocks(i) + "." + ["sod" "h5"]);
     gif = ls(root_tlbx + "/images/gif/" + blocks(i) + "." + ["png" "jpg" "gif"]);
@@ -58,8 +60,6 @@ function arktoolboxlib = startModule()
     pal = xcosPalAddBlock(pal, h5(1), gif(1), style);
 
   end
-
-  exec(pathconvert(root_tlbx+"/macros/unload_defs.sce", %f));
 
   if ~xcosPalAdd(pal) then
     error(msprintf(gettext("%s: Unable to export %s.\n"), "arktoolbox.start", "pal"));
@@ -102,6 +102,7 @@ function arktoolboxlib = startModule()
 endfunction
 
 if with_module('xcos') then
-  arktoolboxlib = startModule();
+  [arktoolboxlib, arktoolboxPath] = startModule();
   clear startModule; // remove startModule on stack
+  exec(pathconvert(arktoolboxPath+"/macros/definitions.sce", %f));
 end

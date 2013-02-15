@@ -37,6 +37,7 @@ function builder_cpp()
     "business_sum", ..
     "block_joystick", ..
     "block_mavlink", ..
+    "block_osg", ..
     ];
    
   srcs =  [..
@@ -44,6 +45,7 @@ function builder_cpp()
     "business_sum.c", ..
     "block_joystick.cpp", ..
     "block_mavlink.cpp", ..
+    "block_osg.cpp", ..
     ];
   
 
@@ -55,7 +57,7 @@ function builder_cpp()
                 CFLAGS,                               ..
                 "",                           ..
                 "",                                   ..
-                "xcos_tbx_skel");
+                "arktoolbox");
 endfunction
 
 builder_cpp();

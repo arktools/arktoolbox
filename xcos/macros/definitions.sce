@@ -3,4 +3,4 @@
 mode(-1);
 lines(0);
 
-blocks = ["TBX_SUM_c" "TBX_MUT_STYLE" "ARK_JOYSTICK" "ARK_MAVLINK"];
+arktoolboxBlocks = ["TBX_SUM_c" "TBX_MUT_STYLE" "ARK_JOYSTICK" "ARK_MAVLINK", "ARK_OSG"];
