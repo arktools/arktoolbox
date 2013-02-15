@@ -36,7 +36,7 @@ function arktoolboxlib = startModule()
   mprintf("\tLoad palette\n");
   pal = xcosPal("ARKToolbox");
 
-  blocks = ["TBX_SUM_c" "TBX_MUT_STYLE" "ARK_JOYSTICK" "ARK_MAVLINK"];
+  exec(pathconvert(root_tlbx+"/macros/load_defs.sce", %f));
   for i=1:size(blocks, "*")
     h5  = ls(root_tlbx + "/images/h5/"  + blocks(i) + "." + ["sod" "h5"]);
     gif = ls(root_tlbx + "/images/gif/" + blocks(i) + "." + ["png" "jpg" "gif"]);
@@ -58,6 +58,8 @@ function arktoolboxlib = startModule()
     pal = xcosPalAddBlock(pal, h5(1), gif(1), style);
 
   end
+
+  exec(pathconvert(root_tlbx+"/macros/unload_defs.sce", %f));
 
   if ~xcosPalAdd(pal) then
     error(msprintf(gettext("%s: Unable to export %s.\n"), "arktoolbox.start", "pal"));
