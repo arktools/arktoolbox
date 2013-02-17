@@ -23,7 +23,8 @@ file(COPY ${ARKTOOLS_INCLUDE_DIRS}/arktools DESTINATION ${XCOS_ROOT}/support/inc
 file(COPY ${ARKTOOLS_LIBRARIES} DESTINATION ${XCOS_ROOT}/support/lib)
 
 # build xcos toolbox
-file(GLOB_RECURSE XCOS_SRCS ${XCOS_ROOT})
+file(GLOB_RECURSE XCOS_SRCS ${XCOS_ROOT} "*.sci" "*.sce" "*.*cos" "*.txt" "*.xml")
+#message(STATUS "XCOS_SRCS: ${XCOS_SRCS}")
 set(XCOS_ARKTOOLS_LIB ${XCOS_ROOT}/src/cpp/libarktoolbox_cpp${CMAKE_SHARED_LIBRARY_SUFFIX})
 add_custom_command(OUTPUT ${XCOS_ARKTOOLS_LIB} COMMAND 
     ${CMAKE_COMMAND} -E chdir ${XCOS_ROOT}
