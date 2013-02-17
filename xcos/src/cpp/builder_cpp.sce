@@ -5,7 +5,7 @@
 function builder_cpp()
   src_cpp_path = get_absolute_file_path("builder_cpp.sce");
   support_path = src_cpp_path + "../../support/";
-  arktools_lib = support_path + "/lib/libarktools";
+  arktools_lib = support_path + "/lib/libarktools_core";
 
   CFLAGS = ilib_include_flag(src_cpp_path);
   CFLAGS = CFLAGS + " -I" + support_path + "/include";
