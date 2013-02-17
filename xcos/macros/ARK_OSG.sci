@@ -79,8 +79,8 @@ select job
         model.dep_ut=[%t %f]
 
         // jsbsim parameters
-        ModelPath="arktoolboxPath + ""/data/models/rcTruck.ac""";
-        TexturePath="arktoolboxPath + ""/data/images/lz.rgb""";
+        ModelPath="arktoolboxPath + ""/support/share/arktools/models/rcTruck.ac"";
+        TexturePath="arktoolboxPath + ""/support/share/arktools/images/lz.rgb"";
         model.ipar=[..
             length(evstr(ModelPath)),ascii(evstr(ModelPath)),0,..
             length(evstr(TexturePath)),ascii(evstr(TexturePath)),0];
