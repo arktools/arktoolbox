@@ -8,7 +8,7 @@ function builder_gw_cpp()
                     ["tbx_sum", "sci_tbx_sum"],                         ..
                     ["sci_tbx_sum.c"],                                  ..
                     get_absolute_file_path("builder_gateway_cpp.sce"),  ..
-                    ["../../src/cpp/libarktoolbox",                     ..
+                    ["../../src/cpp/libarktoolbox_cpp",                 ..
                      "../../support/bin/libsupport"],                   ..
                     "",                                                 ..
                     includes_src_cpp);

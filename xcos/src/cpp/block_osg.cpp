@@ -17,9 +17,10 @@
  */
 
 #include <iostream>
-#include "Viewer.hpp"
-#include "osgUtils.hpp"
-#include "utilities.hpp"
+
+#include "arktools/Viewer.hpp"
+#include "arktools/osgUtils.hpp"
+#include "arktools/utilities.hpp"
 
 extern "C"
 {

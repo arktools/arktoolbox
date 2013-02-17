@@ -70,8 +70,8 @@
  *
  */
 
-#include "utilities.hpp"
-#include "MAVLinkParser.hpp"
+#include "arktools/utilities.hpp"
+#include "arktools/MAVLinkParser.hpp"
 
 extern "C"
 {

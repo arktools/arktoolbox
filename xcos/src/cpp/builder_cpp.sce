@@ -5,7 +5,7 @@
 function builder_cpp()
   src_cpp_path = get_absolute_file_path("builder_cpp.sce");
   support_path = src_cpp_path + "../../support/";
-  support_lib = support_path + "/bin/libsupport";
+  support_lib = support_path + "/lib/libsupport";
 
   CFLAGS = ilib_include_flag(src_cpp_path);
   CFLAGS = CFLAGS + " -I" + support_path + "/include";
@@ -51,13 +51,13 @@ function builder_cpp()
 
   tbx_build_src(entry_points, srcs, ..
                 "c",                                  ..
-                src_cpp_path,                           ..
+                src_cpp_path,                         ..
                 [support_lib],                        ..
                 LDFLAGS,                              ..
                 CFLAGS,                               ..
-                "",                           ..
                 "",                                   ..
-                "arktoolbox");
+                "",                                   ..
+                "arktoolbox_cpp");
 endfunction
 
 builder_cpp();

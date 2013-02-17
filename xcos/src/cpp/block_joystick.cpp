@@ -18,7 +18,7 @@
  * y: vector of axis values
  */
 
-#include "Joystick.hpp"
+#include "arktools/Joystick.hpp"
 
 extern "C"
 {
