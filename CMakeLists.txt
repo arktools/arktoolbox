@@ -9,12 +9,7 @@ enable_testing()
 
 # find packages
 find_package(ARKTOOLS REQUIRED)
-
-# find xcos compile program
-find_program(SCILAB_ADV_CLI scilab-adv-cli)
-if (${SCILAB_ADV_CLI} STREQUAL "SCILAB_ADV_CLI-NOTFOUND")
-    message(FATAL_ERROR "Couldn't find scilab-adv-cli")
-endif()
+find_package(Scilab REQUIRED)
 
 # install arktools to xcos toolbox
 set(XCOS_ROOT ${CMAKE_SOURCE_DIR}/xcos/)
