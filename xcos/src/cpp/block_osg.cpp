@@ -42,15 +42,14 @@ void block_osg(scicos_block *block, scicos_flag flag)
     char ** stringArray;
     int * intArray;
     getIpars(2,0,ipar,&stringArray,&intArray);
-    char * model = stringArray[0];
-    char * texture = stringArray[1];
+    char * dataPath = stringArray[0];
 
     // handle flags
     if (flag == Initialization)
     {
         try
         {
-            vis = new VisCar(model,texture);
+            vis = new VisCar(dataPath);
         }
         catch (const std::runtime_error & e)
         {

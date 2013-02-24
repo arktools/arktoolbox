@@ -17,7 +17,7 @@ set(_ARKTOOLS_EXTRA_SEARCH_PATHS
 
 # find the include directory
 find_path(_ARKTOOLS_INCLUDE_DIR
-	NAMES arktools/osgUtils.hpp
+	NAMES arktools/utilities.hpp
     PATHS ${_ARKTOOLS_EXTRA_SEARCH_PATHS}
     PATH_SUFFIXES include
     )

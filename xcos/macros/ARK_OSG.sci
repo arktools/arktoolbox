@@ -49,19 +49,16 @@ select job
         graphics=arg1.graphics;exprs=graphics.exprs;
         model=arg1.model;
         while %t do
-            labels=[..
-                'car model';'ground texture'];
-            [ok,ModelPath,TexturePath,exprs]=..
+            labels=['data path'];
+            [ok,DataPath,exprs]=..
                 getvalue('Set Car Parameters',labels,..
-                list('str',-1,'str',-1),exprs);
+                list('str',-1),exprs);
             if ~ok then break,end
             [model,graphics,ok]=check_io(model,graphics,[3;3;2],[],1,[]);
             if ok then
-                printf("model path: %s\n", ModelPath)
                 length(evstr(ModelPath))
                 model.ipar=[..
-                    length(evstr(ModelPath)),ascii(evstr(ModelPath)),0,..
-                    length(evstr(TexturePath)),ascii(evstr(TexturePath)),0];
+                    length(evstr(DataPath)),ascii(evstr(DataPath)),0];
                 graphics.exprs=exprs;
                 x.graphics=graphics;
                 x.model=model;
@@ -79,20 +76,16 @@ select job
         model.dep_ut=[%t %f]
 
         // jsbsim parameters
-        ModelPath="arktoolboxPath + ""/support/share/arktools/models/rcTruck.ac""";
-        TexturePath="arktoolboxPath + ""/support/share/arktools/images/lz.rgb""";
+        DataPath="arktoolboxPath + ""/support/share/arktools""";
         model.ipar=[..
-            length(evstr(ModelPath)),ascii(evstr(ModelPath)),0,..
-            length(evstr(TexturePath)),ascii(evstr(TexturePath)),0];
+            length(evstr(DataPath)),ascii(evstr(DataPath)),0];
 
         // intial state
 
         // save state
 
         // initialize strings for gui
-        exprs=[
-            strcat(ModelPath),..
-            strcat(TexturePath)];
+        exprs=[strcat(DataPath)];
 
         //setup icon
         gr_i=['xstringb(orig(1),orig(2),..

@@ -115,9 +115,9 @@ void block_mavlink(scicos_block *block, scicos_flag flag)
             baudRate = intArray[0];
             try
             {
-                mavlink = new MAVLinkParser(0,0,MAV_TYPE_GENERIC,device,baudRate);
+                mavlink = new MAVLinkParser(0,0,device,baudRate);
             }
-            catch(const boost::system::system_error & e)
+            catch(const std::exception & e)
             {
                 Scierror(999, "%s", e.what());
             }
