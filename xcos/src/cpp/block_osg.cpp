@@ -18,9 +18,9 @@
 
 #include <iostream>
 
-#include "arktools/Viewer.hpp"
-#include "arktools/osgUtils.hpp"
+#include "arktools/visualization.hpp"
 #include "arktools/utilities.hpp"
+#include <stdexcept>
 
 extern "C"
 {
@@ -73,11 +73,11 @@ void block_osg(scicos_block *block, scicos_flag flag)
         vis = (VisCar *)*work;
         if (vis)
         {
-            vis->lock();
-            vis->car->setEuler(u1[0],u1[1],u1[2]);
-            vis->car->setPositionScalars(u2[0],u2[1],u2[2]);
-            vis->car->setU(u3[0],u3[1]);
-            vis->unlock();
+            //vis->lock();
+            vis->setEuler(u1[0],u1[1],u1[2]);
+            vis->setPosition(u2[0],u2[1],u2[2]);
+            vis->setU(u3[0],u3[1]);
+            //vis->unlock();
         }
     }
     else

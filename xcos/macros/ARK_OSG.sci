@@ -56,7 +56,6 @@ select job
             if ~ok then break,end
             [model,graphics,ok]=check_io(model,graphics,[3;3;2],[],1,[]);
             if ok then
-                length(evstr(ModelPath))
                 model.ipar=[..
                     length(evstr(DataPath)),ascii(evstr(DataPath)),0];
                 graphics.exprs=exprs;
