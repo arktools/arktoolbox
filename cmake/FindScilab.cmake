@@ -11,6 +11,7 @@
 include(FindPackageHandleStandardArgs)
 
 set(_SCILAB_EXTRA_SEARCH_PATHS
+    /home/jgoppert
     /usr/local
     /opt/local
     /Program\ Files
@@ -58,10 +59,10 @@ find_path(_SCILAB_CONTRIB_DIR
     NO_CMAKE_SYSTEM_PATH
     )
 
-find_library(_SCILAB_SCICOS_LIBRARY
-    NAMES libscicos
+find_library(_SCILAB_LIBRARY
+    NAMES libscilab
     PATHS ${_SCILAB_ROOT}
-    PATH_SUFFIXES lib
+    PATH_SUFFIXES lib/scilab
     NO_CMAKE_PATH
     NO_CMAKE_ENVIRONMENT_PATH
     NO_SYSTEM_ENVIRONMENT_PATH
