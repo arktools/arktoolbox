@@ -4,12 +4,11 @@ function builder_gw_cpp()
 
   includes_src_cpp = ilib_include_flag(get_absolute_file_path("builder_gateway_cpp.sce") + "../../src/cpp");
 
-  tbx_build_gateway("arktoolbox_cpp",                        ..
+  tbx_build_gateway("arktoolbox_gateway_cpp",                          ..
                     ["tbx_sum", "sci_tbx_sum"],                         ..
                     ["sci_tbx_sum.c"],                                  ..
                     get_absolute_file_path("builder_gateway_cpp.sce"),  ..
-                    ["../../src/cpp/libarktoolbox_cpp",                 ..
-                     "../../support/lib/libarktools_core"],             ..
+                    ["../../support/lib/libarktools_core"],             ..
                     "",                                                 ..
                     includes_src_cpp);
 

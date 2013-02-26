@@ -1,3 +1,4 @@
 build
 .*.swp
 xcos/support/
+xcos/sci_gateway/cpp/libarktoolbox_gateway_cpp.c
