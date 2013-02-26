@@ -1,6 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
 #include <mex.h> 
 #include <sci_gateway.h>
 #include <api_scilab.h>
@@ -25,6 +22,3 @@ int C2F(libarktoolbox_cpp)()
   }
   return 0;
 }
-#ifdef __cplusplus
-}
-#endif

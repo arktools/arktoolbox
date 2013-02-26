@@ -8,7 +8,7 @@ function builder_cpp()
   arktools_lib = support_path + "/lib/libarktools_core";
 
   CFLAGS = ilib_include_flag(src_cpp_path);
-  CFLAGS = CFLAGS + " -I" + support_path + "/include";
+  CFLAGS = "-g " + CFLAGS + " -I" + support_path + "/include";
   LDFLAGS = "";
 
   if (getos()<>"Windows") then

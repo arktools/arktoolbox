@@ -1,10 +1,10 @@
 # - Try to find  SCILAB
 # Once done, this will define
 #
-#  SCILAB_FOUND - system has scicoslab 
-#  SCILAB_INCLUDE_DIRS - the scicoslab include directories
-#  SCILAB_CONTRIB_DIR - the scicoslab contrib directory
-#  SCILAB_LIBRARIES - the scicoslab library to link against, only on win
+#  SCILAB_FOUND - system has scilab 
+#  SCILAB_INCLUDE_DIRS - the scilab include directories
+#  SCILAB_CONTRIB_DIR - the scilab contrib directory
+#  SCILAB_LIBRARIES - the scilab library to link against, only on win
 #  SCILAB_ADV_CLI - the scilab program
 
 # macros
@@ -17,7 +17,7 @@ set(_SCILAB_EXTRA_SEARCH_PATHS
     /Program\ Files
     )
 
-# find scicos app on mac
+# find scilab app on mac
 if (APPLE)
     execute_process(COMMAND mdfind "kMDItemKind == Application && kMDItemDisplayName == scilab*"
         COMMAND head -1
@@ -26,7 +26,7 @@ if (APPLE)
         ERROR_VARIABLE ERROR_MESSAGE
         OUTPUT_STRIP_TRAILING_WHITESPACE)
     if (RESULT) 
-        MESSAGE(FATAL_ERROR "Could not locate 'ScicosLabGtk.app' - ${ERROR_MESSAGE}")
+        MESSAGE(FATAL_ERROR "Could not locate 'Scilab.app' - ${ERROR_MESSAGE}")
     endif (RESULT)
     list(APPEND _SCILAB_EXTRA_SEARCH_PATHS ${_SCILAB_APP}/Contents/MacOS)
 endif()
@@ -122,7 +122,7 @@ set(SCILAB_CONTRIB_DIR ${_SCILAB_CONTRIB_DIR})
 # handle wine overrides on output variables
 string(REGEX MATCH ".*/\\.wine/drive_c/(.*)" _SCILAB_SCILAB_WINE_MATCH ${_SCILAB_ROOT})
 if (NOT "${_SCILAB_SCILAB_WINE_MATCH}" STREQUAL "")
-    #message(STATUS "detected wine version of scicoslab")
+    #message(STATUS "detected wine version of scilab")
     set(SCILAB_ADV_CLI "wine" "${_SCILAB_ADV_CLI}")
     set(SCILAB_CONTRIB_DIR "C:\${CMAKE_MATCH_1}")
 endif()
@@ -137,7 +137,7 @@ set(_SCILAB_REQUIRED_VARS
 if (WIN32)
     list(INSERT _SCILAB_REQUIRED_VARS 0 SCILAB_SCICOS_LIBRARIES)
 endif()
-find_package_handle_standard_args(ScicosLab
+find_package_handle_standard_args(Scilab
     REQUIRED_VARS ${_SCILAB_REQUIRED_VARS}
     VERSION_VAR SCILAB_VERSION
     )

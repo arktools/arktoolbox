@@ -41,7 +41,7 @@ void block_osg(scicos_block *block, scicos_flag flag)
     int * ipar=block->ipar;
     char ** stringArray;
     int * intArray;
-    getIpars(2,0,ipar,&stringArray,&intArray);
+    getIpars(1,0,ipar,&stringArray,&intArray);
     char * dataPath = stringArray[0];
 
     // handle flags
