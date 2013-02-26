@@ -49,8 +49,11 @@ void block_osg(scicos_block *block, scicos_flag flag)
     {
         try
         {
-            vis = new VisCar(dataPath);
+            if (!vis) {
+                vis = new VisCar(dataPath);
+            }
         }
+
         catch (const std::runtime_error & e)
         {
             std::cout << "exception: " << e.what() << std::endl;
@@ -73,11 +76,10 @@ void block_osg(scicos_block *block, scicos_flag flag)
         vis = (VisCar *)*work;
         if (vis)
         {
-            //vis->lock();
             vis->setEuler(u1[0],u1[1],u1[2]);
             vis->setPosition(u2[0],u2[1],u2[2]);
             vis->setU(u3[0],u3[1]);
-            //vis->unlock();
+            vis->frame();
         }
     }
     else
